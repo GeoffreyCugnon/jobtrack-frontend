@@ -6,10 +6,11 @@ interface PageContainerProps {
   className?: string;
 }
 
-export function PageContainer({ children, className = "" }: PageContainerProps) {
+export function PageContainer({
+  children,
+  className = "",
+}: PageContainerProps) {
   return (
-    <div className={`max-w-5xl mx-auto px-4 ${className}`}>
-      {children}
-    </div>
+    <div className={`max-w-5xl mx-auto px-4 ${className}`}>{children}</div>
   );
 }

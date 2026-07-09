@@ -14,10 +14,12 @@ export function MenuProvider({ children }: { children: ReactNode }) {
 
   const openMenu = () => setIsMenuOpen(true);
   const closeMenu = () => setIsMenuOpen(false);
-  const toggleMenu = () => setIsMenuOpen(prev => !prev);
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   return (
-    <MenuContext.Provider value={{ isMenuOpen, openMenu, closeMenu, toggleMenu }}>
+    <MenuContext.Provider
+      value={{ isMenuOpen, openMenu, closeMenu, toggleMenu }}
+    >
       {children}
     </MenuContext.Provider>
   );

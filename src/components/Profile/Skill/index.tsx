@@ -26,7 +26,11 @@ export function ProfileSkills({ skills }: ProfileSkillsProps) {
 
       <div className="bg-base-100 p-4 shadow-sm rounded-none sm:rounded-box space-y-3 w-full">
         {skills.map((group) => (
-          <SkillCategory key={group.category} category={group.category} items={group.items} />
+          <SkillCategory
+            key={group.category}
+            category={group.category}
+            items={group.items}
+          />
         ))}
       </div>
     </>

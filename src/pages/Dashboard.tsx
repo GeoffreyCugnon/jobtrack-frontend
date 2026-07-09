@@ -1,5 +1,13 @@
 // src/pages/Dashboard.tsx
-import { Mail, Link as LinkIcon, TrendingUp, Calendar, Briefcase, Briefcase as BriefcaseIcon, XCircle } from "lucide-react";
+import {
+  Mail,
+  Link as LinkIcon,
+  TrendingUp,
+  Calendar,
+  Briefcase,
+  Briefcase as BriefcaseIcon,
+  XCircle,
+} from "lucide-react";
 import { WelcomeBanner } from "../components/Dashboard/WelcomeBanner";
 import { StatCards } from "../components/Dashboard/StatsCards";
 import { UrgentTasks } from "../components/Dashboard/UrgentTasks";
@@ -21,7 +29,12 @@ export function Dashboard() {
 
   const recentEvents = [
     { id: 1, text: 'Offre sauvegardée : "Dev React"', icon: BriefcaseIcon },
-    { id: 2, text: 'Statut modifié : "Lidl" -> Refusé', icon: XCircle, variant: "error" as const },
+    {
+      id: 2,
+      text: 'Statut modifié : "Lidl" -> Refusé',
+      icon: XCircle,
+      variant: "error" as const,
+    },
   ];
 
   return (

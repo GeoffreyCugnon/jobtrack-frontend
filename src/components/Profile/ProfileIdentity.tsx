@@ -19,22 +19,26 @@ interface ProfileIdentityProps {
 export function ProfileIdentity({ user }: ProfileIdentityProps) {
   return (
     <>
-      {/* 1. Zone de Couverture */}
-      <div className="relative h-34 bg-linear-to-r from-primary to-secondary">
-        <button className="btn btn-sm btn-glass absolute right-4 bottom-3 gap-1.5 text-primary-content border-none hover:bg-black/20">
+        {/* 1. Zone de Couverture */}
+            <div className="relative h-34 sm:h-56 bg-linear-to-r from-primary to-secondary">
+        <button className="btn btn-sm btn-glass absolute right-4 bottom-6 sm:bottom-6 gap-1.5 text-primary-content border-none hover:bg-black/20">
           <Edit2 className="w-3.5 h-3.5" />
           Modifier
         </button>
       </div>
 
       {/* 2. Contenu des détails de l'identité */}
-      <div className="relative pt-12 px-4 pb-5 bg-base-100 shadow-sm mb-3">
+      <div className="relative pt-12 px-4 pb-5 bg-base-100 shadow-sm -mt-4">
         
         {/* DaisyUI Avatar Container décalé vers le haut */}
-        <div className="absolute left-4 -top-16 avatar placeholder">
-          <div className="w-24 rounded-full bg-neutral text-neutral-content ring-4 ring-base-100 shadow-md">
-            <span className="text-3xl font-bold">{user.initials}</span>
-          </div>
+        <div className="absolute left-4 -top-14 avatar placeholder">
+            <div className="w-24 h-24 rounded-full ring-4 ring-base-100 shadow-md overflow-hidden bg-neutral">
+                <img 
+                    src="https://picsum.photos/200" 
+                    alt="Avatar" 
+                    className="w-full h-full object-cover object-center"
+                />
+            </div>
         </div>
 
         {/* Bloc d'informations textuelles */}

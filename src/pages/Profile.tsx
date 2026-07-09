@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
+import { PageContainer } from "../components/Layout/PageContainer";
 
-// Importations des sous-composants fraîchement créés
 import { ProfileIdentity } from "../components/Profile/ProfileIdentity";
-import { ProfileContact } from "../components/Profile/ProfileContact";
-import { ProfileSkills } from "../components/Profile/ProfileSkills";
+import { ProfileContact } from "../components/Profile/Contact";
+import { ProfileSkills } from "../components/Profile/Skill";
 
 const user = {
   firstName: "Geoffrey",
@@ -34,26 +34,21 @@ export function Profile() {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full bg-base-200 text-base-content">
-      {/* Header Local */}
-      <header className="navbar bg-base-100 border-b border-base-200 sticky top-0 z-10 px-4">
-        <div className="flex-none">
+    <div className="w-full min-h-screen bg-base-200 text-base-content">
+      <header className="bg-base-300 border-b border-base-content/10 sticky top-0 z-10">
+        <PageContainer className="h-14 flex items-center">
           <button onClick={() => navigate(-1)} className="btn btn-ghost btn-circle btn-sm">
             <ArrowLeft className="w-5 h-5 text-base-content" />
           </button>
-        </div>
-        <div className="flex-1">
           <h1 className="text-lg font-semibold ml-2">Mon profil</h1>
-        </div>
+        </PageContainer>
       </header>
 
-      {/* Conteneur fluide : prend tout l'espace sur petit écran, se centre et se limite sur desktop */}
-      <main className="w-full max-w-3xl mx-auto p-0 sm:p-4 space-y-4 mt-0 sm:mt-4 pb-4">
+      <div className="max-w-5xl mx-auto px-0 sm:px-4 pb-0 sm:pb-4">
         <ProfileIdentity user={user} />
         <ProfileContact user={user} />
         <ProfileSkills skills={skills} />
-        <div className="h-24 w-full bg-base-200 pointer-events-none" />
-      </main>
+      </div>
     </div>
   );
 }

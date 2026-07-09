@@ -1,5 +1,5 @@
 // src/components/dashboard/urgenttasks/index.tsx
-import { TaskRow } from "./taskRow";
+import { TaskRow } from "./TaskRow";
 import type { LucideIcon } from "lucide-react";
 
 interface TaskItem {
@@ -18,7 +18,7 @@ interface UrgentTasksProps {
 export function UrgentTasks({ tasks }: UrgentTasksProps) {
   return (
     <>
-      <h2 className="text-sm uppercase tracking-wide text-gray-600 mb-3">
+      <h2 className="text-xs uppercase tracking-wide text-base-content/50 mb-3">
         À Faire Ce Jour
       </h2>
       

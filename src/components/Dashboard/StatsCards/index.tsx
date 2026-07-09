@@ -1,8 +1,7 @@
 // src/components/dashboard/statscards/index.tsx
-import { Card } from "./statCard";
+import { Card } from "./StatCard";
 import type { LucideIcon } from "lucide-react";
 
-// 1. On remet les interfaces indispensables pour TypeScript
 interface StatItem {
   label: string;
   count: number;
@@ -16,12 +15,11 @@ interface StatCardsProps {
 export function StatCards({ stats }: StatCardsProps) {
   return (
     <>
-      <h2 className="text-sm uppercase tracking-wide text-gray-600 mb-3">
+      <h2 className="text-xs uppercase tracking-wide text-base-content/50 mb-3">
         Stats Rapides
       </h2>
-      <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4">
+      <div className="grid grid-cols-3 gap-3">
         {stats.map((stat) => (
-          // 2. On utilise le bon nom du composant exporté par card.tsx
           <Card key={stat.label} {...stat} />
         ))}
       </div>

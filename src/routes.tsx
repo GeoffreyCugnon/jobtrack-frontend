@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router";
-import { Root } from "./pages/root";
-import { Dashboard } from "./pages/dashboard";
-import { Offers } from "./pages/offers";
-import { Network } from "./pages/network";
-import { Documents } from "./pages/documents";
-import { Posts } from "./pages/posts";
-import { Statistics } from "./pages/statistics";
-import { Settings } from "./pages/settings";
-import { Profile } from "./pages/profile";
+import { Root } from "./pages/Root";
+import { Dashboard } from "./pages/Dashboard";
+import { Offers } from "./pages/Offers";
+import { Network } from "./pages/Network";
+import { Documents } from "./pages/Documents";
+import { Posts } from "./pages/Posts";
+import { Statistics } from "./pages/Statistics";
+import { Settings } from "./pages/Settings";
+import { Profile } from "./pages/Profile";
 
 export const router = createBrowserRouter([
   {

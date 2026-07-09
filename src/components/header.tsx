@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { User } from "lucide-react"; // On importe l'icône de bonhomme
+import { User, Menu } from "lucide-react"; 
 
 interface HeaderProps {
   title: string;
@@ -7,19 +7,30 @@ interface HeaderProps {
 
 export function Header({ title }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between shadow-sm">
-      <h1 className="text-xl font-bold text-gray-900 tracking-tight">
-        {title}
-      </h1>
+    <header className="sticky top-0 z-30 bg-base-300 border-b border-base-300 px-4 py-3 flex items-center justify-between shadow-sm h-16">
       
-      {/* Le bonhomme cliquable qui redirige vers le profil */}
-      <Link 
-        to="/profile" 
-        className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-colors border border-gray-200"
+      {/* 1. BLOC GAUCHE : Bouton Burger + Titre */}
+      <div className="flex items-center gap-3">
+        {/* Bouton burger bleu avec DaisyUI */}
+      <button className="btn btn-circle btn-sm h-9 w-9 min-h-0 border-none flex items-center justify-center text-white bg-[#004bfa] hover:bg-[#003cb8] transition-colors">
+        <Menu className="w-5 h-5" />
+      </button>
+        
+        {/* Titre de l'application */}
+        <h1 className="text-xl font-bold text-white uppercase tracking-wide">
+          {title}
+        </h1>
+      </div>
+
+      {/* 2. BLOC DROITE : Le bonhomme cliquable discret du prototype */}
+      <Link
+        to="/profile"
+        className="w-10 h-10 rounded-full flex items-center justify-center bg-base-100 text-slate-300 hover:text-white hover:bg-base-100 transition-colors border border-base-100/10"
         aria-label="Voir mon profil"
       >
         <User className="w-5 h-5" />
       </Link>
+
     </header>
   );
 }

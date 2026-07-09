@@ -25,14 +25,14 @@ function RootContent() {
   return (
     <>
       <SideMenu isOpen={isMenuOpen} onClose={closeMenu} />
-      <div className="h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-base-200">
         {/* Zone de contenu principale scrollable avec l'Outlet */}
-        <div className="flex-1 overflow-y-auto pb-20">
+        <div className="flex-1 overflow-y-auto bg-base-200 w-full">
           <Outlet />
         </div>
 
         {/* Barre de navigation basse (Mobile-First) */}
-        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-3 shadow-lg z-40">
+        <nav className="fixed bottom-0 left-0 right-0 bg-base-300 border-t border-base-300 px-2 py-3 shadow-lg z-40">
           <div className="flex justify-around items-center max-w-md mx-auto">
             {navItems.map(({ path, icon: Icon, label }) => (
               <Link

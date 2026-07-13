@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from "react-router";
 import { Home, Briefcase, Users, FileText, Megaphone } from "lucide-react";
-import SideMenu from "../components/SideMenu";
+import { SideMenu } from "../components/SideMenu";
 import { MessagingFab } from "../components/Message/MessagingFab";
 import { MenuProvider, useMenu } from "../context/MenuContext";
 import { BOTTOM_NAV_HEIGHT } from "../constants/layout";

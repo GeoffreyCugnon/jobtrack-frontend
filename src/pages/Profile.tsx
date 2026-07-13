@@ -24,22 +24,10 @@ const user = {
 };
 
 const skills = [
-  {
-    category: "Front-end",
-    items: ["React", "TypeScript", "Tailwind CSS", "Next.js", "Vite"],
-  },
-  {
-    category: "Back-end",
-    items: ["Node.js", "Express", "REST API", "PostgreSQL"],
-  },
-  {
-    category: "Outils",
-    items: ["Git", "GitHub", "Figma", "VS Code", "Docker (bases)"],
-  },
-  {
-    category: "Soft skills",
-    items: ["Autonomie", "Curiosité", "Esprit d'équipe", "Adaptabilité"],
-  },
+  { category: "Front-end", items: ["React", "TypeScript", "Tailwind CSS", "Next.js", "Vite"] },
+  { category: "Back-end", items: ["Node.js", "Express", "REST API", "PostgreSQL"] },
+  { category: "Outils", items: ["Git", "GitHub", "Figma", "VS Code", "Docker (bases)"] },
+  { category: "Soft skills", items: ["Autonomie", "Curiosité", "Esprit d'équipe", "Adaptabilité"] },
 ];
 
 export function Profile() {
@@ -49,10 +37,7 @@ export function Profile() {
     <div className="w-full min-h-screen bg-base-200 text-base-content">
       <header className="bg-base-300 border-b border-base-content/10 sticky top-0 z-10">
         <PageContainer className="h-14 flex items-center">
-          <button
-            onClick={() => navigate(-1)}
-            className="btn btn-ghost btn-circle btn-sm"
-          >
+          <button onClick={() => navigate(-1)} className="btn btn-ghost btn-circle btn-sm">
             <ArrowLeft className="w-5 h-5 text-base-content" />
           </button>
           <h1 className="text-lg font-semibold ml-2">Mon profil</h1>

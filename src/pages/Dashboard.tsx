@@ -12,7 +12,7 @@ import { WelcomeBanner } from "../components/Dashboard/WelcomeBanner";
 import { StatCards } from "../components/Dashboard/StatsCards";
 import { UrgentTasks } from "../components/Dashboard/UrgentTasks";
 import { RecentEvents } from "../components/Dashboard/RecentEvents";
-import  Header  from "../components/Header";
+import { Header } from "../components/Header";
 import { PageContainer } from "../components/Layout/PageContainer";
 
 export function Dashboard() {

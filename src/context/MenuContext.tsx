@@ -1,4 +1,3 @@
-// src/context/MenuContext.tsx
 import { useState, type ReactNode } from "react";
 import { MenuContext } from "./menuContextInstance";
 
@@ -20,10 +19,4 @@ export function MenuProvider({ children }: MenuProviderProps) {
       {children}
     </MenuContext.Provider>
   );
-}
-
-export function useMenu() {
-  const context = useContext(MenuContext);
-  if (!context) throw new Error("useMenu must be used within a MenuProvider");
-  return context;
 }

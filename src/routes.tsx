@@ -9,7 +9,6 @@ import { Posts } from "./pages/Posts";
 import { Statistics } from "./pages/Statistics";
 import { Settings } from "./pages/Settings";
 import { Profile } from "./pages/Profile";
-import Register from "./pages/Register";
 
 export const router = createBrowserRouter([
   { path: "/", Component: Home },
@@ -25,7 +24,6 @@ export const router = createBrowserRouter([
       { path: "statistics", Component: Statistics },
       { path: "settings", Component: Settings },
       { path: "profile", Component: Profile },
-      { path: "register", Component: Register},
     ],
   },
 ]);

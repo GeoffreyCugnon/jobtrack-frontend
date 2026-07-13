@@ -21,7 +21,7 @@ export function UrgentTasks({ tasks }: UrgentTasksProps) {
       <h2 className="text-xs uppercase tracking-wide text-base-content/50 mb-3">
         À Faire Ce Jour
       </h2>
-
+      
       <div className="space-y-3">
         {tasks.map((task) => (
           <TaskRow key={task.id} {...task} />

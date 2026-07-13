@@ -11,10 +11,19 @@ export function MenuProvider({ children }: MenuProviderProps) {
 
   const openMenu = () => setIsMenuOpen(true);
   const closeMenu = () => setIsMenuOpen(false);
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   return (
-    <MenuContext.Provider value={{ isMenuOpen, openMenu, closeMenu }}>
+    <MenuContext.Provider
+      value={{ isMenuOpen, openMenu, closeMenu, toggleMenu }}
+    >
       {children}
     </MenuContext.Provider>
   );
+}
+
+export function useMenu() {
+  const context = useContext(MenuContext);
+  if (!context) throw new Error("useMenu must be used within a MenuProvider");
+  return context;
 }

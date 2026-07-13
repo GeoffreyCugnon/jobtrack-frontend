@@ -19,7 +19,7 @@ export function MessagingFab({ unreadCount = 0 }: MessagingFabProps) {
     >
       <div className="relative w-full">
         <Link
-          to="/app/messaging"
+          to="/messaging"
           aria-label={
             unreadCount > 0
               ? `Messagerie, ${unreadCount} message${unreadCount > 1 ? "s" : ""} non lu${unreadCount > 1 ? "s" : ""}`

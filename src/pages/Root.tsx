@@ -2,7 +2,8 @@ import { Outlet, Link, useLocation } from "react-router";
 import { Home, Briefcase, Users, FileText, Megaphone } from "lucide-react";
 import { SideMenu } from "../components/SideMenu";
 import { MessagingFab } from "../components/Message/MessagingFab";
-import { MenuProvider, useMenu } from "../context/MenuContext";
+import { MenuProvider } from "../context/MenuContext";
+import { useMenu } from "../context/useMenu";
 import { BOTTOM_NAV_HEIGHT } from "../constants/layout";
 
 function RootContent() {
@@ -10,18 +11,18 @@ function RootContent() {
   const { isMenuOpen, closeMenu } = useMenu();
 
   const isActive = (path: string) => {
-    if (path === "/") {
-      return location.pathname === "/";
+    if (path === "/app") {
+      return location.pathname === "/app";
     }
     return location.pathname.startsWith(path);
   };
 
   const navItems = [
-    { path: "/", icon: Home, label: "Dashb." },
-    { path: "/offers", icon: Briefcase, label: "Offres" },
-    { path: "/network", icon: Users, label: "Relat." },
-    { path: "/documents", icon: FileText, label: "Docs" },
-    { path: "/posts", icon: Megaphone, label: "Publis." },
+    { path: "/app", icon: Home, label: "Dashb." },
+    { path: "/app/offers", icon: Briefcase, label: "Offres" },
+    { path: "/app/network", icon: Users, label: "Relat." },
+    { path: "/app/documents", icon: FileText, label: "Docs" },
+    { path: "/app/posts", icon: Megaphone, label: "Publis." },
   ];
 
   return (

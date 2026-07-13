@@ -2,7 +2,7 @@
 import { Link } from "react-router";
 import { User, Menu } from "lucide-react";
 import { PageContainer } from "./Layout/PageContainer";
-import { useMenu } from "../context/MenuContext";
+import { useMenu } from "../context/useMenu";
 
 interface HeaderProps {
   title: string;
@@ -30,7 +30,7 @@ export function Header({ title }: HeaderProps) {
           </div>
 
           <Link
-            to="/profile"
+            to="/app/profile"
             className="w-10 h-10 rounded-full flex items-center justify-center bg-base-100 text-slate-300 hover:text-white hover:bg-base-content/10 transition-colors border border-base-100/10"
             aria-label="Voir mon profil"
           >

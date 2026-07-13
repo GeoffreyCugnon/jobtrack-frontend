@@ -1,4 +1,3 @@
-// src/context/useMenu.ts
 import { useContext } from "react";
 import { MenuContext } from "./menuContextInstance";
 

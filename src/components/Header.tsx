@@ -1,4 +1,3 @@
-// src/components/header.tsx
 import { Link } from "react-router";
 import { User, Menu } from "lucide-react";
 import { PageContainer } from "./Layout/PageContainer";

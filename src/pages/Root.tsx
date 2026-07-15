@@ -2,13 +2,17 @@ import { Outlet, Link, useLocation } from "react-router";
 import { Home, Briefcase, Users, FileText, Megaphone } from "lucide-react";
 import { SideMenu } from "../components/SideMenu";
 import { MessagingFab } from "../components/Message/MessagingFab";
+import { MessagingPanel } from "../components/MessagingPanel";
 import { MenuProvider } from "../context/MenuContext";
 import { useMenu } from "../context/useMenu";
+import { MessagingProvider } from "../context/MessagingContext";
+import { useMessaging } from "../context/useMessaging";
 import { BOTTOM_NAV_HEIGHT } from "../constants/layout";
 
 function RootContent() {
   const location = useLocation();
   const { isMenuOpen, closeMenu } = useMenu();
+  const { isMessagingOpen, closeMessaging } = useMessaging();
 
   const isActive = (path: string) => {
     if (path === "/app") {
@@ -27,7 +31,9 @@ function RootContent() {
 
   return (
     <>
-      <SideMenu isOpen={isMenuOpen} onClose={closeMenu} />
+      <SideMenu open={isMenuOpen} onClose={closeMenu} />
+      <MessagingPanel open={isMessagingOpen} onClose={closeMessaging} />
+
       <div className="min-h-screen flex flex-col bg-base-100">
         <div
           className="flex-1 overflow-y-auto bg-base-200 w-full max-w-5xl mx-auto border-x border-base-content/10"
@@ -36,7 +42,7 @@ function RootContent() {
           <Outlet />
         </div>
 
-        <MessagingFab unreadCount={3} />
+        <MessagingFab unreadCount={3} hidden={isMessagingOpen} />
 
         <nav
           className="fixed bottom-0 left-0 right-0 bg-base-100 z-40"
@@ -72,7 +78,9 @@ function RootContent() {
 export function Root() {
   return (
     <MenuProvider>
-      <RootContent />
+      <MessagingProvider>
+        <RootContent />
+      </MessagingProvider>
     </MenuProvider>
   );
 }

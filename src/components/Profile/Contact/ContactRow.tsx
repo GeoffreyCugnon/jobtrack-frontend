@@ -1,4 +1,3 @@
-// ContactRow.tsx
 interface ContactRowProps {
   icon: React.ReactNode; // ou LucideIcon si toutes sont Lucide
   label: string;

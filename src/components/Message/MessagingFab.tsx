@@ -1,25 +1,32 @@
-// src/components/Message/messagingFab.tsx
-import { Link } from "react-router";
 import { MessageCircle } from "lucide-react";
+import { useMessaging } from "../../context/useMessaging";
 import { BOTTOM_NAV_HEIGHT } from "../../constants/layout";
 
 interface MessagingFabProps {
   unreadCount?: number;
+  hidden?: boolean;
 }
 
-const FAB_SIZE = 44; // px (w-11 h-11)
+const FAB_SIZE = 44;
 
-export function MessagingFab({ unreadCount = 0 }: MessagingFabProps) {
+export function MessagingFab({
+  unreadCount = 0,
+  hidden = false,
+}: MessagingFabProps) {
+  const { openMessaging } = useMessaging();
   const displayCount = unreadCount > 9 ? "9+" : unreadCount;
 
   return (
     <div
-      className="fixed left-0 right-0 z-50 max-w-5xl mx-auto px-4 pointer-events-none"
+      className={`fixed left-0 right-0 z-50 max-w-5xl mx-auto px-4 pointer-events-none transition-opacity duration-200 ${
+        hidden ? "opacity-0 pointer-events-none" : "opacity-100"
+      }`}
       style={{ bottom: BOTTOM_NAV_HEIGHT - FAB_SIZE / 2 }}
     >
       <div className="relative w-full">
-        <Link
-          to="/messaging"
+        <button
+          onClick={openMessaging}
+          disabled={hidden}
           aria-label={
             unreadCount > 0
               ? `Messagerie, ${unreadCount} message${unreadCount > 1 ? "s" : ""} non lu${unreadCount > 1 ? "s" : ""}`
@@ -33,7 +40,7 @@ export function MessagingFab({ unreadCount = 0 }: MessagingFabProps) {
               {displayCount}
             </span>
           )}
-        </Link>
+        </button>
       </div>
     </div>
   );

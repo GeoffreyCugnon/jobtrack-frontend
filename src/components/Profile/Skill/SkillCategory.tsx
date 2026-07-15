@@ -1,4 +1,3 @@
-// src/components/Profile/SkillCategory.tsx
 interface SkillCategoryProps {
   category: string;
   items: string[];

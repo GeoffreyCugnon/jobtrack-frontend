@@ -1,12 +1,12 @@
 import { Outlet, Link, useLocation } from "react-router";
 import { Home, Briefcase, Users, FileText, Megaphone } from "lucide-react";
 import { SideMenu } from "../components/SideMenu";
-import { MessagingFab } from "../components/Message/MessagingFab";
-import { MessagingPanel } from "../components/MessagingPanel";
-import { MenuProvider } from "../context/MenuContext";
-import { useMenu } from "../context/useMenu";
-import { MessagingProvider } from "../context/MessagingContext";
-import { useMessaging } from "../context/useMessaging";
+import { MessagingFab } from "../components/Messaging/MessagingFab";
+import { MessagingPanel } from "../components/Messaging";
+import { MenuProvider } from "../context/Menu/MenuContext";
+import { useMenu } from "../context/Menu/useMenu";
+import { MessagingProvider } from "../context/Messaging/MessagingContext";
+import { useMessaging } from "../context/Messaging/useMessaging";
 import { BOTTOM_NAV_HEIGHT } from "../constants/layout";
 
 function RootContent() {

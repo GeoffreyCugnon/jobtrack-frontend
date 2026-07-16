@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { User, Menu } from "lucide-react";
 import { PageContainer } from "./Layout/PageContainer";
-import { useMenu } from "../context/useMenu";
+import { useMenu } from "../context/Menu/useMenu";
 
 interface HeaderProps {
   title: string;

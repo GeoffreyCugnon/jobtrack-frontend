@@ -24,11 +24,11 @@ export function OfferCard({ title, location, timeAgo }: OfferCardProps) {
         </div>
 
         <div className="flex gap-2 mt-1">
-          <button className="btn btn-sm flex-1 bg-primary/10 text-primary border-none font-medium gap-1.5">
+          <button className="btn btn-sm flex-1 bg-primary text-primary-content border-none font-medium gap-1.5 rounded-field">
             <Star className="w-4 h-4" />
             Sauvegarder
           </button>
-          <button className="btn btn-sm flex-1 bg-base-200 text-base-content/70 border-none font-medium gap-1.5">
+          <button className="btn btn-sm flex-1 bg-base-200 text-base-content/70 border-none font-medium gap-1.5 rounded-field">
             <X className="w-4 h-4" />
             Masquer
           </button>

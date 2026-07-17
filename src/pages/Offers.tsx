@@ -2,8 +2,8 @@ import { useState } from "react";
 import { OfferSearchBar } from "../components/Offers/OfferSearchBar";
 import { OfferFilters } from "../components/Offers/OfferFilters";
 import { OfferList } from "../components/Offers/OfferList";
-import { Header } from "../components/header";
-import { PageContainer } from "../components/layout/PageContainer";
+import { Header } from "../components/Header";
+import { PageContainer } from "../components/Layout/PageContainer";
 
 export function Offers() {
   const [activeFilters, setActiveFilters] = useState<string[]>(["Télétravail"]);

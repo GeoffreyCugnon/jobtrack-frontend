@@ -21,7 +21,11 @@ export function MenuLink({
       <Link
         to={to}
         onClick={onClick}
-        className={variant === "danger" ? "text-error hover:bg-error/10" : ""}
+        className={
+          variant === "danger"
+            ? "text-error hover:bg-error/10"
+            : "text-base-content"
+        }
       >
         {Icon && <Icon className="w-4 h-4" />}
         {label}

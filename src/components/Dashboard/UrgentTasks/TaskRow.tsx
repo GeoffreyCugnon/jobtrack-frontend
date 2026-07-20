@@ -9,15 +9,25 @@ interface TaskRowProps {
   icon: LucideIcon;
 }
 
-export function TaskRow({ type, company, role, text, icon: Icon }: TaskRowProps) {
+export function TaskRow({
+  type,
+  company,
+  role,
+  text,
+  icon: Icon,
+}: TaskRowProps) {
   const label = type === "relance" ? `Relancer ${company} (${role})` : text;
   const actionLabel =
-    type === "relance" ? `Envoyer un email à ${company}` : "Ouvrir le lien de l'entretien";
+    type === "relance"
+      ? `Envoyer un email à ${company}`
+      : "Ouvrir le lien de l'entretien";
 
   return (
-    <div className="bg-base-100 border border-base-200 rounded-lg px-4 py-3 flex items-center justify-between shadow-sm cursor-pointer hover:bg-base-content/5 transition-colors">
+    <div className="bg-base-100 border border-base-200 rounded-field px-4 py-3 flex items-center justify-between shadow-sm cursor-pointer hover:bg-base-content/10 transition-colors">
       <div className="flex items-center gap-3">
-        <span className="badge badge-error badge-sm text-error-content">Urgent</span>
+        <span className="badge badge-error badge-sm text-error-content">
+          Urgent
+        </span>
         <span className="text-sm text-base-content/90">{label}</span>
       </div>
       <button

@@ -10,13 +10,13 @@ export function AuthTabs({ mode, onChange }: AuthTabsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-1 bg-base-200 rounded-lg p-1 mb-6">
+    <div className="grid grid-cols-2 gap-1 bg-base-200 rounded-field p-1 mb-6">
       {tabs.map((tab) => (
         <button
           key={tab.key}
           type="button"
           onClick={() => onChange(tab.key)}
-          className={`cursor-pointer rounded-md py-2 text-sm font-medium transition-colors ${
+          className={`cursor-pointer rounded-field py-2 text-sm font-medium transition-colors ${
             mode === tab.key
               ? "bg-base-100 shadow-sm text-base-content"
               : "text-base-content/50 hover:text-base-content/80"

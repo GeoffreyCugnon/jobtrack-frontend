@@ -7,8 +7,11 @@ import { Network } from "./pages/Network";
 import { Documents } from "./pages/Documents";
 import { Posts } from "./pages/Posts";
 import { Statistics } from "./pages/Statistics";
-import { Settings } from "./pages/Settings";
+import { Settings } from "./pages/Settings/Settings";
 import { Profile } from "./pages/Profile";
+import { SettingsPassword } from "./pages/Settings/SettingsPassword";
+import { SettingsTwoFA } from "./pages/Settings/SettingTwoFa";
+import { SettingsHelp } from "./pages/Settings/SettingsHelp";
 
 export const router = createBrowserRouter([
   { path: "/", Component: Home },
@@ -23,6 +26,9 @@ export const router = createBrowserRouter([
       { path: "posts", Component: Posts },
       { path: "statistics", Component: Statistics },
       { path: "settings", Component: Settings },
+      { path: "settings/password", Component: SettingsPassword },
+      { path: "settings/2fa", Component: SettingsTwoFA },
+      { path: "settings/help", Component: SettingsHelp },
       { path: "profile", Component: Profile },
     ],
   },

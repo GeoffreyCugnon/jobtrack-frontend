@@ -5,7 +5,7 @@
 }
 
 @plugin "daisyui/theme" {
-  name: "moncrm-black";
+  name: "moncrm-dark";
   default: true;
   prefersdark: false;
   color-scheme: dark;

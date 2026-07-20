@@ -11,7 +11,7 @@ export function Home() {
   return (
     <div className="min-h-screen w-full bg-base-200 flex flex-col items-center justify-center px-4 py-8">
       <div className="w-full max-w-sm">
-        <AuthLogo />
+        <AuthLogo size="lg" />
 
         <div className="bg-base-100 border border-base-200 rounded-box shadow-sm p-6">
           <AuthTabs mode={mode} onChange={setMode} />

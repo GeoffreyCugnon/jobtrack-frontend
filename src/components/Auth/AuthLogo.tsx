@@ -1,14 +1,19 @@
-import { Briefcase } from "lucide-react";
+// src/components/Auth/AuthLogo.tsx
+import { LogoMark } from "./LogoMark";
 
-export function AuthLogo() {
+type AuthLogoSize = "sm" | "lg";
+
+interface AuthLogoProps {
+  size?: AuthLogoSize;
+  align?: "left" | "center";
+}
+
+export function AuthLogo({ size = "lg", align = "center" }: AuthLogoProps) {
+  const width = size === "lg" ? "w-96" : "w-52";
+
   return (
-    <div className="flex flex-col items-center gap-3 mb-8">
-      <div className="w-16 h-16 rounded-box bg-primary flex items-center justify-center shadow-md">
-        <Briefcase className="w-8 h-8 text-primary-content" />
-      </div>
-      <h1 className="text-xl font-bold text-base-content uppercase tracking-wide">
-        Mon CRM Emploi
-      </h1>
+    <div className={align === "center" ? "flex justify-center mb-8" : ""}>
+      <LogoMark className={`${width} text-base-content`} align={align} />
     </div>
   );
 }

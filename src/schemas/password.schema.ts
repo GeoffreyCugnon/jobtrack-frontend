@@ -1,0 +1,5 @@
+import { z } from "zod";
+
+export const passwordSchema = z
+  .string()
+  .min(8, "Le mot de passe doit contenir au moins 8 caractères");

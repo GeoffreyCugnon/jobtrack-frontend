@@ -27,7 +27,7 @@ export function SignupForm() {
           className="input input-bordered border-base-content/20 focus:border-primary w-full"
           {...register("name")}
         />
-        <FieldError message={errors.name?.message} />
+        <FieldError error={errors.password} />
       </label>
 
       <label className="block">
@@ -39,7 +39,7 @@ export function SignupForm() {
           className="input input-bordered border-base-content/20 focus:border-primary w-full"
           {...register("email")}
         />
-        <FieldError message={errors.email?.message} />
+        <FieldError error={errors.password} />
       </label>
 
       <label className="block">
@@ -53,10 +53,13 @@ export function SignupForm() {
           className="input input-bordered border-base-content/20 focus:border-primary w-full"
           {...register("password")}
         />
-        <FieldError message={errors.password?.message} />
+        <FieldError error={errors.password} />
       </label>
 
-      <button type="submit" className="btn btn-primary w-full mt-2">
+      <button
+        type="submit"
+        className="btn btn-primary w-full mt-2 border border-primary-content/20 focus:border-primary-content/40"
+      >
         Créer mon compte
       </button>
     </form>

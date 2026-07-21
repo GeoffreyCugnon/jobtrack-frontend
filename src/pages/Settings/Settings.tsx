@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Bell, Globe, Lock, ShieldCheck, HelpCircle, Info } from "lucide-react";
 import ProfileCard from "../../components/Settings/SettingsProfilCard";
@@ -15,7 +15,6 @@ interface UserSettings {
 export function Settings() {
   const navigate = useNavigate();
 
-  // état local — à remplacer par contexte user / un futur GET /user/settings
   const [settings, setSettings] = useState<UserSettings>({
     notifications: true,
     language: "Français",
@@ -24,9 +23,6 @@ export function Settings() {
 
   const user = { name: "Geoffrey Cugnon", email: "junior@dev.fr" };
 
-  // refs pour les modales daisyUI
-  const notificationsModalRef = useRef<HTMLDialogElement>(null);
-  const languageModalRef = useRef<HTMLDialogElement>(null);
   const aboutModalRef = useRef<HTMLDialogElement>(null);
   const deleteModalRef = useRef<HTMLDialogElement>(null);
 
@@ -40,24 +36,53 @@ export function Settings() {
 
   return (
     <>
-      <Header title="Paramètres" />
+      <Header/>
       <div className="max-w-5xl px-4 py-6">
         <ProfileCard name={user.name} email={user.email} onEdit={() => {}} />
 
         <SettingsSection title="Préférences">
-          <SettingsItem
-            icon={<Bell size={18} />}
-            label="Notifications"
-            value={settings.notifications ? "Activées" : "Désactivées"}
-            onClick={() => notificationsModalRef.current?.showModal()}
-          />
-        
-          <SettingsItem
-            icon={<Globe size={18} />}
-            label="Langue"
-            value={settings.language}
-            onClick={() => languageModalRef.current?.showModal()}
-          />
+          {/* Ligne Notifications — inline */}
+          <div className="flex w-full items-center justify-between bg-base-100 px-4 py-4 border-b border-base-200 last:border-b-0">
+            <span className="flex items-center gap-3">
+              <span className="text-base-content/60">
+                <Bell size={18} />
+              </span>
+              <span className="font-medium text-base-content">
+                <span className="sm:hidden">Notifications</span>
+                <span className="hidden sm:inline">Recevoir les notifications</span>
+              </span>
+            </span>
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={settings.notifications}
+              onChange={(e) =>
+                setSettings((s) => ({ ...s, notifications: e.target.checked }))
+              }
+            />
+          </div>
+
+          {/* Ligne Langue — inline, dropdown natif stylisé */}
+          <div className="flex w-full items-center justify-between bg-base-100 px-4 py-4 border-b border-base-200 last:border-b-0">
+            <span className="flex items-center gap-3">
+              <span className="text-base-content/60">
+                <Globe size={18} />
+              </span>
+              <span className="font-medium text-base-content">Langue</span>
+            </span>
+            <select
+              className="select select-ghost select-md w-auto px-10 text-right font-normal text-base-content/50 focus:outline-none"
+              value={settings.language}
+              onChange={(e) =>
+                setSettings((s) => ({ ...s, language: e.target.value }))
+              }
+            >
+              <option>Français</option>
+              <option>English</option>
+              <option>Deutsch</option>
+              <option>Español</option>
+            </select>
+          </div>
         </SettingsSection>
 
         <SettingsSection title="Sécurité">
@@ -96,37 +121,10 @@ export function Settings() {
         </button>
       </div>
 
-      <SettingsModal modalRef={notificationsModalRef} title="Notifications">
-        <label className="flex cursor-pointer items-center justify-between">
-          <span>Recevoir les notifications</span>
-          <input
-            type="checkbox"
-            className="toggle toggle-primary"
-            checked={settings.notifications}
-            onChange={(e) =>
-              setSettings((s) => ({ ...s, notifications: e.target.checked }))
-            }
-          />
-        </label>
-      </SettingsModal>
-
-      <SettingsModal modalRef={languageModalRef} title="Langue">
-        <select
-          className="select select-bordered w-full"
-          value={settings.language}
-          onChange={(e) => setSettings((s) => ({ ...s, language: e.target.value }))}
-        >
-          <option>Français</option>
-          <option>English</option>
-          <option>Español</option>
-        </select>
-      </SettingsModal>
-
       <SettingsModal modalRef={aboutModalRef} title="À propos">
         <p className="text-sm text-base-content/70">Version 1.0.0</p>
       </SettingsModal>
 
-      {/* Modale suppression de compte — reste inline, logique de confirmation propre */}
       <dialog ref={deleteModalRef} className="modal">
         <div className="modal-box">
           <h3 className="text-lg font-bold text-error">Supprimer votre compte ?</h3>

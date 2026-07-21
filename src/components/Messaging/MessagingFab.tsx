@@ -1,5 +1,5 @@
 import { MessageCircle } from "lucide-react";
-import { useMessaging } from "../../context/useMessaging";
+import { useMessaging } from "../../context/Messaging/useMessaging";
 import { BOTTOM_NAV_HEIGHT } from "../../constants/layout";
 
 interface MessagingFabProps {

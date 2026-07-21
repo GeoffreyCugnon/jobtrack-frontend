@@ -1,14 +1,61 @@
 @import "tailwindcss";
-@plugin "daisyui";
 
-@theme {
-  /* Recopie ici les codes HEX de ton prototype Figma */
-  --color-primary: #1e40af;       /* Ta couleur principale */
-  --color-secondary: #0d9488;     /* Ta couleur secondaire */
-  --color-bg-main: #0f172a;       /* La couleur de fond de tes pages */
-  --color-bg-card: #1e293b;       /* La couleur de fond de tes blocs/cartes */
-  
-  /* Les couleurs de texte de ta maquette */
-  --color-txt-title: #ffffff;
-  --color-txt-body: #94a3b8;
+@plugin "daisyui" {
+  themes: false;
+}
+
+@plugin "daisyui/theme" {
+  name: "moncrm-dark";
+  default: true;
+  prefersdark: false;
+  color-scheme: dark;
+
+  --color-primary: #1d4ed8;
+  --color-primary-content: #ffffff;
+  --color-secondary: #0d9488;
+
+  --color-base-100: #1c1c24;
+  --color-base-200: #121218;
+  --color-base-300: #0a0a0e;
+
+  --color-base-content: #ffffff;
+
+  --color-error: #dc2626;
+  --color-error-content: #ffffff;
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
+  --border: 1px;
+}
+
+@plugin "daisyui/theme" {
+  name: "moncrm-light";
+  default: false;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-primary: #2563eb;
+  --color-primary-content: #ffffff;
+  --color-secondary: #0d9488;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #e2e8f0; /* fond de page, plus gris */
+  --color-base-300: #cbd5e1; /* header/nav, encore plus marqué */
+
+  --color-base-content: #0f172a;
+
+  --color-error: #a33333; /* désaturé et éclairci pour moins accrocher sur fond blanc */
+  --color-error-content: #ffffff;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-info: #2563eb;
+
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
+  --border: 1px;
 }

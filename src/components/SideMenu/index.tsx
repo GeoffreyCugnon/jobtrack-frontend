@@ -3,6 +3,7 @@ import { MenuOverlay } from "./MenuOverlay";
 import { MenuHeader } from "./MenuHeader";
 import { MenuSection } from "./MenuSection";
 import { MenuLink } from "./MenuLink";
+import { ThemeToggle } from "../ThemeToggle";
 
 interface SideMenuProps {
   open: boolean;
@@ -44,6 +45,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
           </div>
 
           <ul className="menu menu-vertical w-full py-4">
+            <ThemeToggle />
             <MenuLink
               to="/app/settings"
               label="Paramètres"

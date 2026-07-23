@@ -12,6 +12,8 @@ import { Profile } from "./pages/Profile";
 import { SettingsPassword } from "./pages/Settings/SettingsPassword";
 import { SettingsTwoFA } from "./pages/Settings/SettingTwoFa";
 import { SettingsHelp } from "./pages/Settings/SettingsHelp";
+import CvCard from "./components/Document/CvCards/CvCard";
+import LettreCard from "./components/Document/LettreCards/Lettre";
 
 export const router = createBrowserRouter([
   { path: "/", Component: Home },
@@ -30,6 +32,8 @@ export const router = createBrowserRouter([
       { path: "settings/2fa", Component: SettingsTwoFA },
       { path: "settings/help", Component: SettingsHelp },
       { path: "profile", Component: Profile },
-    ],
+      { path: "CvCard", Component: CvCard },
+      { path: "LettreCard", Component: LettreCard },
+      ],
   },
 ]);

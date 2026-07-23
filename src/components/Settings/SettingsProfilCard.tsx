@@ -1,5 +1,3 @@
-import React from "react";
-
 interface ProfileCardProps {
   name: string;
   email: string;
@@ -13,7 +11,7 @@ export default function ProfileCard({ name, email, onEdit }: ProfileCardProps) {
     .join("");
 
   return (
-    <div className="mb-6 flex items-center justify-between rounded-2xl border border-base-200 bg-base-100 px-4 py-4">
+    <div className="mb-6 flex items-center justify-between card card-border bg-base-100 px-4 py-4">
       <div className="flex items-center gap-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-semibold text-primary-content">
           {initials}
@@ -23,7 +21,10 @@ export default function ProfileCard({ name, email, onEdit }: ProfileCardProps) {
           <p className="text-sm text-base-content/60">{email}</p>
         </div>
       </div>
-      <button onClick={onEdit} className="text-sm font-medium text-primary hover:underline">
+      <button
+        onClick={onEdit}
+        className="text-sm font-medium text-primary hover:underline"
+      >
         Modifier
       </button>
     </div>

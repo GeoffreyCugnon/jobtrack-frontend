@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginValues } from "../../schemas/auth.schemas";
 import { FieldError } from "./FieldError";
+import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 
 /**
  * LoginForm
@@ -34,7 +35,7 @@ export function LoginForm() {
           type="email"
           autoComplete="email" // aide au remplissage auto + gestionnaires de mots de passe
           placeholder="jean.dupont@email.fr"
-          className="input input-bordered border-base-content/20 focus:border-primary w-full"
+          className={INPUT_CLASS}
           {...register("email")} // connecte ce champ à react-hook-form sous la clé "email"
         />
         {/* Affiche le message d'erreur Zod pour ce champ, si présent */}
@@ -50,7 +51,7 @@ export function LoginForm() {
           type="password"
           autoComplete="current-password" // suggère au navigateur un mdp déjà connu (≠ "new-password")
           placeholder="••••••••"
-          className="input input-bordered border-base-content/20 focus:border-primary w-full"
+          className={INPUT_CLASS}
           {...register("password")}
         />
         <FieldError error={errors.password} />
@@ -58,7 +59,7 @@ export function LoginForm() {
 
       <button
         type="submit"
-        className="btn btn-primary w-full mt-2 border border-primary-content/20 focus:border-primary-content/40"
+        className={`btn btn-primary w-full mt-2 ${BTN_FOCUS_RING.primary}`}
       >
         Se connecter
       </button>

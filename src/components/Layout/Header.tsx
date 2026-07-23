@@ -1,12 +1,14 @@
-// src/components/Header.tsx
-import { Link } from "react-router";
+// src/components/Layout/Header.tsx
+import { Link, useLocation } from "react-router";
 import { User, Menu } from "lucide-react";
-import { PageContainer } from "./Layout/PageContainer";
-import { useMenu } from "../context/Menu/useMenu";
-import { AuthLogo } from "./Auth/AuthLogo";
+import { PageContainer } from "./PageContainer";
+import { useMenu } from "../../context/Menu/useMenu";
+import { AuthLogo } from "../Auth/AuthLogo";
+import { MAIN_NAV_ITEMS, isNavItemActive } from "../../constants/nav";
 
 export function Header() {
   const { openMenu } = useMenu();
+  const location = useLocation();
 
   return (
     <header className="sticky top-0 z-30 bg-base-100 border-b border-base-content/10 shadow-sm h-16">
@@ -29,6 +31,23 @@ export function Header() {
               <AuthLogo size="sm" align="left" />
             </Link>
           </div>
+
+          <nav className="hidden lg:flex items-center h-full">
+            {MAIN_NAV_ITEMS.map(({ path, icon: Icon, label }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex flex-col items-center justify-center gap-0.5 h-full px-4 text-xs transition-colors ${
+                  isNavItemActive(location.pathname, path)
+                    ? "text-primary font-medium"
+                    : "text-base-content/60 hover:text-base-content"
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                <span>{label}</span>
+              </Link>
+            ))}
+          </nav>
 
           <Link
             to="/app/profile"

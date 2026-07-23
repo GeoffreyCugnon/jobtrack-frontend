@@ -32,7 +32,7 @@ export function TaskRow({
       </div>
       <button
         aria-label={actionLabel}
-        className="text-primary p-1.5 -m-1.5 bg-transparent border-none shadow-none"
+        className="btn btn-ghost btn-circle btn-sm text-primary"
       >
         <Icon className="w-5 h-5" />
       </button>

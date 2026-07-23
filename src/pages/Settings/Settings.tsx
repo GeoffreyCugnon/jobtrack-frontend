@@ -5,7 +5,8 @@ import ProfileCard from "../../components/Settings/SettingsProfilCard";
 import { SettingsSection } from "../../components/Settings/SettingsSection";
 import SettingsItem from "../../components/Settings/SettingsItem";
 import { SettingsModal } from "../../components/Settings/SettingsModal";
-import { Header } from "../../components/Header";
+import { Header } from "../../components/Layout/Header";
+import { PageContainer } from "../../components/Layout/PageContainer";
 
 interface UserSettings {
   notifications: boolean;
@@ -37,7 +38,7 @@ export function Settings() {
   return (
     <>
       <Header/>
-      <div className="max-w-5xl px-4 py-6">
+      <PageContainer className="py-6">
         <ProfileCard name={user.name} email={user.email} onEdit={() => {}} />
 
         <SettingsSection title="Préférences">
@@ -115,11 +116,11 @@ export function Settings() {
 
         <button
           onClick={() => deleteModalRef.current?.showModal()}
-          className="w-full rounded-2xl border border-error/20 bg-error/5 px-4 py-4 text-center font-medium text-error transition-colors hover:bg-error/10"
+          className="btn btn-error btn-soft w-full"
         >
           Supprimer mon compte
         </button>
-      </div>
+      </PageContainer>
 
       <SettingsModal modalRef={aboutModalRef} title="À propos">
         <p className="text-sm text-base-content/70">Version 1.0.0</p>

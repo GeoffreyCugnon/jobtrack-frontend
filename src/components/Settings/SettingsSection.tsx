@@ -11,7 +11,7 @@ export function SettingsSection({ title, children }: SettingsSectionProps) {
       <h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-base-content/50">
         {title}
       </h2>
-      <div className="overflow-hidden rounded-2xl border border-base-200 bg-base-100">
+      <div className="overflow-hidden card card-border bg-base-100">
         {children}
       </div>
     </div>

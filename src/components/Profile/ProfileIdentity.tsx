@@ -14,21 +14,25 @@ interface UserType {
 
 interface ProfileIdentityProps {
   user: UserType;
+  onEdit?: () => void;
 }
 
-export function ProfileIdentity({ user }: ProfileIdentityProps) {
+export function ProfileIdentity({ user, onEdit }: ProfileIdentityProps) {
   return (
     <>
       {/* 1. Zone de Couverture */}
       <div className="relative h-34 sm:h-56 bg-linear-to-r from-primary to-secondary">
-        <button className="btn btn-sm btn-glass absolute right-4 bottom-6 sm:bottom-6 gap-1.5 text-primary-content border-none hover:bg-base-content/20">
+        <button
+          onClick={onEdit}
+          className="btn btn-sm absolute right-4 bottom-6 sm:bottom-6 gap-1.5 text-white bg-black/25 hover:bg-black/35 backdrop-blur-sm border-none"
+        >
           <Edit2 className="w-3.5 h-3.5" />
           Modifier
         </button>
       </div>
 
       {/* 2. Contenu des détails de l'identité */}
-      <div className="relative pt-12 px-4 pb-5 bg-base-100 shadow-sm -mt-4">
+      <div className="relative pt-12 px-4 pb-5 bg-base-100 -mt-4">
         {/* DaisyUI Avatar Container décalé vers le haut */}
         <div className="absolute left-4 -top-14 avatar placeholder">
           <div className="w-24 h-24 rounded-full ring-4 ring-base-100 shadow-md overflow-hidden bg-base-300">

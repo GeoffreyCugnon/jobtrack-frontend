@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
-import { Header } from "../../components/Header";
+import { Header } from "../../components/Layout/Header";
 
 type Step = "intro" | "qrcode" | "verify" | "recovery";
 
@@ -77,7 +77,7 @@ export function SettingsTwoFA() {
                 <p className="text-sm text-base-content/70">
                   Scanne ce QR code avec ton application d'authentification.
                 </p>
-                <div className="flex h-48 w-48 items-center justify-center self-center rounded-xl border border-base-200 bg-base-200/40 text-xs text-base-content/40">
+                <div className="flex h-48 w-48 items-center justify-center self-center rounded-box border border-base-200 bg-base-200/40 text-xs text-base-content/40">
                   {qrCodeUrl ? (
                     <img src={qrCodeUrl} alt="QR code 2FA" />
                   ) : (
@@ -121,7 +121,7 @@ export function SettingsTwoFA() {
                   te permettront de récupérer ton compte si tu perds l'accès à ton
                   application d'authentification.
                 </p>
-                <div className="rounded-xl border border-base-200 bg-base-200/40 p-4 font-mono text-sm">
+                <div className="rounded-box border border-base-200 bg-base-200/40 p-4 font-mono text-sm">
                   {recoveryCodes.length > 0 ? (
                     recoveryCodes.map((c) => <div key={c}>{c}</div>)
                   ) : (

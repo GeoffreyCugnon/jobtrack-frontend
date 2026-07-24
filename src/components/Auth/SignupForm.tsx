@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, type SignupValues } from "../../schemas/auth.schemas";
 import { FieldError } from "./FieldError";
+import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 
 export function SignupForm() {
   const {
@@ -24,7 +25,7 @@ export function SignupForm() {
           type="text"
           autoComplete="name"
           placeholder="Jean Dupont"
-          className="input input-bordered border-base-content/20 focus:border-primary w-full"
+          className={INPUT_CLASS}
           {...register("name")}
         />
         <FieldError error={errors.password} />
@@ -36,7 +37,7 @@ export function SignupForm() {
           type="email"
           autoComplete="email"
           placeholder="jean.dupont@email.fr"
-          className="input input-bordered border-base-content/20 focus:border-primary w-full"
+          className={INPUT_CLASS}
           {...register("email")}
         />
         <FieldError error={errors.password} />
@@ -50,7 +51,7 @@ export function SignupForm() {
           type="password"
           autoComplete="new-password"
           placeholder="••••••••"
-          className="input input-bordered border-base-content/20 focus:border-primary w-full"
+          className={INPUT_CLASS}
           {...register("password")}
         />
         <FieldError error={errors.password} />
@@ -58,7 +59,7 @@ export function SignupForm() {
 
       <button
         type="submit"
-        className="btn btn-primary w-full mt-2 border border-primary-content/20 focus:border-primary-content/40"
+        className={`btn btn-primary w-full mt-2 ${BTN_FOCUS_RING.primary}`}
       >
         Créer mon compte
       </button>

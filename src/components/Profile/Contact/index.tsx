@@ -1,4 +1,5 @@
-import { Mail, Phone, Globe } from "lucide-react";
+import { useState } from "react";
+import { Mail, Phone, Globe, ChevronDown, Plus } from "lucide-react";
 import { ContactRow } from "./ContactRow";
 
 interface UserType {
@@ -11,6 +12,7 @@ interface UserType {
 
 interface ProfileContactProps {
   user: UserType;
+  onAdd?: () => void;
 }
 
 const iconSizeStyle = "w-4 h-4";
@@ -45,7 +47,9 @@ const githubIcon = (
   </svg>
 );
 
-export function ProfileContact({ user }: ProfileContactProps) {
+export function ProfileContact({ user, onAdd }: ProfileContactProps) {
+  const [isOpen, setIsOpen] = useState(true);
+
   const contacts = [
     { icon: <Mail className={iconSizeStyle} />, label: user?.email },
     { icon: <Phone className={iconSizeStyle} />, label: user?.phone },
@@ -55,18 +59,48 @@ export function ProfileContact({ user }: ProfileContactProps) {
   ];
 
   return (
-    <>
-      <div className="flex items-center justify-between px-4 my-3">
-        <h3 className="font-bold text-lg text-base-content">Contact</h3>
+    <div className="border border-base-200 rounded-none sm:rounded-box overflow-hidden">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => setIsOpen((v) => !v)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsOpen((v) => !v);
+          }
+        }}
+        aria-expanded={isOpen}
+        className="flex items-center justify-between px-4 py-3 bg-base-300 cursor-pointer"
+      >
+        <div className="flex items-center gap-2">
+          <h3 className="font-bold text-lg text-base-content">Contact</h3>
+          <button
+            type="button"
+            aria-label="Ajouter un contact"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAdd?.();
+            }}
+            className="btn btn-ghost btn-circle btn-sm text-base-content/60 hover:text-primary hover:bg-primary/10 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
+        <ChevronDown
+          className={`w-5 h-5 text-base-content/50 transition-transform ${isOpen ? "rotate-180" : ""}`}
+        />
       </div>
 
-      <div className="bg-base-100 p-4 shadow-sm rounded-none sm:rounded-box">
-        <div className="space-y-2">
-          {contacts.map((contact, i) => (
-            <ContactRow key={i} icon={contact.icon} label={contact.label} />
-          ))}
+      {isOpen && (
+        <div className="bg-base-100 p-4 border-t border-base-200">
+          <div className="space-y-2">
+            {contacts.map((contact, i) => (
+              <ContactRow key={i} icon={contact.icon} label={contact.label} />
+            ))}
+          </div>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }

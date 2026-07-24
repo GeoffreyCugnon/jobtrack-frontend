@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { ArrowLeft, HelpCircle } from "lucide-react";
-import { Header } from "../../components/Header";
+import { Header } from "../../components/Layout/Header";
 
 export function SettingsHelp() {
   const navigate = useNavigate();

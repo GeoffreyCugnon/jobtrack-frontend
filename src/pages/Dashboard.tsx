@@ -1,5 +1,6 @@
 // src/pages/Dashboard.tsx
 import {
+  Home,
   Mail,
   Link as LinkIcon,
   TrendingUp,
@@ -12,8 +13,9 @@ import { WelcomeBanner } from "../components/Dashboard/WelcomeBanner";
 import { StatCards } from "../components/Dashboard/StatsCards";
 import { UrgentTasks } from "../components/Dashboard/UrgentTasks";
 import { RecentEvents } from "../components/Dashboard/RecentEvents";
-import { Header } from "../components/Header";
+import { Header } from "../components/Layout/Header";
 import { PageContainer } from "../components/Layout/PageContainer";
+import { PageTitle } from "../components/Layout/PageTitle";
 
 export function Dashboard() {
   const stats = [
@@ -40,7 +42,9 @@ export function Dashboard() {
   return (
     <>
       <Header />
-      <PageContainer className="py-4 space-y-4">
+      <PageContainer className="py-3 space-y-3">
+        <PageTitle title="Dashboard" icon={Home} />
+
         <WelcomeBanner name="Geoffrey" urgentCount={2} />
         <StatCards stats={stats} />
         <UrgentTasks tasks={urgentTasks} />

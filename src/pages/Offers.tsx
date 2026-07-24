@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Briefcase } from "lucide-react";
 import { OfferSearchBar } from "../components/Offers/OfferSearchBar";
 import { OfferFilters } from "../components/Offers/OfferFilters";
 import { OfferList } from "../components/Offers/OfferList";
-import { Header } from "../components/Header";
+import { Header } from "../components/Layout/Header";
 import { PageContainer } from "../components/Layout/PageContainer";
+import { PageTitle } from "../components/Layout/PageTitle";
 
 export function Offers() {
   const [activeFilters, setActiveFilters] = useState<string[]>(["Télétravail"]);
@@ -33,8 +35,10 @@ export function Offers() {
 
   return (
     <>
-      <Header title="Offres" />
-      <PageContainer className="py-4 space-y-4">
+      <Header />
+      <PageContainer className="py-3 space-y-3">
+        <PageTitle title="Offres" icon={Briefcase} />
+
         <OfferSearchBar />
         <OfferFilters active={activeFilters} onToggle={toggleFilter} />
 

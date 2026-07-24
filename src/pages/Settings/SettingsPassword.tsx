@@ -5,8 +5,9 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { FieldError } from "../../components/Auth/FieldError";
-import { Header } from "../../components/Header";
+import { Header } from "../../components/Layout/Header";
 import { type ChangePasswordValues, changePasswordSchema } from "../../schemas/settings.schemas";
+import { INPUT_CLASS } from "../../constants/styles";
 
 export function SettingsPassword() {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ export function SettingsPassword() {
                 <input
                   type="password"
                   autoComplete="current-password"
-                  className="input input-bordered border-base-content/20 focus:border-primary w-full"
+                  className={INPUT_CLASS}
                   {...register("currentPassword")}
                 />
                 <FieldError error={errors.currentPassword?.message} />
@@ -71,7 +72,7 @@ export function SettingsPassword() {
                 <input
                   type="password"
                   autoComplete="new-password"
-                  className="input input-bordered border-base-content/20 focus:border-primary w-full"
+                  className={INPUT_CLASS}
                   {...register("newPassword")}
                 />
                 <FieldError error={errors.newPassword?.message} />
@@ -84,7 +85,7 @@ export function SettingsPassword() {
                 <input
                   type="password"
                   autoComplete="new-password"
-                  className="input input-bordered border-base-content/20 focus:border-primary w-full"
+                  className={INPUT_CLASS}
                   {...register("confirmPassword")}
                 />
                 <FieldError error={errors.confirmPassword?.message} />

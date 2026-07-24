@@ -24,13 +24,13 @@ export function OfferCard({ title, location, timeAgo }: OfferCardProps) {
         </div>
 
         <div className="flex gap-2 mt-1">
-          <button className="btn btn-sm flex-1 bg-primary text-primary-content border-none font-medium gap-1.5 rounded-field">
-            <Star className="w-4 h-4" />
+          <button className="btn btn-primary btn-sm flex-1 font-medium gap-1.5">
+            <Star className="w-4 h-4" fill="currentColor" />
             Sauvegarder
           </button>
-          <button className="btn btn-sm flex-1 bg-base-200 text-base-content/70 border-none font-medium gap-1.5 rounded-field">
+          <button className="btn btn-sm flex-1 font-medium gap-1.5">
             <X className="w-4 h-4" />
-            Masquer
+            Pas intéressé
           </button>
         </div>
       </div>

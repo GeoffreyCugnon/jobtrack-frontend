@@ -23,16 +23,16 @@ export function TaskRow({
       : "Ouvrir le lien de l'entretien";
 
   return (
-    <div className="bg-base-100 border border-base-200 rounded-field px-4 py-3 flex items-center justify-between shadow-sm cursor-pointer hover:bg-base-content/10 transition-colors">
-      <div className="flex items-center gap-3">
-        <span className="badge badge-error badge-sm text-error-content">
+    <div className="flex items-center justify-between gap-2 py-2 first:pt-0 last:pb-0">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="badge badge-error badge-soft badge-sm shrink-0">
           Urgent
         </span>
-        <span className="text-sm text-base-content/90">{label}</span>
+        <span className="text-sm text-base-content/90 truncate">{label}</span>
       </div>
       <button
         aria-label={actionLabel}
-        className="btn btn-ghost btn-circle btn-sm text-primary"
+        className="btn btn-ghost btn-circle btn-sm text-primary shrink-0"
       >
         <Icon className="w-5 h-5" />
       </button>

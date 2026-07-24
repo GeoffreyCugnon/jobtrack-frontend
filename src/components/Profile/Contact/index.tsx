@@ -59,7 +59,7 @@ export function ProfileContact({ user, onAdd }: ProfileContactProps) {
   ];
 
   return (
-    <div className="border border-base-200 rounded-none sm:rounded-box overflow-hidden">
+    <div className="rounded-none sm:rounded-box overflow-hidden">
       <div
         role="button"
         tabIndex={0}
@@ -71,7 +71,7 @@ export function ProfileContact({ user, onAdd }: ProfileContactProps) {
           }
         }}
         aria-expanded={isOpen}
-        className="flex items-center justify-between px-4 py-3 bg-base-300 cursor-pointer"
+        className="flex items-center justify-between px-4 py-3 bg-base-200 cursor-pointer"
       >
         <div className="flex items-center gap-2">
           <h3 className="font-bold text-lg text-base-content">Contact</h3>

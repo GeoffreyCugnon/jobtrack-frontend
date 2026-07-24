@@ -24,7 +24,7 @@ export function MessagingFab({
     <>
       {/* Mobile : bouton rond flottant au-dessus de la barre de navigation */}
       <div
-        className={`fixed right-4 z-50 lg:hidden pointer-events-none transition-opacity duration-200 ${
+        className={`fixed right-4 z-41 lg:hidden pointer-events-none transition-opacity duration-200 ${
           hidden ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
         style={{ bottom: BOTTOM_NAV_HEIGHT - FAB_SIZE / 2 }}
@@ -46,7 +46,7 @@ export function MessagingFab({
 
       {/* Desktop : barre rectangulaire ancrée dans le coin inférieur droit de la fenêtre */}
       <div
-        className={`hidden lg:block fixed bottom-0 right-6 z-50 pointer-events-none transition-opacity duration-200 ${
+        className={`hidden lg:block fixed bottom-0 right-6 z-41 pointer-events-none transition-opacity duration-200 ${
           hidden ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >

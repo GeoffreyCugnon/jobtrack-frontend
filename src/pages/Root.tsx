@@ -20,14 +20,14 @@ function RootContent() {
       <MessagingPanel open={isMessagingOpen} onClose={closeMessaging} />
 
       <div className="min-h-screen flex flex-col">
-        <div className="flex-1 overflow-y-auto bg-base-200 w-full max-w-5xl mx-auto border-x border-base-content/10 pb-16 lg:pb-0">
+        <div className="flex-1 flex flex-col overflow-y-auto bg-base-200 w-full pb-16 lg:pb-0">
           <Outlet />
         </div>
 
         <MessagingFab unreadCount={3} hidden={isMessagingOpen} />
 
         <nav
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-content/10 px-2 py-3 shadow-lg z-40"
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-base-300 px-2 py-3 shadow-lg z-40"
           style={{ height: BOTTOM_NAV_HEIGHT }}
         >
           <div className="max-w-5xl mx-auto h-full">

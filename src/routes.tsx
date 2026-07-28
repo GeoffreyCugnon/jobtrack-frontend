@@ -20,45 +20,53 @@ import { SettingsPassword } from "./pages/Settings/SettingsPassword";
 import { SettingsTwoFA } from "./pages/Settings/SettingTwoFa";
 import { SettingsHelp } from "./pages/Settings/SettingsHelp";
 
+
 export const router = createBrowserRouter([
-  { path: "/", Component: Home },
-  {
-    path: "/app",
-    Component: Root,
-    children: [
-      { index: true, Component: Dashboard },
-      { path: "offers", Component: Offers },
-      { path: "network", Component: Network },
-      {
-        path: "documents",
+    { path: "/", Component: Home },
+    {
+        path: "/app",
+        Component: Root,
         children: [
-          { index: true, Component: Documents },
-          { path: "cv/:id", Component: CVPreview },
-          { path: "cv/:id/edit", Component: CVEdit },
-          { path: "letters/:id", Component: LetterPreview },
-          { path: "letters/:id/edit", Component: LetterEdit },
+            { index: true, Component: Dashboard },
+            { path: "offers", Component: Offers },
+            {
+                path: "documents",
+                children: [
+                    { index: true, Component: Documents },
+                    { path: "cv/:id", Component: CVPreview },
+                    { path: "cv/:id/edit", Component: CVEdit },
+                    { path: "letters/:id", Component: LetterPreview },
+                    { path: "letters/:id/edit", Component: LetterEdit },
+                ],
+            },
+            { path: "posts", Component: Posts },
+            { path: "statistics", Component: Statistics },
+            {
+                path: "profile",
+                children: [
+                    { index: true, Component: Profile },
+                    { path: "edit", Component: ProfileEdit },
+                    { path: "contact/edit", Component: ProfileContactEdit },
+                    { path: "skills/edit", Component: ProfileSkillsEdit },
+                ],
+            },
+            {
+                path: "settings",
+                children: [
+                    { index: true, Component: Settings },
+                    { path: "password", Component: SettingsPassword },
+                    { path: "2fa", Component: SettingsTwoFA },
+                    { path: "help", Component: SettingsHelp },
+                ],
+            },
+            {
+                path: "network",
+                children: [
+                    { index: true, Component: Network },
+                    { path: "network", Component: Network },
+                    
+                ],
+            },
         ],
-      },
-      { path: "posts", Component: Posts },
-      { path: "statistics", Component: Statistics },
-      {
-        path: "profile",
-        children: [
-          { index: true, Component: Profile },
-          { path: "edit", Component: ProfileEdit },
-          { path: "contact/edit", Component: ProfileContactEdit },
-          { path: "skills/edit", Component: ProfileSkillsEdit },
-        ],
-      },
-      {
-        path: "settings",
-        children: [
-          { index: true, Component: Settings },
-          { path: "password", Component: SettingsPassword },
-          { path: "2fa", Component: SettingsTwoFA },
-          { path: "help", Component: SettingsHelp },
-        ],
-      },
-    ],
-  },
+    },
 ]);

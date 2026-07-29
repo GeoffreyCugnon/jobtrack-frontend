@@ -1,7 +1,13 @@
 import { createBrowserRouter } from "react-router";
 import { Home } from "./pages/Home";
 import { Root } from "./pages/Root";
-import { Dashboard } from "./pages/Dashboard";
+import { Dashboard } from "./pages/Dashboard/Dashboard";
+import { Relances } from "./pages/Dashboard/Relances";
+import { Historique } from "./pages/Dashboard/Historique";
+import { Candidatures } from "./pages/Dashboard/Candidatures";
+import { CandidatureDetail } from "./pages/Dashboard/CandidatureDetail";
+import { Entretiens } from "./pages/Dashboard/Entretiens";
+import { EntretienDetail } from "./pages/Dashboard/EntretienDetail";
 import { Offers } from "./pages/Offers";
 import { Network } from "./pages/Network";
 import { Documents } from "./pages/Documents/Documents";
@@ -9,7 +15,7 @@ import { CVPreview } from "./pages/Documents/CVPreview";
 import { CVEdit } from "./pages/Documents/CVEdit";
 import { LetterPreview } from "./pages/Documents/LetterPreview";
 import { LetterEdit } from "./pages/Documents/LetterEdit";
-import { Posts } from "./pages/Posts";
+import PublicationsPage from "./pages/Publications/PublicationsPage";
 import { Statistics } from "./pages/Statistics";
 import { Settings } from "./pages/Settings/Settings";
 import { Profile } from "./pages/Profile/Profile";
@@ -19,54 +25,71 @@ import { ProfileSkillsEdit } from "./pages/Profile/ProfileSkillsEdit";
 import { SettingsPassword } from "./pages/Settings/SettingsPassword";
 import { SettingsTwoFA } from "./pages/Settings/SettingTwoFa";
 import { SettingsHelp } from "./pages/Settings/SettingsHelp";
-
+import { MessagingManage } from "./pages/Messaging/MessagingManage";
+import { MessagingPreferences } from "./pages/Messaging/MessagingPreferences";
+import { MessagingArchived } from "./pages/Messaging/MessagingArchived";
+import { MessagingAwayMessage } from "./pages/Messaging/MessagingAwayMessage";
 
 export const router = createBrowserRouter([
-    { path: "/", Component: Home },
-    {
-        path: "/app",
-        Component: Root,
+  { path: "/", Component: Home },
+  {
+    path: "/app",
+    Component: Root,
+    children: [
+      // Sous-routes du dashboard regroupées sans segment "/dashboard" dans
+      // l'URL : ce sont bien des enfants directs de "/app".
+      {
         children: [
-            { index: true, Component: Dashboard },
-            { path: "offers", Component: Offers },
-            {
-                path: "documents",
-                children: [
-                    { index: true, Component: Documents },
-                    { path: "cv/:id", Component: CVPreview },
-                    { path: "cv/:id/edit", Component: CVEdit },
-                    { path: "letters/:id", Component: LetterPreview },
-                    { path: "letters/:id/edit", Component: LetterEdit },
-                ],
-            },
-            { path: "posts", Component: Posts },
-            { path: "statistics", Component: Statistics },
-            {
-                path: "profile",
-                children: [
-                    { index: true, Component: Profile },
-                    { path: "edit", Component: ProfileEdit },
-                    { path: "contact/edit", Component: ProfileContactEdit },
-                    { path: "skills/edit", Component: ProfileSkillsEdit },
-                ],
-            },
-            {
-                path: "settings",
-                children: [
-                    { index: true, Component: Settings },
-                    { path: "password", Component: SettingsPassword },
-                    { path: "2fa", Component: SettingsTwoFA },
-                    { path: "help", Component: SettingsHelp },
-                ],
-            },
-            {
-                path: "network",
-                children: [
-                    { index: true, Component: Network },
-                    { path: "network", Component: Network },
-                    
-                ],
-            },
+          { index: true, Component: Dashboard },
+          { path: "relances", Component: Relances },
+          { path: "historique", Component: Historique },
+          { path: "candidatures", Component: Candidatures },
+          { path: "candidatures/:id", Component: CandidatureDetail },
+          { path: "entretiens", Component: Entretiens },
+          { path: "entretiens/:id", Component: EntretienDetail },
         ],
-    },
+      },
+      { path: "offers", Component: Offers },
+      { path: "network", Component: Network },
+      {
+        path: "documents",
+        children: [
+          { index: true, Component: Documents },
+          { path: "cv/:id", Component: CVPreview },
+          { path: "cv/:id/edit", Component: CVEdit },
+          { path: "letters/:id", Component: LetterPreview },
+          { path: "letters/:id/edit", Component: LetterEdit },
+        ],
+      },
+      { path: "publications", Component: PublicationsPage },
+      { path: "statistics", Component: Statistics },
+      {
+        path: "messaging",
+        children: [
+          { path: "manage", Component: MessagingManage },
+          { path: "preferences", Component: MessagingPreferences },
+          { path: "archived", Component: MessagingArchived },
+          { path: "away-message", Component: MessagingAwayMessage },
+        ],
+      },
+      {
+        path: "profile",
+        children: [
+          { index: true, Component: Profile },
+          { path: "edit", Component: ProfileEdit },
+          { path: "contact/edit", Component: ProfileContactEdit },
+          { path: "skills/edit", Component: ProfileSkillsEdit },
+        ],
+      },
+      {
+        path: "settings",
+        children: [
+          { index: true, Component: Settings },
+          { path: "password", Component: SettingsPassword },
+          { path: "2fa", Component: SettingsTwoFA },
+          { path: "help", Component: SettingsHelp },
+        ],
+      },
+    ],
+  },
 ]);

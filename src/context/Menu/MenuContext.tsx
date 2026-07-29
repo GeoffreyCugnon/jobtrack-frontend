@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { MenuContext } from "./menuContextInstance";
 
 interface MenuProviderProps {
@@ -8,15 +8,16 @@ interface MenuProviderProps {
 export function MenuProvider({ children }: MenuProviderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const openMenu = () => setIsMenuOpen(true);
-  const closeMenu = () => setIsMenuOpen(false);
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const openMenu = useCallback(() => setIsMenuOpen(true), []);
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+  const toggleMenu = useCallback(() => setIsMenuOpen((prev) => !prev), []);
+
+  const value = useMemo(
+    () => ({ isMenuOpen, openMenu, closeMenu, toggleMenu }),
+    [isMenuOpen, openMenu, closeMenu, toggleMenu]
+  );
 
   return (
-    <MenuContext.Provider
-      value={{ isMenuOpen, openMenu, closeMenu, toggleMenu }}
-    >
-      {children}
-    </MenuContext.Provider>
+    <MenuContext.Provider value={value}>{children}</MenuContext.Provider>
   );
 }

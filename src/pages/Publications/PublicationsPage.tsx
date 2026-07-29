@@ -1,7 +1,6 @@
-import Header from "../../components/layout/Header";
-import TrendingTopics from "../../components/trending/TrendingTopics";
-import BottomNavbar from "../../components/layout/BottomNavbar";
-import PublicationCard from "../../components/publication/PublicationCard";
+import { Header } from "../../components/Layout/Header";
+import TrendingTopics from "../../components/Trending/TrendingTopics";
+import PublicationCard from "../../components/Publication/PublicationCard";
 
 import publications from "../../data/publications";
 
@@ -18,8 +17,6 @@ export default function PublicationsPage() {
             <PublicationCard key={publication.id} publication={publication} />
           ))}
         </main>
-
-        <BottomNavbar />
       </div>
     </div>
   );

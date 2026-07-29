@@ -6,7 +6,7 @@
 
 @plugin "daisyui/theme" {
   name: "moncrm-dark";
-  default: true;
+  default: false;
   prefersdark: false;
   color-scheme: dark;
 
@@ -15,15 +15,16 @@
   --color-secondary: #0d9488;
   --color-secondary-content: #ffffff;
 
-  --color-base-100: #1c1c24;
-  --color-base-200: #121218;
-  --color-base-300: #0a0a0e;
+  --color-base-100: #24242e;
+  --color-base-200: #15151b;
+  --color-base-300: #09090c;
 
   --color-base-content: #ffffff;
 
   --color-error: #dc2626;
   --color-error-content: #ffffff;
-  --color-success: #16a34a;
+  --color-success: #15803d;
+  --color-success-content: #ffffff;
   --color-warning: #f59e0b;
   --color-info: #3b82f6;
 
@@ -35,7 +36,7 @@
 
 @plugin "daisyui/theme" {
   name: "moncrm-light";
-  default: false;
+  default: true;
   prefersdark: false;
   color-scheme: light;
 
@@ -52,7 +53,8 @@
 
   --color-error: #a33333; /* désaturé et éclairci pour moins accrocher sur fond blanc */
   --color-error-content: #ffffff;
-  --color-success: #16a34a;
+  --color-success: #15803d;
+  --color-success-content: #ffffff;
   --color-warning: #d97706;
   --color-info: #2563eb;
 

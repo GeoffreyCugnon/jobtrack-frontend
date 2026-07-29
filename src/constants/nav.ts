@@ -2,11 +2,11 @@
 import { Home, Briefcase, Users, FileText, Megaphone } from "lucide-react";
 
 export const MAIN_NAV_ITEMS = [
-  { path: "/app", icon: Home, label: "Dashboard", shortLabel: "Dashb." },
+  { path: "/app", icon: Home, label: "Accueil", shortLabel: "Accueil" },
   { path: "/app/offers", icon: Briefcase, label: "Offres", shortLabel: "Offres" },
-  { path: "/app/network", icon: Users, label: "Relations", shortLabel: "Relat." },
+  { path: "/app/network", icon: Users, label: "Réseau", shortLabel: "Réseau" },
+  { path: "/app/publications", icon: Megaphone, label: "Actus", shortLabel: "Actus" },
   { path: "/app/documents", icon: FileText, label: "Documents", shortLabel: "Docs" },
-  { path: "/app/posts", icon: Megaphone, label: "Publications", shortLabel: "Publis." },
 ];
 
 export function isNavItemActive(pathname: string, path: string) {

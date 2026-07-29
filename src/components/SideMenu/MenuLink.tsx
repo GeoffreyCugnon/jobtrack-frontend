@@ -1,5 +1,6 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import type { LucideIcon } from "lucide-react";
+import { isNavItemActive } from "../../constants/nav";
 
 interface MenuLinkProps {
   to: string;
@@ -16,15 +17,21 @@ export function MenuLink({
   variant = "default",
   icon: Icon,
 }: MenuLinkProps) {
+  const { pathname } = useLocation();
+  const isActive = variant === "default" && isNavItemActive(pathname, to);
+
   return (
     <li>
       <Link
         to={to}
         onClick={onClick}
+        aria-current={isActive ? "page" : undefined}
         className={
           variant === "danger"
             ? "text-error hover:bg-error/10"
-            : "text-base-content"
+            : isActive
+              ? "bg-primary/10 text-primary font-medium"
+              : "text-base-content"
         }
       >
         {Icon && <Icon className="w-4 h-4" />}

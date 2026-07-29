@@ -1,19 +1,15 @@
-import React from "react";
+import type { ReactNode } from "react";
+import { SectionCard } from "../Layout/SectionCard";
 
 interface SettingsSectionProps {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function SettingsSection({ title, children }: SettingsSectionProps) {
   return (
-    <div className="mb-6">
-      <h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-base-content/50">
-        {title}
-      </h2>
-      <div className="overflow-hidden card card-border bg-base-100">
-        {children}
-      </div>
-    </div>
+    <SectionCard title={title} collapsible={false}>
+      <div className="-m-4">{children}</div>
+    </SectionCard>
   );
 }

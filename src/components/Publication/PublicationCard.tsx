@@ -1,6 +1,6 @@
-import { FiHeart, FiMessageCircle, FiShare2, FiBookmark } from "react-icons/fi";
+import { Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
 
-import { Publication } from "../../types/publication";
+import type { Publication } from "../../types/publication";
 
 interface Props {
   publication: Publication;
@@ -13,7 +13,7 @@ export default function PublicationCard({ publication }: Props) {
         <div className="flex justify-between">
           <div className="flex gap-3">
             <div className="avatar">
-              <div className="w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" />
+              <div className="w-12 rounded-full bg-linear-to-r from-blue-500 to-purple-500" />
             </div>
 
             <div>
@@ -24,7 +24,7 @@ export default function PublicationCard({ publication }: Props) {
           </div>
 
           <button className="btn btn-ghost btn-circle btn-sm">
-            <FiBookmark />
+            <Bookmark />
           </button>
         </div>
 
@@ -43,20 +43,20 @@ export default function PublicationCard({ publication }: Props) {
         <div className="flex justify-between">
           <div className="flex gap-5">
             <button className="btn btn-ghost btn-sm">
-              <FiHeart />
+              <Heart />
 
               {publication.likes}
             </button>
 
             <button className="btn btn-ghost btn-sm">
-              <FiMessageCircle />
+              <MessageCircle />
 
               {publication.comments}
             </button>
           </div>
 
           <button className="btn btn-ghost btn-sm">
-            <FiShare2 />
+            <Share2 />
             Partager
           </button>
         </div>

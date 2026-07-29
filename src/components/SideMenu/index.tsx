@@ -37,14 +37,14 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
   // de place) : une seule source de vérité pour label/icône/path. "Actus"
   // reste à part, regroupé avec "Statistiques" ci-dessous (secondaryLinks).
   const mainLinks = [
-    ...MAIN_NAV_ITEMS.filter((item) => item.path !== "/app/posts").map(
+    ...MAIN_NAV_ITEMS.filter((item) => item.path !== "/app/publications").map(
       ({ path, label, icon }) => ({ to: path, label, icon })
     ),
     { to: "/app/profile", label: "Profil", icon: User },
   ];
 
   const secondaryLinks = [
-    { to: "/app/posts", label: "Actus", icon: Megaphone },
+    { to: "/app/publications", label: "Actus", icon: Megaphone },
     { to: "/app/statistics", label: "Statistiques", icon: BarChart3 },
   ];
 

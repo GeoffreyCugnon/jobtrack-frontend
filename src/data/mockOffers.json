@@ -1,0 +1,313 @@
+[
+  {
+    "id": 1,
+    "role": "Dev Fullstack Jr",
+    "company": "TechCorp",
+    "location": "Sophia Antipolis, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 2h",
+    "postedHoursAgo": 2,
+    "category": "hybride",
+    "workMode": "Hybrid"
+  },
+  {
+    "id": 2,
+    "role": "Concepteur Appli",
+    "company": "InnovA",
+    "location": "Cannes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 1j",
+    "postedHoursAgo": 24,
+    "category": "informatique",
+    "verified": true,
+    "applicantCount": 3
+  },
+  {
+    "id": 3,
+    "role": "Support IT",
+    "company": "NetSolutions",
+    "location": "Nice, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 5h",
+    "postedHoursAgo": 5,
+    "category": "informatique",
+    "applicantCount": 1
+  },
+  {
+    "id": 4,
+    "role": "Gestionnaire administratif",
+    "company": "Mairie de Nice",
+    "location": "Nice, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 3j",
+    "postedHoursAgo": 72,
+    "category": "administration"
+  },
+  {
+    "id": 5,
+    "role": "Formateur numérique",
+    "company": "Académie Sud",
+    "location": "Antibes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 4j",
+    "postedHoursAgo": 96,
+    "category": "enseignement"
+  },
+  {
+    "id": 6,
+    "role": "Assistant e-commerce",
+    "company": "ShopLine",
+    "location": "Grasse, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 6h",
+    "postedHoursAgo": 6,
+    "category": "temps-partiel",
+    "workMode": "Remote"
+  },
+  {
+    "id": 7,
+    "role": "Conseiller vente",
+    "company": "Retail Plus",
+    "location": "Cannes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 2j",
+    "postedHoursAgo": 48,
+    "category": "commerce"
+  },
+  {
+    "id": 8,
+    "role": "Chauffeur-livreur",
+    "company": "TransExpress",
+    "location": "Lyon, Rhône, France",
+    "timeAgo": "Il y a 8h",
+    "postedHoursAgo": 8,
+    "category": "transport"
+  },
+  {
+    "id": 9,
+    "role": "Aide-soignant(e)",
+    "company": "Clinique du Parc",
+    "location": "Cannes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 3h",
+    "postedHoursAgo": 3,
+    "category": "sante"
+  },
+  {
+    "id": 10,
+    "role": "Chargé(e) de communication",
+    "company": "AgenceNova",
+    "location": "Antibes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 1j",
+    "postedHoursAgo": 24,
+    "category": "marketing",
+    "workMode": "Hybrid"
+  },
+  {
+    "id": 11,
+    "role": "Comptable",
+    "company": "FiduciaSud",
+    "location": "Genève, Genève, Suisse",
+    "timeAgo": "Il y a 5j",
+    "postedHoursAgo": 120,
+    "category": "finance",
+    "workMode": "Remote"
+  },
+  {
+    "id": 12,
+    "role": "Développeuse Frontend",
+    "company": "PixelWorks",
+    "location": "Nice, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 10h",
+    "postedHoursAgo": 10,
+    "category": "informatique",
+    "workMode": "Hybrid",
+    "verified": true
+  },
+  {
+    "id": 13,
+    "role": "Ingénieur DevOps",
+    "company": "CloudNine",
+    "location": "Sophia Antipolis, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 2j",
+    "postedHoursAgo": 48,
+    "category": "informatique",
+    "applicantCount": 4
+  },
+  {
+    "id": 14,
+    "role": "Professeur de mathématiques",
+    "company": "Lycée Saint-Exupéry",
+    "location": "Cannes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 6j",
+    "postedHoursAgo": 144,
+    "category": "enseignement"
+  },
+  {
+    "id": 15,
+    "role": "Réceptionniste",
+    "company": "Hôtel Le Majestic",
+    "location": "Cannes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 1j",
+    "postedHoursAgo": 24,
+    "category": "hotellerie",
+    "workMode": "onSite"
+  },
+  {
+    "id": 16,
+    "role": "Chef de rang",
+    "company": "Restaurant La Palme",
+    "location": "Antibes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 9h",
+    "postedHoursAgo": 9,
+    "category": "hotellerie",
+    "applicantCount": 2
+  },
+  {
+    "id": 17,
+    "role": "Agent administratif",
+    "company": "CAF Alpes-Maritimes",
+    "location": "Nice, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 4j",
+    "postedHoursAgo": 96,
+    "category": "administration",
+    "applicantCount": 2
+  },
+  {
+    "id": 18,
+    "role": "Vendeur(se) temps partiel",
+    "company": "Mode Express",
+    "location": "Grasse, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 1j",
+    "postedHoursAgo": 24,
+    "category": "temps-partiel"
+  },
+  {
+    "id": 19,
+    "role": "Caissier(ère)",
+    "company": "Supermarché Leclerc",
+    "location": "Nice, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 7h",
+    "postedHoursAgo": 7,
+    "category": "commerce",
+    "applicantCount": 4
+  },
+  {
+    "id": 20,
+    "role": "Magasinier",
+    "company": "LogiSud",
+    "location": "Antibes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 3j",
+    "postedHoursAgo": 72,
+    "category": "transport"
+  },
+  {
+    "id": 21,
+    "role": "Infirmier(ère)",
+    "company": "Hôpital Pasteur",
+    "location": "Nice, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 5h",
+    "postedHoursAgo": 5,
+    "category": "sante",
+    "verified": true
+  },
+  {
+    "id": 22,
+    "role": "Community Manager",
+    "company": "AgenceNova",
+    "location": "Cannes, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 2j",
+    "postedHoursAgo": 48,
+    "category": "marketing",
+    "applicantCount": 2
+  },
+  {
+    "id": 23,
+    "role": "Analyste financier",
+    "company": "BanquePop",
+    "location": "Nice, Alpes-Maritimes, France",
+    "timeAgo": "Il y a 8j",
+    "postedHoursAgo": 192,
+    "category": "finance"
+  },
+  {
+    "id": 24,
+    "role": "Développeur Backend",
+    "company": "RemoteWorks",
+    "location": "Full remote, France",
+    "timeAgo": "Il y a 1h",
+    "postedHoursAgo": 1,
+    "category": "distance",
+    "workMode": "Remote",
+    "verified": true,
+    "applicantCount": 2
+  },
+  {
+    "id": 25,
+    "role": "Rédacteur web",
+    "company": "ContentFlow",
+    "location": "Full remote, France",
+    "timeAgo": "Il y a 4h",
+    "postedHoursAgo": 4,
+    "category": "distance",
+    "workMode": "Remote"
+  },
+  {
+    "id": 26,
+    "role": "Customer Success Manager",
+    "company": "SaaSPoint",
+    "location": "Full remote, Europe",
+    "timeAgo": "Il y a 3j",
+    "postedHoursAgo": 72,
+    "category": "distance",
+    "workMode": "Remote",
+    "applicantCount": 6
+  },
+  {
+    "id": 27,
+    "role": "UX Designer",
+    "company": "PixelRemote",
+    "location": "Full remote, France",
+    "timeAgo": "Il y a 2h",
+    "postedHoursAgo": 2,
+    "category": "distance",
+    "workMode": "Remote",
+    "verified": true
+  },
+  {
+    "id": 28,
+    "role": "Chef de projet digital",
+    "company": "Nomad Agency",
+    "location": "Full remote, Europe",
+    "timeAgo": "Il y a 9h",
+    "postedHoursAgo": 9,
+    "category": "distance",
+    "workMode": "Remote",
+    "applicantCount": 3
+  },
+  {
+    "id": 29,
+    "role": "Data Analyst",
+    "company": "CloudMetrics",
+    "location": "Full remote, France",
+    "timeAgo": "Il y a 1j",
+    "postedHoursAgo": 24,
+    "category": "distance",
+    "workMode": "Remote"
+  },
+  {
+    "id": 30,
+    "role": "Support client international",
+    "company": "HelpNow",
+    "location": "Full remote, Monde",
+    "timeAgo": "Il y a 5j",
+    "postedHoursAgo": 120,
+    "category": "distance",
+    "workMode": "Remote",
+    "applicantCount": 8
+  },
+  {
+    "id": 31,
+    "role": "Traducteur(rice) freelance",
+    "company": "LinguaConnect",
+    "location": "Full remote, Monde",
+    "timeAgo": "Il y a 6h",
+    "postedHoursAgo": 6,
+    "category": "distance",
+    "workMode": "Remote",
+    "verified": true,
+    "applicantCount": 1
+  }
+]

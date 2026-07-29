@@ -6,7 +6,7 @@ interface MessagingOverlayProps {
 export function MessagingOverlay({ open, onClose }: MessagingOverlayProps) {
   return (
     <div
-      className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-42 bg-black/50 transition-opacity duration-300 ${
         open ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
       onClick={onClose}

@@ -1,0 +1,53 @@
+// src/pages/Dashboard/Entretiens.tsx
+import { Calendar } from "lucide-react";
+import { ClickableRow } from "../../components/Layout/ClickableRow";
+import { EmptyState } from "../../components/Layout/EmptyState";
+import { Header } from "../../components/Layout/Header";
+import { PageContainer } from "../../components/Layout/PageContainer";
+import { PageTitle } from "../../components/Layout/PageTitle";
+import { SectionCard } from "../../components/Layout/SectionCard";
+import { entretienItems } from "../../data/entretiens";
+
+export function Entretiens() {
+  return (
+    <div className="flex-1 flex flex-col">
+      <Header />
+      <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
+        <PageTitle
+          title="Entretiens prévus"
+          description="Vos prochains entretiens"
+          icon={Calendar}
+        />
+
+        <div className="-mx-4 sm:mx-0">
+          <SectionCard title="Entretiens" collapsible={false}>
+            {entretienItems.length === 0 ? (
+              <EmptyState
+                icon={Calendar}
+                message="Aucun entretien prévu pour l'instant."
+              />
+            ) : (
+              <div className="divide-y divide-base-200">
+                {entretienItems.map((entretien) => (
+                  <ClickableRow
+                    key={entretien.id}
+                    to={`/app/entretiens/${entretien.id}`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm text-base-content/90 truncate">
+                        {entretien.company} — {entretien.role}
+                      </span>
+                      <span className="text-xs text-base-content/50 shrink-0">
+                        {entretien.date}
+                      </span>
+                    </div>
+                  </ClickableRow>
+                ))}
+              </div>
+            )}
+          </SectionCard>
+        </div>
+      </PageContainer>
+    </div>
+  );
+}

@@ -7,14 +7,12 @@ import { PageTitle } from "../../components/Layout/PageTitle";
 import { ProfileIdentity } from "../../components/Profile/ProfileIdentity";
 import { ProfileContact } from "../../components/Profile/Contact";
 import { ProfileSkills } from "../../components/Profile/Skill";
+import { currentUser } from "../../data/currentUser";
 
 const user = {
-  firstName: "Geoffrey",
-  lastName: "Cugnon",
-  initials: "GC",
+  ...currentUser,
   title: "Développeur Web Junior",
   location: "Paris, France",
-  email: "junior@dev.fr",
   phone: "+33 6 12 34 56 78",
   website: "geoffreycugnon.dev",
   linkedin: "linkedin.com/in/gcugnon",
@@ -48,10 +46,14 @@ export function Profile() {
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="flex-1 flex flex-col">
       <Header />
-      <PageContainer className="py-3">
-        <PageTitle title="Mon profil" icon={User} />
+      <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
+        <PageTitle
+          title="Mon profil"
+          description="Vos informations visibles par les recruteurs"
+          icon={User}
+        />
 
         <div className="-mx-4 sm:mx-0 mt-3">
           <ProfileIdentity
@@ -68,6 +70,6 @@ export function Profile() {
           />
         </div>
       </PageContainer>
-    </>
+    </div>
   );
 }

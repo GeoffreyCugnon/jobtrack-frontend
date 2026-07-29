@@ -28,7 +28,7 @@ export function SignupForm() {
           className={INPUT_CLASS}
           {...register("name")}
         />
-        <FieldError error={errors.password} />
+        <FieldError error={errors.name} />
       </label>
 
       <label className="block">
@@ -40,7 +40,7 @@ export function SignupForm() {
           className={INPUT_CLASS}
           {...register("email")}
         />
-        <FieldError error={errors.password} />
+        <FieldError error={errors.email} />
       </label>
 
       <label className="block">

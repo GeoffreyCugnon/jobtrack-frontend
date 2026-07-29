@@ -9,7 +9,8 @@ interface TabsProps<T extends string> {
   onChange: (value: T) => void;
   // "onCard": piste foncée + pastille claire, pour un switcher posé sur une carte blanche (ex: Auth)
   // "onPage": piste claire + pastille foncée, pour un switcher posé directement sur le fond gris de la page (ex: Documents)
-  variant?: "onCard" | "onPage";
+  // "onMuted": piste discrète + pastille claire, pour un switcher posé dans un bandeau déjà gris (ex: en-tête de section)
+  variant?: "onCard" | "onPage" | "onMuted";
   className?: string;
 }
 
@@ -23,7 +24,9 @@ export function Tabs<T extends string>({
   const trackStyles =
     variant === "onPage"
       ? "bg-base-100 border border-base-200 shadow-sm"
-      : "bg-base-200";
+      : variant === "onMuted"
+        ? "bg-base-300/50"
+        : "bg-base-200";
 
   const activeStyles =
     variant === "onPage"
@@ -41,7 +44,7 @@ export function Tabs<T extends string>({
           type="button"
           aria-pressed={value === item.key}
           onClick={() => onChange(item.key)}
-          className={`cursor-pointer rounded-field py-2 text-sm font-medium transition-colors ${
+          className={`cursor-pointer rounded-field py-2 text-sm font-medium transition-all ${
             value === item.key
               ? activeStyles
               : "text-base-content/50 hover:text-base-content/80"

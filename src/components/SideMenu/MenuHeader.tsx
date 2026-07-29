@@ -1,20 +1,27 @@
-import { User, X } from "lucide-react";
+import { X } from "lucide-react";
+import { Avatar } from "../UI/Avatar";
 
 interface MenuHeaderProps {
   name: string;
   email: string;
+  initials: string;
+  // Photo réelle optionnelle : l'avatar dégradé + initiales n'est qu'un
+  // fallback tant qu'aucune photo de profil n'est disponible.
+  avatarUrl?: string;
   onClose: () => void;
 }
 
-export function MenuHeader({ name, email, onClose }: MenuHeaderProps) {
+export function MenuHeader({
+  name,
+  email,
+  initials,
+  avatarUrl,
+  onClose,
+}: MenuHeaderProps) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-base-content/10 px-5 pt-6 pb-6">
+    <div className="flex items-center justify-between gap-4 border-b border-base-content/10 px-4 pt-6 pb-6">
       <div className="flex items-center gap-4">
-        <div className="avatar placeholder">
-          <div className="w-14 rounded-full bg-primary/10 text-primary ring-2 ring-primary/40">
-            <User className="w-6 h-6" />
-          </div>
-        </div>
+        <Avatar label={initials} avatarUrl={avatarUrl} size="lg" />
         <div>
           <h2 className="font-semibold text-base-content">{name}</h2>
           <p className="text-sm text-base-content/70">{email}</p>

@@ -1,60 +1,98 @@
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { MessageCircle } from "lucide-react";
 import { useMessaging } from "../../context/Messaging/useMessaging";
+import { useDraggableFab } from "../../hooks/useDraggableFab";
 import { BOTTOM_NAV_HEIGHT } from "../../constants/layout";
 
-interface MessagingFabProps {
-  unreadCount?: number;
-  hidden?: boolean;
-}
+// Espace laissé entre le bouton et le haut de la barre de navigation, en
+// position par défaut (avant tout glissé) — le bouton reste bien au-dessus,
+// sans chevaucher la barre.
+const DEFAULT_GAP_ABOVE_NAV = 12;
 
-const FAB_SIZE = 44;
-
-export function MessagingFab({
-  unreadCount = 0,
-  hidden = false,
-}: MessagingFabProps) {
-  const { openMessaging } = useMessaging();
+export function MessagingFab() {
+  const { isMessagingOpen, unreadConversationIds, openMessaging, openConversation } =
+    useMessaging();
+  const unreadCount = unreadConversationIds.length;
   const displayCount = unreadCount > 9 ? "9+" : unreadCount;
-  const label =
-    unreadCount > 0
-      ? `Messagerie, ${unreadCount} message${unreadCount > 1 ? "s" : ""} non lu${unreadCount > 1 ? "s" : ""}`
-      : "Messagerie";
+  const label = `Nouveau message${unreadCount > 1 ? "s" : ""}, ${unreadCount} non lu${unreadCount > 1 ? "s" : ""}`;
+
+  // Le bouton flottant mobile ne sert qu'à signaler un message non lu et
+  // ouvrir directement la conversation concernée : pas d'accès permanent,
+  // contrairement à la barre desktop et à l'entrée "Messages" de la bottom
+  // nav qui restent, elles, toujours disponibles.
+  const showMobileFab = unreadCount > 0 && !isMessagingOpen;
+
+  const openMostRecentUnread = () => {
+    if (unreadConversationIds[0]) openConversation(unreadConversationIds[0]);
+  };
+
+  const {
+    wrapperRef: mobileWrapperRef,
+    position: mobilePosition,
+    isSnapping,
+    snapDurationMs,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+  } = useDraggableFab({ onTap: openMostRecentUnread });
+
+  // Filet pour l'activation clavier (Entrée/Espace sur le bouton focus) :
+  // ce cas ne déclenche aucun événement pointeur, seulement un "click" avec
+  // detail === 0 (à l'inverse d'un vrai clic souris/tap, où detail >= 1).
+  const handleClick = (e: ReactMouseEvent<HTMLButtonElement>) => {
+    if (e.detail === 0) {
+      openMostRecentUnread();
+    }
+  };
 
   return (
     <>
-      {/* Mobile : bouton rond flottant au-dessus de la barre de navigation */}
-      <div
-        className={`fixed right-4 z-41 lg:hidden pointer-events-none transition-opacity duration-200 ${
-          hidden ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
-        style={{ bottom: BOTTOM_NAV_HEIGHT - FAB_SIZE / 2 }}
-      >
-        <button
-          onClick={openMessaging}
-          disabled={hidden}
-          aria-label={label}
-          className="relative w-11 h-11 rounded-full bg-primary text-primary-content flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors pointer-events-auto"
+      {/* Mobile : n'apparaît que lorsqu'un message n'est pas encore lu, et
+          ouvre directement la conversation concernée. Ancré au-dessus de la
+          barre de navigation par défaut, déplaçable librement à l'appui. */}
+      {showMobileFab && (
+        <div
+          ref={mobileWrapperRef}
+          className={`fixed z-41 lg:hidden pointer-events-none ${
+            mobilePosition ? "" : "right-4"
+          }`}
+          style={{
+            ...(mobilePosition
+              ? { top: mobilePosition.y, left: mobilePosition.x }
+              : { bottom: BOTTOM_NAV_HEIGHT + DEFAULT_GAP_ABOVE_NAV }),
+            transition: isSnapping
+              ? `left ${snapDurationMs}ms ease-out`
+              : undefined,
+          }}
         >
-          <MessageCircle className="w-5 h-5" />
-          {unreadCount > 0 && (
+          <button
+            onClick={handleClick}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            aria-label={label}
+            className="relative w-11 h-11 rounded-full bg-primary text-primary-content flex items-center justify-center shadow-lg hover:bg-primary/90 active:scale-95 active:bg-primary/80 transition touch-none pointer-events-auto"
+          >
+            <MessageCircle className="w-5 h-5" />
             <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
               {displayCount}
             </span>
-          )}
-        </button>
-      </div>
+          </button>
+        </div>
+      )}
 
-      {/* Desktop : barre rectangulaire ancrée dans le coin inférieur droit de la fenêtre */}
+      {/* Desktop : barre rectangulaire ancrée dans le coin inférieur droit de
+          la fenêtre, toujours disponible (ouvre la liste des conversations). */}
       <div
         className={`hidden lg:block fixed bottom-0 right-6 z-41 pointer-events-none transition-opacity duration-200 ${
-          hidden ? "opacity-0 pointer-events-none" : "opacity-100"
+          isMessagingOpen ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >
         <button
           onClick={openMessaging}
-          disabled={hidden}
-          aria-label={label}
-          className="relative flex items-center gap-2 h-11 pl-2.5 pr-4 rounded-t-lg bg-base-100 border border-b-0 border-base-content/10 shadow-lg hover:bg-base-200 transition-colors pointer-events-auto"
+          disabled={isMessagingOpen}
+          aria-label="Messagerie"
+          className="relative flex items-center gap-2 h-11 pl-2.5 pr-4 rounded-t-field bg-base-100 border border-b-0 border-base-content/10 shadow-lg hover:bg-base-200 transition-colors pointer-events-auto"
         >
           <span className="relative flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-content shrink-0">
             <MessageCircle className="w-4 h-4" />

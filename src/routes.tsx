@@ -1,7 +1,13 @@
 import { createBrowserRouter } from "react-router";
 import { Home } from "./pages/Home";
 import { Root } from "./pages/Root";
-import { DashboardTest } from "./pages/DashboardTest";
+import { Dashboard } from "./pages/Dashboard/Dashboard";
+import { Relances } from "./pages/Dashboard/Relances";
+import { Historique } from "./pages/Dashboard/Historique";
+import { Candidatures } from "./pages/Dashboard/Candidatures";
+import { CandidatureDetail } from "./pages/Dashboard/CandidatureDetail";
+import { Entretiens } from "./pages/Dashboard/Entretiens";
+import { EntretienDetail } from "./pages/Dashboard/EntretienDetail";
 import { Offers } from "./pages/Offers";
 import { Network } from "./pages/Network";
 import { Documents } from "./pages/Documents/Documents";
@@ -19,6 +25,10 @@ import { ProfileSkillsEdit } from "./pages/Profile/ProfileSkillsEdit";
 import { SettingsPassword } from "./pages/Settings/SettingsPassword";
 import { SettingsTwoFA } from "./pages/Settings/SettingTwoFa";
 import { SettingsHelp } from "./pages/Settings/SettingsHelp";
+import { MessagingManage } from "./pages/Messaging/MessagingManage";
+import { MessagingPreferences } from "./pages/Messaging/MessagingPreferences";
+import { MessagingArchived } from "./pages/Messaging/MessagingArchived";
+import { MessagingAwayMessage } from "./pages/Messaging/MessagingAwayMessage";
 
 export const router = createBrowserRouter([
   { path: "/", Component: Home },
@@ -26,7 +36,19 @@ export const router = createBrowserRouter([
     path: "/app",
     Component: Root,
     children: [
-      { index: true, Component: DashboardTest },
+      // Sous-routes du dashboard regroupées sans segment "/dashboard" dans
+      // l'URL : ce sont bien des enfants directs de "/app".
+      {
+        children: [
+          { index: true, Component: Dashboard },
+          { path: "relances", Component: Relances },
+          { path: "historique", Component: Historique },
+          { path: "candidatures", Component: Candidatures },
+          { path: "candidatures/:id", Component: CandidatureDetail },
+          { path: "entretiens", Component: Entretiens },
+          { path: "entretiens/:id", Component: EntretienDetail },
+        ],
+      },
       { path: "offers", Component: Offers },
       { path: "network", Component: Network },
       {
@@ -41,6 +63,15 @@ export const router = createBrowserRouter([
       },
       { path: "posts", Component: Posts },
       { path: "statistics", Component: Statistics },
+      {
+        path: "messaging",
+        children: [
+          { path: "manage", Component: MessagingManage },
+          { path: "preferences", Component: MessagingPreferences },
+          { path: "archived", Component: MessagingArchived },
+          { path: "away-message", Component: MessagingAwayMessage },
+        ],
+      },
       {
         path: "profile",
         children: [

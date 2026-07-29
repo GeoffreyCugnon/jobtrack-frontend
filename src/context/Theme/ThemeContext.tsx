@@ -13,7 +13,7 @@ interface ThemeProviderProps {
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem("theme");
-    return stored === THEME_LIGHT ? THEME_LIGHT : THEME_DARK;
+    return stored === THEME_DARK ? THEME_DARK : THEME_LIGHT;
   });
 
   useEffect(() => {

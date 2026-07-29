@@ -6,7 +6,7 @@
 
 @plugin "daisyui/theme" {
   name: "moncrm-dark";
-  default: true;
+  default: false;
   prefersdark: false;
   color-scheme: dark;
 
@@ -23,7 +23,8 @@
 
   --color-error: #dc2626;
   --color-error-content: #ffffff;
-  --color-success: #16a34a;
+  --color-success: #15803d;
+  --color-success-content: #ffffff;
   --color-warning: #f59e0b;
   --color-info: #3b82f6;
 
@@ -35,7 +36,7 @@
 
 @plugin "daisyui/theme" {
   name: "moncrm-light";
-  default: false;
+  default: true;
   prefersdark: false;
   color-scheme: light;
 
@@ -52,7 +53,8 @@
 
   --color-error: #a33333; /* désaturé et éclairci pour moins accrocher sur fond blanc */
   --color-error-content: #ffffff;
-  --color-success: #16a34a;
+  --color-success: #15803d;
+  --color-success-content: #ffffff;
   --color-warning: #d97706;
   --color-info: #2563eb;
 

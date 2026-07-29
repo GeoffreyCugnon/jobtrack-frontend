@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { Header } from "../../components/Layout/Header";
+import { INPUT_CLASS } from "../../constants/styles";
 
 type Step = "intro" | "qrcode" | "verify" | "recovery";
 
@@ -101,7 +102,7 @@ export function SettingsTwoFA() {
                     type="text"
                     inputMode="numeric"
                     maxLength={6}
-                    className="input input-bordered w-full tracking-widest"
+                    className={`${INPUT_CLASS} tracking-widest`}
                     value={code}
                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
                     placeholder="123456"

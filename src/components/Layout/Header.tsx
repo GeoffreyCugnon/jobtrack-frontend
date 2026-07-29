@@ -25,7 +25,7 @@ export function Header() {
 
             <Link
               to="/app"
-              aria-label="Retour au tableau de bord"
+              aria-label="Retour à l'accueil"
               className="-ml-2"
             >
               <AuthLogo size="sm" align="left" />

@@ -11,7 +11,7 @@ export default function ProfileCard({ name, email, onEdit }: ProfileCardProps) {
     .join("");
 
   return (
-    <div className="mb-6 flex items-center justify-between card card-border bg-base-100 px-4 py-4">
+    <div className="flex items-center justify-between rounded-none sm:rounded-box overflow-hidden bg-base-100 px-4 py-4">
       <div className="flex items-center gap-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-semibold text-primary-content">
           {initials}

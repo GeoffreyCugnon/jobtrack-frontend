@@ -3,12 +3,13 @@ import { useNavigate } from "react-router";
 import { ArrowLeft, UserRound } from "lucide-react";
 import { Header } from "../../components/Layout/Header";
 import { INPUT_CLASS, TEXTAREA_CLASS } from "../../constants/styles";
+import { currentUser } from "../../data/currentUser";
 
 export function ProfileEdit() {
   const navigate = useNavigate();
   const [values, setValues] = useState({
-    firstName: "Geoffrey",
-    lastName: "Cugnon",
+    firstName: currentUser.firstName,
+    lastName: currentUser.lastName,
     title: "Développeur Web Junior",
     location: "Paris, France",
     bio: "Développeur web passionné en reconversion, spécialisé React et Node.js. À la recherche d'opportunités en startup ou scale-up pour contribuer à des projets ambitieux.",

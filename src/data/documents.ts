@@ -1,12 +1,15 @@
-import type { CvItem } from "../components/Documents/CV";
-import type { LetterItem } from "../components/Documents/Letter";
+export interface DocumentItem {
+  id: string;
+  title: string;
+  updatedAt: string;
+}
 
-export const cvItems: CvItem[] = [
+export const cvItems: DocumentItem[] = [
   { id: "cv-1", title: "Cv principal-Concepteur Jr", updatedAt: "25/06/2026" },
   { id: "cv-2", title: "Cv Anglais-Fullstack", updatedAt: "12/04/2026" },
 ];
 
-export const letterItems: LetterItem[] = [
+export const letterItems: DocumentItem[] = [
   {
     id: "letter-1",
     title: "Lettre Motivation Générique",

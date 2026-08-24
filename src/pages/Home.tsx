@@ -5,6 +5,7 @@ import { AuthLogo } from "../components/Auth/AuthLogo";
 import { AuthTabs } from "../components/Auth/AuthTabs";
 import { LoginForm } from "../components/Auth/LoginForm";
 import { SignupForm } from "../components/Auth/SignupForm";
+import { RecoveryPasswordForm } from "../components/Auth/RecoveryPasswordForm";
 
 const HERO_FEATURES = [
   { icon: Target, label: "Centralisez vos candidatures et vos offres suivies" },
@@ -13,7 +14,7 @@ const HERO_FEATURES = [
 ];
 
 export function Home() {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "recovery">("login");
 
   return (
     <div className="min-h-screen w-full bg-base-200 lg:flex">
@@ -57,8 +58,23 @@ export function Home() {
           <AuthLogo size="lg" />
 
           <div className="bg-base-100 border border-base-200 rounded-box shadow-sm p-6 lg:shadow-xl lg:shadow-base-300/40">
-            <AuthTabs mode={mode} onChange={setMode} />
-            {mode === "login" ? <LoginForm /> : <SignupForm />}
+            {mode === "recovery" ? (
+              <>
+                <h2 className="text-lg font-semibold mb-6 text-center">
+                  Mot de passe oublié ?
+                </h2>
+                <RecoveryPasswordForm onBack={() => setMode("login")} />
+              </>
+            ) : (
+              <>
+                <AuthTabs mode={mode} onChange={setMode} />
+                {mode === "login" ? (
+                  <LoginForm onForgotPassword={() => setMode("recovery")} />
+                ) : (
+                  <SignupForm />
+                )}
+              </>
+            )}
           </div>
 
           <div className="mt-8 text-center border-t border-base-content/10 pt-4">

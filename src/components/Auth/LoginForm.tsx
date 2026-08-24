@@ -4,13 +4,17 @@ import { loginSchema, type LoginValues } from "../../schemas/auth.schemas";
 import { FieldError } from "./FieldError";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 
+interface LoginFormProps {
+  onForgotPassword?: () => void;
+}
+
 /**
  * LoginForm
  * Formulaire de connexion : email + mot de passe.
  * Validation gérée par react-hook-form + un schéma Zod (loginSchema),
  * via zodResolver qui fait le pont entre les deux.
  */
-export function LoginForm() {
+export function LoginForm({ onForgotPassword }: LoginFormProps) {
   const {
     register, // permet de "brancher" un input non-contrôlé au formulaire
     handleSubmit, // wrapper qui valide les données avant d'appeler onSubmit
@@ -56,6 +60,16 @@ export function LoginForm() {
         />
         <FieldError error={errors.password} />
       </label>
+
+      {onForgotPassword && (
+        <button
+          type="button"
+          onClick={onForgotPassword}
+          className="text-sm text-base-content/50 hover:text-primary transition-colors"
+        >
+          Mot de passe oublié ?
+        </button>
+      )}
 
       <button
         type="submit"

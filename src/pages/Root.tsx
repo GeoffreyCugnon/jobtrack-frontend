@@ -1,8 +1,8 @@
 import { Outlet, Link, useLocation } from "react-router";
 import { MessageCircle } from "lucide-react";
-import { SideMenu } from "../components/SideMenu";
+import { SideMenu } from "../components/SideMenu/SideMenu";
 import { MessagingFab } from "../components/Messaging/MessagingFab";
-import { MessagingPanel } from "../components/Messaging";
+import { MessagingPanel } from "../components/Messaging/MessagingPanel";
 import { MenuProvider } from "../context/Menu/MenuContext";
 import { useMenu } from "../context/Menu/useMenu";
 import { MessagingProvider } from "../context/Messaging/MessagingContext";

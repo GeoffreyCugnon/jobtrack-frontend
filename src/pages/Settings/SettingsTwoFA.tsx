@@ -34,7 +34,7 @@ export function SettingsTwoFA() {
     try {
       // TODO: brancher sur POST /user/2fa/verify avec { code }
       setStep("recovery");
-    } catch (err) {
+    } catch {
       setError("Code invalide, réessaie.");
     }
   };

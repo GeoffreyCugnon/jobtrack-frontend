@@ -15,7 +15,7 @@ import { CVPreview } from "./pages/Documents/CVPreview";
 import { CVEdit } from "./pages/Documents/CVEdit";
 import { LetterPreview } from "./pages/Documents/LetterPreview";
 import { LetterEdit } from "./pages/Documents/LetterEdit";
-import PublicationsPage from "./pages/Publications/PublicationsPage";
+import { Publications } from "./pages/Publications/Publications";
 import { Statistics } from "./pages/Statistics";
 import { Settings } from "./pages/Settings/Settings";
 import { Profile } from "./pages/Profile/Profile";
@@ -23,7 +23,7 @@ import { ProfileEdit } from "./pages/Profile/ProfileEdit";
 import { ProfileContactEdit } from "./pages/Profile/ProfileContactEdit";
 import { ProfileSkillsEdit } from "./pages/Profile/ProfileSkillsEdit";
 import { SettingsPassword } from "./pages/Settings/SettingsPassword";
-import { SettingsTwoFA } from "./pages/Settings/SettingTwoFa";
+import { SettingsTwoFA } from "./pages/Settings/SettingsTwoFA";
 import { SettingsHelp } from "./pages/Settings/SettingsHelp";
 import { MessagingManage } from "./pages/Messaging/MessagingManage";
 import { MessagingPreferences } from "./pages/Messaging/MessagingPreferences";
@@ -61,7 +61,7 @@ export const router = createBrowserRouter([
           { path: "letters/:id/edit", Component: LetterEdit },
         ],
       },
-      { path: "publications", Component: PublicationsPage },
+      { path: "publications", Component: Publications },
       { path: "statistics", Component: Statistics },
       {
         path: "messaging",

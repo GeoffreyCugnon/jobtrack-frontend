@@ -3,10 +3,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   recoveryPasswordSchema,
   type RecoveryPasswordValues,
-} from "../../Auth/AuthSchemas";
+} from "../../schemas/auth.schemas";
 
 import { FieldError } from "./FieldError";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
+
+interface RecoveryPasswordFormProps {
+  onBack: () => void;
+}
 
 /**
  * RecoveryPasswordForm
@@ -15,7 +19,7 @@ import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
  * L'utilisateur renseigne son email.
  * Si l'adresse existe, un email contenant un lien de réinitialisation sera envoyé.
  */
-export function RecoveryPasswordForm() {
+export function RecoveryPasswordForm({ onBack }: RecoveryPasswordFormProps) {
   const {
     register,
     handleSubmit,
@@ -59,6 +63,14 @@ export function RecoveryPasswordForm() {
         className={`btn btn-primary w-full ${BTN_FOCUS_RING.primary}`}
       >
         {isSubmitting ? "Envoi..." : "Recevoir un lien de réinitialisation"}
+      </button>
+
+      <button
+        type="button"
+        onClick={onBack}
+        className="block mx-auto text-sm text-base-content/50 hover:text-primary transition-colors"
+      >
+        Retour à la connexion
       </button>
     </form>
   );

@@ -5,8 +5,8 @@ import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";
 
 import { ProfileIdentity } from "../../components/Profile/ProfileIdentity";
-import { ProfileContact } from "../../components/Profile/Contact";
-import { ProfileSkills } from "../../components/Profile/Skill";
+import { ProfileContact } from "../../components/Profile/Contact/ProfileContact";
+import { ProfileSkills } from "../../components/Profile/Skill/ProfileSkills";
 import { currentUser } from "../../data/currentUser";
 
 const user = {

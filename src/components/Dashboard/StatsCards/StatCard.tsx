@@ -1,4 +1,3 @@
-// src/components/dashboard/StatCard.tsx
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { Link } from "react-router";
 
@@ -9,7 +8,7 @@ interface StatCardProps {
   to: string;
 }
 
-export function Card({ label, count, icon: Icon, to }: StatCardProps) {
+export function StatCard({ label, count, icon: Icon, to }: StatCardProps) {
   return (
     <Link
       to={to}

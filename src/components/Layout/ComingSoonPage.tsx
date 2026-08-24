@@ -10,7 +10,7 @@ interface ComingSoonPageProps {
   icon: LucideIcon;
 }
 
-// Même structure que Network/Posts/Statistics pour les sections pas encore
+// Même structure que Network/Publications/Statistics pour les sections pas encore
 // construites : header + titre + état vide "arrive bientôt".
 export function ComingSoonPage({ title, description, icon }: ComingSoonPageProps) {
   return (

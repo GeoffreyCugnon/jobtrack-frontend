@@ -9,7 +9,7 @@ import {
   Info,
   Settings as SettingsIcon,
 } from "lucide-react";
-import ProfileCard from "../../components/Settings/SettingsProfilCard";
+import SettingsProfileCard from "../../components/Settings/SettingsProfileCard";
 import { SettingsSection } from "../../components/Settings/SettingsSection";
 import SettingsItem from "../../components/Settings/SettingsItem";
 import { SettingsModal } from "../../components/Settings/SettingsModal";
@@ -59,7 +59,7 @@ export function Settings() {
 
         <div className="-mx-4 sm:mx-0">
           <div className="flex flex-col divide-y divide-base-300">
-            <ProfileCard
+            <SettingsProfileCard
               name={user.name}
               email={user.email}
               onEdit={() => {}}

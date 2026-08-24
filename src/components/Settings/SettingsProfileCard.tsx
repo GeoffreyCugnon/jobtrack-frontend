@@ -1,10 +1,10 @@
-interface ProfileCardProps {
+interface SettingsProfileCardProps {
   name: string;
   email: string;
   onEdit?: () => void;
 }
 
-export default function ProfileCard({ name, email, onEdit }: ProfileCardProps) {
+export default function SettingsProfileCard({ name, email, onEdit }: SettingsProfileCardProps) {
   const initials = name
     .split(" ")
     .map((n) => n[0])

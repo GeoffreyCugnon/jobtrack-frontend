@@ -4,7 +4,7 @@
 // ProfileContact/ProfileSkills) via SectionCard.
 import { useMemo, useState } from "react";
 import { Home, ChevronRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { Card as StatCard } from "../../components/Dashboard/StatsCards/StatCard";
+import { StatCard } from "../../components/Dashboard/StatsCards/StatCard";
 import { TodoGroup } from "../../components/Dashboard/UrgentTasks/TodoGroup";
 import { EventRow } from "../../components/Dashboard/RecentEvents/EventRow";
 import { DashboardHeroBanner } from "../../components/Dashboard/DashboardHeroBanner";

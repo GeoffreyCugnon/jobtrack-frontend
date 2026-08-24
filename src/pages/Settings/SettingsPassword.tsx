@@ -20,12 +20,12 @@ export function SettingsPassword() {
     formState: { errors, isSubmitting },
   } = useForm<ChangePasswordValues>({ resolver: zodResolver(changePasswordSchema) });
 
-  const onSubmit = async (_values: ChangePasswordValues) => {
+  const onSubmit = async () => {
     setServerError(null);
     try {
       // TODO: brancher sur PATCH /user/password
       successModalRef.current?.showModal();
-    } catch (err) {
+    } catch {
       setServerError("Une erreur est survenue. Vérifie ton mot de passe actuel.");
     }
   };

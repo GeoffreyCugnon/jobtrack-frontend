@@ -1,10 +1,10 @@
 import { Header } from "../../components/Layout/Header";
-import TrendingTopics from "../../components/Trending/TrendingTopics";
-import PublicationCard from "../../components/Publication/PublicationCard";
+import TrendingTopics from "../../components/Publications/TrendingTopics";
+import PublicationCard from "../../components/Publications/PublicationCard";
 
 import publications from "../../data/publications";
 
-export default function PublicationsPage() {
+export function Publications() {
   return (
     <div className="bg-base-200 h-screen flex justify-center">
       <div className="w-full max-w-md bg-base-100 flex flex-col">

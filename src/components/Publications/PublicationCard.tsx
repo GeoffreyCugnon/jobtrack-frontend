@@ -1,6 +1,6 @@
 import { Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
 
-import type { Publication } from "../../types/publication";
+import type { Publication } from "../../types/publication.types";
 
 interface Props {
   publication: Publication;

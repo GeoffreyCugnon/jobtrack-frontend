@@ -1,0 +1,31 @@
+import type { SignInData } from "../types/auth.type";
+import { api } from "../utils/axios-client";
+import axios from "axios";
+
+export type LoginResponse = {
+    accessToken: string;
+};
+
+export type RefreshResponse = {
+    accessToken: string;
+};
+
+export class AuthApi {
+    static async login(body: SignInData): Promise<LoginResponse> {
+        const { data } = await api.post("auth/login", body);
+        return data;
+    }
+
+    static async refresh(): Promise<RefreshResponse> {
+        const { data } = await axios.post(
+            `${import.meta.env.VITE_API_URL}/auth/refresh`,
+            {},
+            { withCredentials: true }
+        );
+        return data;
+    }
+
+    async logout(): Promise<void> {
+        await api.post("auth/logout", {}, { withCredentials: true });
+    }
+}

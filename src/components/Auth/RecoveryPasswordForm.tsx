@@ -7,6 +7,8 @@ import {
 
 import { FieldError } from "./FieldError";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
+import { AuthApi } from "../../api/auth.api";
+import { useToastStore } from "../../store/toast.store";
 
 interface RecoveryPasswordFormProps {
   onBack: () => void;
@@ -28,9 +30,25 @@ export function RecoveryPasswordForm({ onBack }: RecoveryPasswordFormProps) {
     resolver: zodResolver(recoveryPasswordSchema),
   });
 
-  const onSubmit = async () => {
-    // TODO : appeler le service API
-    // await authService.forgotPassword(values.email);
+  const onSubmit = async (values: RecoveryPasswordValues) => {
+    try {
+      await AuthApi.forgotPassword(values.email);
+      useToastStore
+        .getState()
+        .addToast(
+          "Si un compte existe pour cette adresse, un lien de réinitialisation vient d’être envoyé.",
+          "success",
+        );
+      onBack();
+    } catch (error) {
+      console.error("Forgot password failed", error);
+      useToastStore
+        .getState()
+        .addToast(
+          "Impossible d’envoyer le lien de réinitialisation.",
+          "error",
+        );
+    }
   };
 
   return (

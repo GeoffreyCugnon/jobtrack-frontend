@@ -30,6 +30,11 @@ export class AuthApi {
     return data;
   }
 
+  static async forgotPassword(email: string): Promise<{ message: string }> {
+    const { data } = await api.post("auth/forgot-password", { email });
+    return data;
+  }
+
   static async refresh(): Promise<RefreshResponse> {
     const { data } = await axios.post(
       `${import.meta.env.VITE_API_URL}/auth/refresh`,

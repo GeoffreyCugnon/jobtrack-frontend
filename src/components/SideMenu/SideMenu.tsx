@@ -13,8 +13,9 @@ import { MenuSection } from "./MenuSection";
 import { MenuLink } from "./MenuLink";
 import { ThemeToggle } from "../UI/ThemeToggle";
 import { getMainNavItems, isNavItemActive } from "../../constants/nav";
-import { currentUser } from "../../data/currentUser";
 import { useAuthStore } from "../../store/auth.store";
+import { useToastStore } from "../../store/toast.store";
+import { AuthApi } from "../../api/auth.api";
 
 interface SideMenuProps {
   open: boolean;
@@ -25,7 +26,16 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
   const mainNavItems = getMainNavItems(isAuthenticated);
+
+  const displayName = user
+    ? `${user.first_name} ${user.last_name}`.trim()
+    : "Invité";
+  const displayEmail = user?.email ?? "";
+  const displayInitials =
+    `${user?.first_name?.[0] ?? ""}${user?.last_name?.[0] ?? ""}`.toUpperCase() ||
+    "?";
 
   const MAIN_ROUTES = mainNavItems.map((item) => item.path);
   const isMainRoute = MAIN_ROUTES.some((path) =>
@@ -48,6 +58,19 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
       ]
     : [];
 
+  const handleLogout = async () => {
+    try {
+      await new AuthApi().logout();
+    } catch (error) {
+      console.error("Logout failed", error);
+    } finally {
+      useAuthStore.getState().clearAuth();
+      useToastStore.getState().addToast("Déconnexion réussie", "success");
+      onClose();
+      navigate("/auth");
+    }
+  };
+
   return (
     <>
       <MenuOverlay open={open} onClose={onClose} />
@@ -58,9 +81,9 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
         }`}
       >
         <MenuHeader
-          name={currentUser.name}
-          email={currentUser.email}
-          initials={currentUser.initials}
+          name={displayName}
+          email={displayEmail}
+          initials={displayInitials}
           onClose={onClose}
         />
 
@@ -100,13 +123,16 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
                 onClick={onClose}
                 icon={Settings}
               />
-              <MenuLink
-                to="/"
-                label="Déconnexion"
-                onClick={onClose}
-                variant="danger"
-                icon={LogOut}
-              />
+              <li>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-error hover:bg-error/10 w-full text-left"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Déconnexion
+                </button>
+              </li>
             </ul>
           )}
         </div>

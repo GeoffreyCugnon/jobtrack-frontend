@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Briefcase, Heart } from "lucide-react";
 import { OfferSearchBar } from "../components/Offers/OfferSearchBar";
 import { OfferCategorySelector } from "../components/Offers/OfferCategorySelector";
@@ -10,7 +10,8 @@ import { PageContainer } from "../components/Layout/PageContainer";
 import { PageTitle } from "../components/Layout/PageTitle";
 import { SectionCard } from "../components/Layout/SectionCard";
 import { Tabs } from "../components/Layout/Tabs";
-import { offerCategories, mockOffers } from "../data/offerCategories";
+import { offerCategories } from "../data/offerCategories";
+import { OffersApi, type OfferApiItem } from "../api/offers.api";
 
 function pluralize(count: number, singular: string, plural: string) {
   return count > 1 ? plural : singular;
@@ -23,16 +24,35 @@ export function Offers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [alertEnabled, setAlertEnabled] = useState(false);
-  const [offers, setOffers] = useState(mockOffers);
+  const [offers, setOffers] = useState<OfferApiItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const pageTopRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const loadOffers = async () => {
+      try {
+        const data = await OffersApi.getAll();
+        setOffers(data);
+      } catch (error) {
+        console.error("Failed to load offers", error);
+        setOffers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadOffers();
+  }, []);
+
   const activeCategoryData = offerCategories.find(
-    (category) => category.key === activeCategory
+    (category) => category.key === activeCategory,
   );
 
   const toggleSave = (id: number) => {
     setSavedIds((prev) =>
-      prev.includes(id) ? prev.filter((savedId) => savedId !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((savedId) => savedId !== id)
+        : [...prev, id],
     );
   };
 
@@ -51,10 +71,12 @@ export function Offers() {
   // Choisir une catégorie ne filtre pas la liste courante : ça bascule vers
   // une autre colonne de résultats, propre à cette catégorie. Sans catégorie
   // active (aucun badge sélectionné), aucun filtrage n'est appliqué.
+  const normalizedOffers = Array.isArray(offers) ? offers : [];
+
   const categoryOffers =
     activeCategory === null
-      ? offers
-      : offers.filter((offer) => offer.category === activeCategory);
+      ? normalizedOffers
+      : normalizedOffers.filter((offer) => offer.category === activeCategory);
 
   const searchedOffers = categoryOffers.filter((offer) => {
     const query = searchQuery.trim().toLowerCase();
@@ -66,15 +88,19 @@ export function Offers() {
     );
   });
 
-  const savedOffers = offers.filter((offer) => savedIds.includes(offer.id));
+  const savedOffers = normalizedOffers.filter((offer) =>
+    savedIds.includes(offer.id),
+  );
   // Plus récent d'abord : postedHoursAgo croissant (petit nombre = publié il
   // y a peu de temps).
-  const visibleOffers = [...(activeTab === "search" ? searchedOffers : savedOffers)].sort(
-    (a, b) => a.postedHoursAgo - b.postedHoursAgo
-  );
+  const visibleOffers = [
+    ...(activeTab === "search" ? searchedOffers : savedOffers),
+  ].sort((a, b) => a.postedHoursAgo - b.postedHoursAgo);
 
   const searchResultsLabel = `${searchedOffers.length} ${pluralize(searchedOffers.length, "offre trouvée", "offres trouvées")}`;
-  const bannerLabel = activeCategoryData ? activeCategoryData.label : "Toutes les offres";
+  const bannerLabel = activeCategoryData
+    ? activeCategoryData.label
+    : "Toutes les offres";
 
   return (
     <div className="flex-1 flex flex-col" ref={pageTopRef}>
@@ -128,19 +154,33 @@ export function Offers() {
                       OFFER_CATEGORY_BANNER_HEIGHT) : les badges se collent
                       juste sous la bannière. */}
                   <div className="sticky top-30 z-20 bg-base-100">
-                    <OfferCategorySelector active={activeCategory} onChange={handleCategoryChange} />
+                    <OfferCategorySelector
+                      active={activeCategory}
+                      onChange={handleCategoryChange}
+                    />
                   </div>
                   {/* Sticky uniquement quand la recherche contient du texte :
                       une recherche vide n'a pas besoin de rester accessible
                       en permanence, elle scrolle avec le reste comme avant.
                       top-42 (168px) = header (64) + bannière (56) + badges
                       (48) : elle se colle juste sous les badges. */}
-                  <div className={searchQuery ? "sticky top-42 z-20 bg-base-100" : ""}>
-                    <OfferSearchBar value={searchQuery} onChange={setSearchQuery} />
+                  <div
+                    className={
+                      searchQuery ? "sticky top-42 z-20 bg-base-100" : ""
+                    }
+                  >
+                    <OfferSearchBar
+                      value={searchQuery}
+                      onChange={setSearchQuery}
+                    />
                   </div>
 
                   <div className="border-t border-base-300">
-                    {visibleOffers.length === 0 ? (
+                    {loading ? (
+                      <div className="p-4 text-sm text-base-content/60">
+                        Chargement des offres...
+                      </div>
+                    ) : visibleOffers.length === 0 ? (
                       <div className="p-4">
                         <EmptyState
                           icon={Briefcase}
@@ -164,7 +204,11 @@ export function Offers() {
                   title={`${visibleOffers.length} ${pluralize(visibleOffers.length, "offre sauvegardée", "offres sauvegardées")}`}
                   collapsible={false}
                 >
-                  {visibleOffers.length === 0 ? (
+                  {loading ? (
+                    <div className="p-4 text-sm text-base-content/60">
+                      Chargement des offres...
+                    </div>
+                  ) : visibleOffers.length === 0 ? (
                     <EmptyState
                       icon={Heart}
                       message="Aucune offre sauvegardée pour l'instant. Cliquez sur le cœur pour en ajouter !"

@@ -14,7 +14,6 @@ import {
   Laptop,
   type LucideIcon,
 } from "lucide-react";
-import rawMockOffers from "./mockOffers.json";
 
 export interface OfferCategory {
   key: string;
@@ -35,35 +34,40 @@ export const offerCategories: OfferCategory[] = [
   {
     key: "hybride",
     label: "Hybride",
-    description: "Un équilibre entre présentiel et télétravail, où que vous soyez.",
+    description:
+      "Un équilibre entre présentiel et télétravail, où que vous soyez.",
     icon: Home,
     colorClass: "bg-rose-400",
   },
   {
     key: "informatique",
     label: "Informatique",
-    description: "Développement, support et infrastructure pour les équipes tech.",
+    description:
+      "Développement, support et infrastructure pour les équipes tech.",
     icon: Headphones,
     colorClass: "bg-violet-500",
   },
   {
     key: "enseignement",
     label: "Enseignement",
-    description: "Former et transmettre, du primaire à l'enseignement supérieur.",
+    description:
+      "Former et transmettre, du primaire à l'enseignement supérieur.",
     icon: GraduationCap,
     colorClass: "bg-blue-500",
   },
   {
     key: "hotellerie",
     label: "Hôtellerie",
-    description: "Accueil, restauration et service dans l'hôtellerie-restauration.",
+    description:
+      "Accueil, restauration et service dans l'hôtellerie-restauration.",
     icon: ConciergeBell,
     colorClass: "bg-zinc-400",
   },
   {
     key: "administration",
     label: "Administration publique",
-    description: "Des postes au service de l'intérêt général, dans les collectivités et l'État.",
+    description:
+      "Des postes au service de l'intérêt général, dans les collectivités et l'État.",
     icon: Building2,
     colorClass: "bg-slate-500",
   },
@@ -130,9 +134,3 @@ export interface CategoryOffer {
   applicantCount?: number;
   verified?: boolean;
 }
-
-// "industrie" est volontairement vide pour valider le passage par l'état
-// vide (EmptyState) quand on bascule sur une colonne sans résultat. Les
-// offres elles-mêmes vivent dans mockOffers.json (données pures, pas de
-// composants), à séparer de offerCategories qui référence des icônes React.
-export const mockOffers: CategoryOffer[] = rawMockOffers as CategoryOffer[];

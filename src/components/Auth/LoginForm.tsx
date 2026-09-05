@@ -1,56 +1,61 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router";
 import { loginSchema, type LoginValues } from "../../schemas/auth.schemas";
 import { FieldError } from "./FieldError";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
+import { AuthApi } from "../../api/auth.api";
+import { useAuthStore } from "../../store/auth.store";
+import { useToastStore } from "../../store/toast.store";
 
 interface LoginFormProps {
   onForgotPassword?: () => void;
 }
 
-/**
- * LoginForm
- * Formulaire de connexion : email + mot de passe.
- * Validation gérée par react-hook-form + un schéma Zod (loginSchema),
- * via zodResolver qui fait le pont entre les deux.
- */
 export function LoginForm({ onForgotPassword }: LoginFormProps) {
+  const navigate = useNavigate();
   const {
-    register, // permet de "brancher" un input non-contrôlé au formulaire
-    handleSubmit, // wrapper qui valide les données avant d'appeler onSubmit
-    formState: { errors }, // erreurs de validation par champ (générées par Zod)
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
   } = useForm<LoginValues>({ resolver: zodResolver(loginSchema) });
 
-  // Handler appelé uniquement si la validation Zod passe.
-  // TODO: appel réel au service d'auth (probablement dans services/ vu ta convention de dossiers)
-  const onSubmit = () => {};
+  const onSubmit = async (values: LoginValues) => {
+    try {
+      const response = await AuthApi.login(values);
+      useAuthStore.getState().setUser(response.user);
+      useAuthStore.getState().setAccessToken(response.accessToken);
+      useToastStore.getState().addToast("Connexion réussie", "success");
+      navigate("/app/dashboard");
+    } catch (error) {
+      console.error("Login failed", error);
+      useToastStore
+        .getState()
+        .addToast("Email ou mot de passe invalide", "error");
+    }
+  };
 
   return (
-    // noValidate désactive la validation native du navigateur (bulles HTML5)
-    // pour laisser Zod/react-hook-form gérer entièrement l'affichage des erreurs
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
-      {/* Champ Email */}
       <label className="block">
         <span className="text-sm text-base-content/70 mb-1 block">Email</span>
         <input
           type="email"
-          autoComplete="email" // aide au remplissage auto + gestionnaires de mots de passe
+          autoComplete="email"
           placeholder="jean.dupont@email.fr"
           className={INPUT_CLASS}
-          {...register("email")} // connecte ce champ à react-hook-form sous la clé "email"
+          {...register("email")}
         />
-        {/* Affiche le message d'erreur Zod pour ce champ, si présent */}
         <FieldError error={errors.email} />
       </label>
 
-      {/* Champ Mot de passe */}
       <label className="block">
         <span className="text-sm text-base-content/70 mb-1 block">
           Mot de passe
         </span>
         <input
           type="password"
-          autoComplete="current-password" // suggère au navigateur un mdp déjà connu (≠ "new-password")
+          autoComplete="current-password"
           placeholder="••••••••"
           className={INPUT_CLASS}
           {...register("password")}
@@ -70,9 +75,10 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
 
       <button
         type="submit"
+        disabled={isSubmitting}
         className={`btn btn-primary w-full mt-2 ${BTN_FOCUS_RING.primary}`}
       >
-        Se connecter
+        {isSubmitting ? "Connexion..." : "Se connecter"}
       </button>
     </form>
   );

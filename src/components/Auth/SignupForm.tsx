@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, type SignupValues } from "../../schemas/auth.schemas";
 import { FieldError } from "./FieldError";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
+import { AuthApi } from "../../api/auth.api";
 
 export function SignupForm() {
   const {
@@ -11,8 +12,24 @@ export function SignupForm() {
     formState: { errors },
   } = useForm<SignupValues>({ resolver: zodResolver(signupSchema) });
 
-  // TODO: appel réel au service d'auth
-  const onSubmit = () => {};
+  const onSubmit = async (values: SignupValues) => {
+    const fullName = values.name.trim();
+    const parts = fullName.split(/\s+/).filter(Boolean);
+
+    const first_name = parts[0] ?? "";
+    const last_name = parts.slice(1).join(" ") || "User";
+
+    try {
+      await AuthApi.register({
+        first_name,
+        last_name,
+        email: values.email,
+        password: values.password,
+      });
+    } catch (error) {
+      console.error("Signup failed", error);
+    }
+  };
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>

@@ -12,41 +12,41 @@ import { MenuHeader } from "./MenuHeader";
 import { MenuSection } from "./MenuSection";
 import { MenuLink } from "./MenuLink";
 import { ThemeToggle } from "../UI/ThemeToggle";
-import { MAIN_NAV_ITEMS, isNavItemActive } from "../../constants/nav";
+import { getMainNavItems, isNavItemActive } from "../../constants/nav";
 import { currentUser } from "../../data/currentUser";
+import { useAuthStore } from "../../store/auth.store";
 
 interface SideMenuProps {
   open: boolean;
   onClose: () => void;
 }
 
-// Routes accessibles depuis la bottom nav : sur ces pages, "Retour" n'a pas
-// de sens (on est déjà à la racine de la navigation principale). Dérivées de
-// MAIN_NAV_ITEMS pour ne pas dupliquer cette liste à la main.
-const MAIN_ROUTES = MAIN_NAV_ITEMS.map((item) => item.path);
-
 export function SideMenu({ open, onClose }: SideMenuProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const mainNavItems = getMainNavItems(isAuthenticated);
 
+  const MAIN_ROUTES = mainNavItems.map((item) => item.path);
   const isMainRoute = MAIN_ROUTES.some((path) =>
-    isNavItemActive(location.pathname, path)
+    isNavItemActive(location.pathname, path),
   );
 
-  // Mêmes routes que la bottom nav (+ Profil, absent de la bottom nav faute
-  // de place) : une seule source de vérité pour label/icône/path. "Actus"
-  // reste à part, regroupé avec "Statistiques" ci-dessous (secondaryLinks).
-  const mainLinks = [
-    ...MAIN_NAV_ITEMS.filter((item) => item.path !== "/app/publications").map(
-      ({ path, label, icon }) => ({ to: path, label, icon })
-    ),
-    { to: "/app/profile", label: "Profil", icon: User },
-  ];
+  const mainLinks = isAuthenticated
+    ? [
+        ...mainNavItems
+          .filter((item) => item.path !== "/app/dashboard")
+          .map(({ path, label, icon }) => ({ to: path, label, icon })),
+        { to: "/app/profile", label: "Profil", icon: User },
+      ]
+    : mainNavItems.map(({ path, label, icon }) => ({ to: path, label, icon }));
 
-  const secondaryLinks = [
-    { to: "/app/publications", label: "Actus", icon: Megaphone },
-    { to: "/app/statistics", label: "Statistiques", icon: BarChart3 },
-  ];
+  const secondaryLinks = isAuthenticated
+    ? [
+        { to: "/app/publications", label: "Actus", icon: Megaphone },
+        { to: "/app/statistics", label: "Statistiques", icon: BarChart3 },
+      ]
+    : [];
 
   return (
     <>
@@ -64,10 +64,6 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
           onClose={onClose}
         />
 
-        {/* flex-1 (plutôt qu'une hauteur calculée à la main sur MenuHeader)
-            occupe tout l'espace restant sans dépendre de sa hauteur exacte,
-            et laisse le contenu s'empiler naturellement en haut : le vide
-            éventuel reste en bas, jamais entre les groupes de liens. */}
         <div className="flex-1 flex flex-col overflow-y-auto">
           {!isMainRoute && (
             <ul className="menu menu-vertical w-full border-b border-base-content/10">
@@ -87,28 +83,32 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
             </ul>
           )}
           <MenuSection links={mainLinks} onLinkClick={onClose} />
-          <MenuSection
-            links={secondaryLinks}
-            onLinkClick={onClose}
-            title="Suivi"
-          />
+          {secondaryLinks.length > 0 && (
+            <MenuSection
+              links={secondaryLinks}
+              onLinkClick={onClose}
+              title="Suivi"
+            />
+          )}
 
-          <ul className="menu menu-vertical w-full py-4">
-            <ThemeToggle />
-            <MenuLink
-              to="/app/settings"
-              label="Paramètres"
-              onClick={onClose}
-              icon={Settings}
-            />
-            <MenuLink
-              to="/"
-              label="Déconnexion"
-              onClick={onClose}
-              variant="danger"
-              icon={LogOut}
-            />
-          </ul>
+          {isAuthenticated && (
+            <ul className="menu menu-vertical w-full py-4">
+              <ThemeToggle />
+              <MenuLink
+                to="/app/settings"
+                label="Paramètres"
+                onClick={onClose}
+                icon={Settings}
+              />
+              <MenuLink
+                to="/"
+                label="Déconnexion"
+                onClick={onClose}
+                variant="danger"
+                icon={LogOut}
+              />
+            </ul>
+          )}
         </div>
       </aside>
     </>

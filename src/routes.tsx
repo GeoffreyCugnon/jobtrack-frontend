@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import { Home } from "./pages/Home";
+import { AuthPage } from "./pages/AuthPage";
 import { Root } from "./pages/Root";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { Relances } from "./pages/Dashboard/Relances";
@@ -32,6 +33,7 @@ import { MessagingAwayMessage } from "./pages/Messaging/MessagingAwayMessage";
 
 export const router = createBrowserRouter([
   { path: "/", Component: Home },
+  { path: "/auth", Component: AuthPage },
   {
     path: "/app",
     Component: Root,
@@ -41,6 +43,7 @@ export const router = createBrowserRouter([
       {
         children: [
           { index: true, Component: Dashboard },
+          { path: "dashboard", Component: Dashboard },
           { path: "relances", Component: Relances },
           { path: "historique", Component: Historique },
           { path: "candidatures", Component: Candidatures },

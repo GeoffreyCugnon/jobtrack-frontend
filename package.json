@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cy:open": "node scripts/run-cypress.cjs open",
+    "cy:run": "node scripts/run-cypress.cjs run",
+    "cy:component": "node scripts/run-cypress.cjs open --component",
+    "cy:component:run": "node scripts/run-cypress.cjs run --component"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -28,6 +32,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
+    "cypress": "^15.21.0",
     "daisyui": "^5.6.16",
     "eslint": "^9.29.0",
     "eslint-plugin-react-hooks": "^5.2.0",

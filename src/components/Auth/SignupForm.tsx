@@ -1,15 +1,19 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router";
 import { signupSchema, type SignupValues } from "../../schemas/auth.schemas";
 import { FieldError } from "./FieldError";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 import { AuthApi } from "../../api/auth.api";
+import { useAuthStore } from "../../store/auth.store";
+import { useToastStore } from "../../store/toast.store";
 
 export function SignupForm() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SignupValues>({ resolver: zodResolver(signupSchema) });
 
   const onSubmit = async (values: SignupValues) => {
@@ -26,8 +30,21 @@ export function SignupForm() {
         email: values.email,
         password: values.password,
       });
+
+      const loginResponse = await AuthApi.login({
+        email: values.email,
+        password: values.password,
+      });
+
+      useAuthStore.getState().setUser(loginResponse.user);
+      useAuthStore.getState().setAccessToken(loginResponse.accessToken);
+      useToastStore.getState().addToast("Compte créé et connecté", "success");
+      navigate("/app/dashboard");
     } catch (error) {
       console.error("Signup failed", error);
+      useToastStore
+        .getState()
+        .addToast("Impossible de créer le compte", "error");
     }
   };
 
@@ -75,9 +92,10 @@ export function SignupForm() {
 
       <button
         type="submit"
+        disabled={isSubmitting}
         className={`btn btn-primary w-full mt-2 ${BTN_FOCUS_RING.primary}`}
       >
-        Créer mon compte
+        {isSubmitting ? "Création..." : "Créer mon compte"}
       </button>
     </form>
   );

@@ -11,7 +11,8 @@ import { PageTitle } from "../components/Layout/PageTitle";
 import { SectionCard } from "../components/Layout/SectionCard";
 import { Tabs } from "../components/Layout/Tabs";
 import { offerCategories } from "../data/offerCategories";
-import { OffersApi, type OfferApiItem } from "../api/offers.api";
+import { OffersApi } from "../api/offers.api";
+import type { Offer } from "../types/offer.type";
 
 function pluralize(count: number, singular: string, plural: string) {
   return count > 1 ? plural : singular;
@@ -24,7 +25,7 @@ export function Offers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [alertEnabled, setAlertEnabled] = useState(false);
-  const [offers, setOffers] = useState<OfferApiItem[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const pageTopRef = useRef<HTMLDivElement>(null);
 

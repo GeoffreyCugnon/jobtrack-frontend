@@ -1,23 +1,13 @@
 import { api } from "../utils/axios-client";
+import type { Offer } from "../types/offer.type";
 
-export type OfferApiItem = {
-  id: number;
-  role: string;
-  company: string;
-  location: string;
-  timeAgo: string;
-  postedHoursAgo: number;
-  category: string;
-  workMode?: "onSite" | "Remote" | "Hybrid";
-  applicantCount?: number;
-  verified?: boolean;
-};
+export type { Offer };
 
 export class OffersApi {
-  static async getAll(): Promise<OfferApiItem[]> {
-    const { data } = await api.get<
-      OfferApiItem[] | { offers?: OfferApiItem[] }
-    >("job-offering");
+  static async getAll(): Promise<Offer[]> {
+    const { data } = await api.get<Offer[] | { offers?: Offer[] }>(
+      "job-offering",
+    );
     const items = Array.isArray(data)
       ? data
       : Array.isArray(data?.offers)

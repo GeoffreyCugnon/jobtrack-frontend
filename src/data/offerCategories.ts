@@ -122,15 +122,5 @@ export const offerCategories: OfferCategory[] = [
   },
 ];
 
-export interface CategoryOffer {
-  id: number;
-  role: string;
-  company: string;
-  location: string;
-  timeAgo: string;
-  postedHoursAgo: number;
-  category: string;
-  workMode?: "onSite" | "Remote" | "Hybrid";
-  applicantCount?: number;
-  verified?: boolean;
-}
+// Le type d'une offre vit dans `src/types/offer.type.ts` (`Offer`) — il était
+// dupliqué ici sous le nom `CategoryOffer` (jamais importé), supprimé.

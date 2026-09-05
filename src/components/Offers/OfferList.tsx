@@ -1,15 +1,5 @@
 import { OfferCard } from "./OfferCard";
-
-interface Offer {
-  id: number;
-  role: string;
-  company: string;
-  location: string;
-  timeAgo: string;
-  workMode?: "onSite" | "Remote" | "Hybrid";
-  applicantCount?: number;
-  verified?: boolean;
-}
+import type { Offer } from "../../types/offer.type";
 
 interface OfferListProps {
   offers: Offer[];

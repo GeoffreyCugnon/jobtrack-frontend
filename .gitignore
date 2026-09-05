@@ -22,4 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.claude
+
+# Claude Code : config projet partagée (settings.json, skills) versionnée,
+# seuls les réglages locaux à la machine sont ignorés
+.claude/settings.local.json

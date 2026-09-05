@@ -11,9 +11,8 @@ export function SignupForm() {
     formState: { errors },
   } = useForm<SignupValues>({ resolver: zodResolver(signupSchema) });
 
-  const onSubmit = (values: SignupValues) => {
-    console.log("signup", values);
-  };
+  // TODO: appel réel au service d'auth
+  const onSubmit = () => {};
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>

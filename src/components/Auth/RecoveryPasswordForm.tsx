@@ -28,15 +28,9 @@ export function RecoveryPasswordForm({ onBack }: RecoveryPasswordFormProps) {
     resolver: zodResolver(recoveryPasswordSchema),
   });
 
-  const onSubmit = async (values: RecoveryPasswordValues) => {
-    try {
-      // TODO : appeler le service API
-      // await authService.forgotPassword(values.email);
-
-      console.log("Recovery password :", values);
-    } catch (error) {
-      console.error(error);
-    }
+  const onSubmit = async () => {
+    // TODO : appeler le service API
+    // await authService.forgotPassword(values.email);
   };
 
   return (

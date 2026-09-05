@@ -36,9 +36,8 @@ describe("SignupForm", () => {
       .and("contain.text", "Nom trop court");
   });
 
-  it("soumet le formulaire quand toutes les valeurs sont valides", () => {
+  it("n'affiche aucune erreur quand toutes les valeurs sont valides", () => {
     cy.mount(<SignupForm />);
-    cy.window().then((win) => cy.stub(win.console, "log").as("consoleLog"));
 
     cy.get('input[type="text"]').type("Jean Dupont");
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
@@ -46,10 +45,5 @@ describe("SignupForm", () => {
     cy.contains("button", "Créer mon compte").click();
 
     cy.get('[role="alert"]').should("not.exist");
-    cy.get("@consoleLog").should("have.been.calledWith", "signup", {
-      name: "Jean Dupont",
-      email: "jean.dupont@email.fr",
-      password: "motdepasse123",
-    });
   });
 });

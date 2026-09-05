@@ -42,7 +42,6 @@ export function Settings() {
 
   const handleDeleteAccount = () => {
     // TODO: brancher sur DELETE /user/account
-    console.log("Compte supprimé");
     deleteModalRef.current?.close();
   };
 

@@ -1,0 +1,53 @@
+# JobTrack — Frontend
+
+Application mobile-first de CRM de recherche d'emploi ("Mon CRM Emploi"). Ce repo est le frontend ; le backend (`../Backend`) est un repo Git **séparé** (NestJS + Prisma), pas un monorepo.
+
+Projet initialement développé à deux, repris en solo par Jeff. En l'absence de relecteur, privilégier des vérifications explicites (lint/build/tests) avant de considérer une tâche terminée plutôt que de compter sur une revue humaine.
+
+## Stack
+
+- React 19, TypeScript ~5.8, Vite 7
+- TailwindCSS v4 (`@tailwindcss/vite`) + DaisyUI v5 — thèmes custom `moncrm-dark` / `moncrm-light` définis dans `src/index.css` (pas les thèmes DaisyUI par défaut, `themes: false`)
+- React Router v8 (package `react-router` unifié, pas `react-router-dom`)
+- Zustand — stores dans `src/store` (`auth.store.ts`, `toast.store.ts`)
+- TanStack React Query + axios (`src/utils/axios-client.ts`) pour les appels API
+- Zod + react-hook-form + `@hookform/resolvers` pour les formulaires (schémas dans `src/schemas`)
+- Lucide React pour les icônes
+- Cypress pour les tests e2e/composants
+
+## Architecture & conventions
+
+- Toutes les pages applicatives sont sous `/app`, montées via `pages/Root.tsx` (layout avec `Header`, `SideMenu`, `MessagingPanel`, nav du bas). `Home.tsx` est la seule page hors layout (publique).
+- Dossiers de composants en **PascalCase** (`Dashboard`, `Profile`, `SideMenu`...) ; dossiers utilitaires en lowercase (`constants`, `context`, `schemas`, `services`, `store`, `types`, `utils`). `index.tsx` toujours en minuscule. Ces renommages ont déjà été faits une fois (voir historique Git) — ne pas réintroduire de fichiers en camelCase/lowercase par erreur.
+- Les contextes React (`Menu`, `Messaging`, `Theme`) suivent un pattern à 3 fichiers (instance / Provider / hook) pour éviter les conflits de Fast Refresh — reproduire ce pattern pour tout nouveau contexte plutôt qu'un fichier unique.
+- Deux conventions de layout coexistent, ne pas les confondre :
+  - Pages "liste" : `PageContainer` (`max-w-5xl mx-auto px-4`) + `PageTitle` + `SectionCard`, référence = `src/pages/Dashboard/Dashboard.tsx`.
+  - Sous-pages formulaire/détail (`SettingsPassword`, `ProfileEdit`, `CVEdit`...) : conteneur `max-w-2xl`, bouton "Retour", card unique, `<h1>` custom.
+- Classes DaisyUI répétées dans les formulaires sont centralisées dans `src/constants/styles.ts` (`INPUT_CLASS`, `TEXTAREA_CLASS`, `BTN_FOCUS_RING`) — les réutiliser plutôt que retaper les combos de classes.
+- Tokens DaisyUI uniquement pour la couleur (`base-100/200/300`, `primary`, `error`, `success`...), jamais de couleur Tailwind brute (`text-gray-500`...) — ça casse le rendu dark/light.
+
+## Skill existante à réutiliser
+
+`.claude/skills/design-audit/SKILL.md` contient déjà un audit détaillé des patterns UI du Dashboard (cards cliquables, badges, empty states, liens "voir tout", tokens de thème). L'invoquer pour toute demande d'harmonisation ou de cohérence visuelle entre pages plutôt que de redériver les règles ici — ce fichier `CLAUDE.md` ne les duplique pas volontairement.
+
+## Tests & build — piège Windows/Electron
+
+Cypress **doit** être lancé via les scripts npm (`npm run cy:open`, `npm run cy:run`, `npm run cy:component`), jamais via `npx cypress` directement : ces scripts passent par `scripts/run-cypress.cjs`, qui supprime `ELECTRON_RUN_AS_NODE` de l'environnement. Sans ça, Cypress se comporte mal car il détecte juste la *présence* de cette variable (peu importe sa valeur), ce qui arrive quand les commandes sont lancées depuis un environnement basé sur Electron.
+
+- `npm run lint`, `tsc -b` (via `npm run build`) doivent passer sans erreur ni warning avant de considérer une tâche terminée.
+- Serveur de dev sur `http://localhost:5173` (fallback `5174` si le port est pris) — c'est la `baseUrl` Cypress.
+
+## Workflow Git
+
+Projet solo désormais, plus de suivi par tickets (l'ancienne convention YouTrack `GC/CRM-XX` était liée au projet d'équipe CRM, abandonnée ici).
+
+- Dépôt hébergé sur `gp_assassin-script/jobtrack/frontend` (GitLab self-hosted, `git.alt-tools.tech`) — remote `origin`. L'ancien dépôt d'équipe reste accessible en lecture via le remote `crm`.
+- Commits réguliers désormais, plutôt qu'uniquement à des points stables validés — ne pas hésiter à committer souvent en cours de tâche.
+
+## Préférences de travail
+
+- Éléments pleine largeur, éviter les cards-wrapper qui réduisent l'espace horizontal disponible.
+- Réutiliser les composants partagés plutôt que dupliquer de la logique.
+- Affordances visuelles permanentes (mobile-first) — jamais d'indice d'interactivité qui dépend uniquement du `:hover`.
+- Valider les changements UI par capture d'écran (mobile/desktop × clair/sombre) avant de considérer une page terminée.
+- Signaler explicitement les contrastes insuffisants ou excessifs plutôt que de trancher seul.

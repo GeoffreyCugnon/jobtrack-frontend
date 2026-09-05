@@ -31,18 +31,12 @@ describe("RecoveryPasswordForm", () => {
       .and("contain.text", "adresse email valide");
   });
 
-  it("soumet le formulaire avec un email valide", () => {
+  it("n'affiche aucune erreur avec un email valide", () => {
     cy.mount(<RecoveryPasswordForm onBack={() => {}} />);
-    cy.window().then((win) => cy.stub(win.console, "log").as("consoleLog"));
 
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
     cy.contains("button", "Recevoir un lien de réinitialisation").click();
 
     cy.get('[role="alert"]').should("not.exist");
-    cy.get("@consoleLog").should(
-      "have.been.calledWith",
-      "Recovery password :",
-      { email: "jean.dupont@email.fr" },
-    );
   });
 });

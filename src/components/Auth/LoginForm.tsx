@@ -22,11 +22,8 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
   } = useForm<LoginValues>({ resolver: zodResolver(loginSchema) });
 
   // Handler appelé uniquement si la validation Zod passe.
-  // TODO: remplacer le console.log par l'appel réel au service d'auth
-  // (probablement dans services/ vu ta convention de dossiers)
-  const onSubmit = (values: LoginValues) => {
-    console.log("login", values);
-  };
+  // TODO: appel réel au service d'auth (probablement dans services/ vu ta convention de dossiers)
+  const onSubmit = () => {};
 
   return (
     // noValidate désactive la validation native du navigateur (bulles HTML5)

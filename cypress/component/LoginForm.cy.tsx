@@ -47,18 +47,13 @@ describe("LoginForm", () => {
       .and("contain.text", "8 caractères");
   });
 
-  it("soumet le formulaire quand les identifiants sont valides", () => {
+  it("n'affiche aucune erreur quand les identifiants sont valides", () => {
     cy.mount(<LoginForm />);
-    cy.window().then((win) => cy.stub(win.console, "log").as("consoleLog"));
 
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
     cy.get('input[type="password"]').type("motdepasse123");
     cy.contains("button", "Se connecter").click();
 
     cy.get('[role="alert"]').should("not.exist");
-    cy.get("@consoleLog").should("have.been.calledWith", "login", {
-      email: "jean.dupont@email.fr",
-      password: "motdepasse123",
-    });
   });
 });

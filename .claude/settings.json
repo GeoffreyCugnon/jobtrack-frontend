@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill //F //PID 8700)",
+      "Bash(node check-messaging.js)",
+      "Bash(curl -s http://localhost:5174/app)",
+      "Bash(taskkill //F //PID 21372)"
+    ]
+  }
+}

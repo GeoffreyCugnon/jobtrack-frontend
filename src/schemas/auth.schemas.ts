@@ -18,3 +18,20 @@ export const recoveryPasswordSchema = z.object({
 });
 
 export type RecoveryPasswordValues = z.infer<typeof recoveryPasswordSchema>;
+
+// Étape 2 du "mot de passe oublié" : l'email et le token viennent des query
+// params de l'URL générée par le Backend, seuls les deux champs mot de passe
+// sont saisis ici. Même forme que `changePasswordSchema` côté Settings.
+export const resetPasswordSchema = z
+  .object({
+    newPassword: passwordSchema,
+    confirmPassword: z
+      .string()
+      .min(1, "Merci de confirmer le nouveau mot de passe"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Les mots de passe ne correspondent pas",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;

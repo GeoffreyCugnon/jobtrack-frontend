@@ -35,6 +35,15 @@ export class AuthApi {
     return data;
   }
 
+  static async resetPassword(body: {
+    email: string;
+    token: string;
+    newPassword: string;
+  }): Promise<{ message: string }> {
+    const { data } = await api.post("auth/reset-password", body);
+    return data;
+  }
+
   static async refresh(): Promise<RefreshResponse> {
     const { data } = await axios.post(
       `${import.meta.env.VITE_API_URL}/auth/refresh`,
@@ -44,7 +53,7 @@ export class AuthApi {
     return data;
   }
 
-  async logout(): Promise<void> {
+  static async logout(): Promise<void> {
     await api.post("auth/logout", {}, { withCredentials: true });
   }
 }

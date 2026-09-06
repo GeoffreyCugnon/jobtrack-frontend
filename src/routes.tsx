@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import { Home } from "./pages/Home";
 import { AuthPage } from "./pages/AuthPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { Root } from "./pages/Root";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { Relances } from "./pages/Dashboard/Relances";
@@ -34,6 +35,7 @@ import { MessagingAwayMessage } from "./pages/Messaging/MessagingAwayMessage";
 export const router = createBrowserRouter([
   { path: "/", Component: Home },
   { path: "/auth", Component: AuthPage },
+  { path: "/auth/reset-password", Component: ResetPasswordPage },
   {
     path: "/app",
     Component: Root,

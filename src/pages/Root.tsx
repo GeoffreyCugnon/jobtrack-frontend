@@ -56,7 +56,11 @@ function RootContent() {
           style={{ height: BOTTOM_NAV_HEIGHT }}
         >
           <div className="max-w-5xl mx-auto h-full">
-            <div className="flex justify-around items-center h-full">
+            <div
+              className={`flex items-center h-full ${
+                isAuthenticated ? "justify-around" : "justify-center gap-12"
+              }`}
+            >
               {bottomNavItems.map(({ path, icon: Icon, shortLabel }, index) => (
                 <Fragment key={path}>
                   {index === publishIndex && (

@@ -175,24 +175,24 @@ export default function PublicationCard({
       >
         <div className="flex items-center">
           <button type="button" onClick={notify} className={actionBtn}>
-            <ThumbsUp className="h-4.5 w-4.5" weight="fill" />
+            <ThumbsUp className="h-5 w-5" weight="bold" />
             {publication.likesCount}
           </button>
 
           {linkToDetail ? (
             <Link to={to} className={actionBtn}>
-              <MessageCircle className="h-4.5 w-4.5" weight="fill" />
+              <MessageCircle className="h-5 w-5" weight="bold" />
               {publication.commentsCount}
             </Link>
           ) : (
             <span className={actionBtn}>
-              <MessageCircle className="h-4.5 w-4.5" weight="fill" />
+              <MessageCircle className="h-5 w-5" weight="bold" />
               {publication.commentsCount}
             </span>
           )}
 
           <button type="button" onClick={notify} className={actionBtn}>
-            <Repeat2 className="h-4.5 w-4.5" weight="fill" />
+            <Repeat2 className="h-5 w-5" weight="bold" />
             {publication.sharesCount}
           </button>
 
@@ -202,7 +202,7 @@ export default function PublicationCard({
             aria-label="Partager"
             className={actionBtn}
           >
-            <Send className="h-4.5 w-4.5" weight="fill" />
+            <Send className="h-5 w-5" weight="bold" />
           </button>
         </div>
 

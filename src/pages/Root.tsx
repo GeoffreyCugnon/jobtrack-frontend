@@ -1,4 +1,6 @@
+import { Fragment } from "react";
 import { Outlet, Link, useLocation } from "react-router";
+import { Plus } from "lucide-react";
 import { SideMenu } from "../components/SideMenu/SideMenu";
 import { MessagingFab } from "../components/Messaging/MessagingFab";
 import { MessagingPanel } from "../components/Messaging/MessagingPanel";
@@ -9,6 +11,7 @@ import { useSwipeGestures } from "../hooks/useSwipeGestures";
 import { BOTTOM_NAV_HEIGHT } from "../constants/layout";
 import { getMainNavItems, isNavItemActive } from "../constants/nav";
 import { useAuthStore } from "../store/auth.store";
+import { useToastStore } from "../store/toast.store";
 import { Publications } from "./Publications/Publications";
 
 function RootContent() {
@@ -17,6 +20,20 @@ function RootContent() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const navItems = getMainNavItems(isAuthenticated);
   useSwipeGestures();
+
+  // Barre du bas mobile : "Documents" reste accessible via le SideMenu, on
+  // libère un créneau pour un bouton central "Publier" (placeholder).
+  const bottomNavItems = navItems.filter((item) => item.path !== "/documents");
+  const publishIndex = isAuthenticated
+    ? Math.floor(bottomNavItems.length / 2)
+    : -1;
+
+  const handlePublish = () => {
+    // TODO: ouvrir la création de publication
+    useToastStore
+      .getState()
+      .addToast("Publier : bientôt disponible", "info");
+  };
 
   const guestHomeView =
     !isAuthenticated &&
@@ -40,19 +57,33 @@ function RootContent() {
         >
           <div className="max-w-5xl mx-auto h-full">
             <div className="flex justify-around items-center h-full">
-              {navItems.map(({ path, icon: Icon, shortLabel }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-field transition-colors ${
-                    isNavItemActive(location.pathname, path)
-                      ? "text-primary bg-primary/10 font-medium"
-                      : "text-base-content/50 hover:text-base-content/80"
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-xs">{shortLabel}</span>
-                </Link>
+              {bottomNavItems.map(({ path, icon: Icon, shortLabel }, index) => (
+                <Fragment key={path}>
+                  {index === publishIndex && (
+                    <button
+                      type="button"
+                      onClick={handlePublish}
+                      aria-label="Publier"
+                      className="flex flex-col items-center gap-1 px-2 text-base-content/50 hover:text-base-content/80 transition-colors"
+                    >
+                      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-content shadow-md">
+                        <Plus className="h-6 w-6" />
+                      </span>
+                      <span className="text-xs">Publier</span>
+                    </button>
+                  )}
+                  <Link
+                    to={path}
+                    className={`flex flex-col items-center gap-1 px-3 py-2 rounded-field transition-colors ${
+                      isNavItemActive(location.pathname, path)
+                        ? "text-primary bg-primary/10 font-medium"
+                        : "text-base-content/50 hover:text-base-content/80"
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="text-xs">{shortLabel}</span>
+                  </Link>
+                </Fragment>
               ))}
             </div>
           </div>

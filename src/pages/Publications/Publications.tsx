@@ -42,9 +42,9 @@ export function Publications({ showLogo = true }: PublicationsProps) {
     <div className="flex-1 flex flex-col bg-base-200 pb-6">
       <Header search="feed" />
 
-      {/* Démarcation sous le header : même hauteur que l'espace entre les
-          publications (bande base-200). */}
-      <div className="h-1.5 shrink-0" />
+      {/* Démarcation base-200 sous le header (1px de moins que l'espace
+          entre les publications). */}
+      <div className="h-1.25 shrink-0" />
 
       {showLogo && (
         <div className="bg-base-100 pt-2">

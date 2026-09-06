@@ -1,147 +1,130 @@
-import { useState } from "react";
-import { Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 import { Header } from "../components/Layout/Header";
-import { PageContainer } from "../components/Layout/PageContainer";
 import { Tabs } from "../components/Layout/Tabs";
+import { PeopleCard } from "../components/Network/PeopleCard";
+import { UserApi } from "../api/user.api";
+import { useAuthStore } from "../store/auth.store";
+import { useToastStore } from "../store/toast.store";
+import type { User } from "../types/user.type";
 
-import { RelationsSearchInput } from "../components/Network/RelationsSearchInput";
-import { CompanyList } from "../components/Network/CompanyList";
-import { ContactsList } from "../components/Network/ContactsList";
+function NavRow({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center justify-between border-b border-base-200 bg-base-100 px-4 py-4 text-left transition-colors last:border-b-0 hover:bg-base-200"
+    >
+      <span className="font-medium text-base-content">{label}</span>
+      <ArrowRight size={18} className="text-base-content/50" />
+    </button>
+  );
+}
 
-import { CompanyForm } from "../components/Network/CompanyForm";
-import { ContactForm } from "../components/Network/ContactForm";
-
-import type { Company } from "../types/company.types";
-import type { Contact } from "../types/contact.types";
-import type { CompanyFormData } from "../schemas/company.schemas";
-import type { ContactFormData } from "../schemas/contact.schemas";
+const notify = () =>
+  useToastStore.getState().addToast("Bientôt disponible", "info");
 
 export function Network() {
-  const [activeTab, setActiveTab] = useState<"companies" | "contacts">(
-    "companies",
+  const [tab, setTab] = useState<"grow" | "reconnect">("grow");
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const currentUser = useAuthStore((state) => state.user);
+
+  const [people, setPeople] = useState<User[]>([]);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
   );
 
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [contacts, setContacts] = useState<Contact[]>([]);
-
-  const [query, setQuery] = useState("");
-
-  const [showForm, setShowForm] = useState(false);
-  const [editingContact, setEditingContact] = useState<Contact | null>(null);
-
-  const companyNameById = Object.fromEntries(
-    companies.map((company) => [company.id, company.name]),
-  );
-
-  const filteredCompanies = companies.filter((company) =>
-    company.name.toLowerCase().includes(query.toLowerCase()),
-  );
-
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(query.toLowerCase()),
-  );
-
-  function deleteContact(id: number) {
-    setContacts((prev) => prev.filter((contact) => contact.id !== id));
-  }
-
-  function createCompany(data: CompanyFormData) {
-    const newCompany: Company = {
-      id: Math.max(0, ...companies.map((c) => c.id)) + 1,
-      name: data.name,
-      businessSector: data.businessSector,
-      website: data.website || null,
-      address: data.address || null,
-      contactsCount: 0,
-      candidaturesCount: 0,
-      latestApplicationStatus: null,
-    };
-    setCompanies((prev) => [...prev, newCompany]);
-    setShowForm(false);
-  }
-
-  function submitContact(data: ContactFormData) {
-    if (editingContact) {
-      setContacts((prev) =>
-        prev.map((c) =>
-          c.id === editingContact.id
-            ? { ...c, ...data, phone: data.phone || null }
-            : c,
-        ),
-      );
-    } else {
-      const newContact: Contact = {
-        id: Math.max(0, ...contacts.map((c) => c.id)) + 1,
-        ...data,
-        phone: data.phone || null,
-      };
-      setContacts((prev) => [...prev, newContact]);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setStatus("ready");
+      setPeople([]);
+      return;
     }
-    setShowForm(false);
-  }
+    let cancelled = false;
+    setStatus("loading");
+    UserApi.getAll()
+      .then((users) => {
+        if (cancelled) return;
+        setPeople(
+          users.filter((u) => String(u.id) !== String(currentUser?.id)),
+        );
+        setStatus("ready");
+      })
+      .catch((error) => {
+        console.error("Failed to load network suggestions", error);
+        if (!cancelled) setStatus("error");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, currentUser?.id]);
 
   return (
-    <>
+    <div className="flex-1 flex flex-col bg-base-200 pb-6">
       <Header />
 
-      <PageContainer className="py-3 space-y-3">
+      <div className="border-b border-base-200 bg-base-100 px-4 pt-3 pb-3">
         <Tabs
           items={[
-            { key: "companies", label: "Entreprises" },
-            { key: "contacts", label: "Contacts" },
+            { key: "grow", label: "Développer" },
+            { key: "reconnect", label: "Reprendre contact" },
           ]}
-          value={activeTab}
-          onChange={setActiveTab}
-          variant="onPage"
+          value={tab}
+          onChange={setTab}
+          variant="onMuted"
         />
+      </div>
 
-        <RelationsSearchInput value={query} onChange={setQuery} />
+      {tab === "reconnect" ? (
+        <p className="p-8 text-center text-sm text-base-content/60">
+          Bientôt : reprenez contact avec vos relations inactives.
+        </p>
+      ) : (
+        <>
+          <div className="mt-2 bg-base-100">
+            <NavRow label="Invitations" onClick={notify} />
+            <NavRow label="Gérer mon réseau" onClick={notify} />
+          </div>
 
-        {activeTab === "companies" ? (
-          <CompanyList companies={filteredCompanies} />
-        ) : (
-          <ContactsList
-            contacts={filteredContacts}
-            companyNameById={companyNameById}
-            onEdit={(contact) => {
-              setEditingContact(contact);
-              setShowForm(true);
-            }}
-            onDelete={deleteContact}
-          />
-        )}
+          <section className="mt-2 bg-base-100 px-4 py-4">
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-warning">
+              <span className="inline-block h-2.5 w-2.5 rounded-sm bg-warning" />
+              Premium
+            </p>
+            <h2 className="mt-1 text-lg font-bold text-base-content">
+              Personnes qui recrutent à votre poste
+            </h2>
 
-        <button
-          className="btn btn-primary w-11 h-11 rounded-full p-0 mx-auto flex items-center justify-center gap-2 sm:mx-0 sm:w-full sm:h-auto sm:rounded-btn sm:p-2"
-          onClick={() => {
-            setEditingContact(null);
-            setShowForm(true);
-          }}
-        >
-          <Plus size={18} />
-          <span className="hidden sm:inline">
-            {activeTab === "companies"
-              ? "Ajouter une entreprise"
-              : "Ajouter un contact"}
-          </span>
-        </button>
-
-        {showForm &&
-          (activeTab === "companies" ? (
-            <CompanyForm
-              onClose={() => setShowForm(false)}
-              onSubmit={createCompany}
-            />
-          ) : (
-            <ContactForm
-              initialData={editingContact}
-              companies={companies}
-              onClose={() => setShowForm(false)}
-              onSubmit={submitContact}
-            />
-          ))}
-      </PageContainer>
-    </>
+            {!isAuthenticated ? (
+              <p className="py-6 text-sm text-base-content/60">
+                Connectez-vous pour voir des suggestions.
+              </p>
+            ) : status === "loading" ? (
+              <p className="py-6 text-sm text-base-content/60">Chargement…</p>
+            ) : status === "error" ? (
+              <p className="py-6 text-sm text-base-content/60">
+                Impossible de charger les suggestions.
+              </p>
+            ) : people.length === 0 ? (
+              <p className="py-6 text-sm text-base-content/60">
+                Aucune suggestion pour l'instant.
+              </p>
+            ) : (
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {people.slice(0, 12).map((user, index) => (
+                  <PeopleCard
+                    key={user.id}
+                    user={user}
+                    index={index}
+                    onAction={notify}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        </>
+      )}
+    </div>
   );
 }

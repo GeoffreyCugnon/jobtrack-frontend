@@ -18,7 +18,7 @@ describe("SignupForm", () => {
     cy.get('[role="alert"]').should("have.length", 3);
     cy.contains("Nom trop court").should("be.visible");
     cy.contains("Email invalide").should("be.visible");
-    cy.contains("Le mot de passe doit contenir au moins 8 caractères").should(
+    cy.contains("une minuscule, une majuscule, un chiffre et un symbole").should(
       "be.visible",
     );
   });
@@ -28,7 +28,7 @@ describe("SignupForm", () => {
 
     cy.get('input[type="text"]').type("J");
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
-    cy.get('input[type="password"]').type("motdepasse123");
+    cy.get('input[type="password"]').type("Motdepasse123!");
     cy.contains("button", "Créer mon compte").click();
 
     cy.get('[role="alert"]')
@@ -41,7 +41,7 @@ describe("SignupForm", () => {
 
     cy.get('input[type="text"]').type("Jean Dupont");
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
-    cy.get('input[type="password"]').type("motdepasse123");
+    cy.get('input[type="password"]').type("Motdepasse123!");
     cy.contains("button", "Créer mon compte").click();
 
     cy.get('[role="alert"]').should("not.exist");

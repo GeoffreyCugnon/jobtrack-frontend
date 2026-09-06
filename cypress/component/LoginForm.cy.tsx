@@ -30,7 +30,7 @@ describe("LoginForm", () => {
 
     cy.get('[role="alert"]').should("have.length", 2);
     cy.contains("Email invalide").should("be.visible");
-    cy.contains("Le mot de passe doit contenir au moins 8 caractères").should(
+    cy.contains("une minuscule, une majuscule, un chiffre et un symbole").should(
       "be.visible",
     );
   });
@@ -51,7 +51,7 @@ describe("LoginForm", () => {
     cy.mount(<LoginForm />);
 
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
-    cy.get('input[type="password"]').type("motdepasse123");
+    cy.get('input[type="password"]').type("Motdepasse123!");
     cy.contains("button", "Se connecter").click();
 
     cy.get('[role="alert"]').should("not.exist");

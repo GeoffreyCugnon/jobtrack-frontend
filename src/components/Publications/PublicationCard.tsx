@@ -152,7 +152,7 @@ export default function PublicationCard({
                 img.naturalHeight / img.naturalWidth > TALL_IMAGE_RATIO,
               );
             }}
-            className="w-full object-cover"
+            className="block w-full object-cover"
           />
           {imageTall && !imageExpanded && (
             <button
@@ -166,8 +166,13 @@ export default function PublicationCard({
         </div>
       )}
 
-      {/* Une seule ligne : actions à gauche, résumé des réactions à droite. */}
-      <div className="mt-2 flex items-center justify-between border-t border-base-200 px-2 py-1 text-base-content/60">
+      {/* Une seule ligne : actions à gauche, résumé des réactions à droite.
+          Pas de marge haute quand une image la précède (elle colle l'image). */}
+      <div
+        className={`${
+          publication.imageUrl ? "" : "mt-2"
+        } flex items-center justify-between border-t border-base-200 px-2 py-1 text-base-content/60`}
+      >
         <div className="flex items-center">
           <button type="button" onClick={notify} className={actionBtn}>
             <ThumbsUp className="h-4 w-4" />

@@ -2,17 +2,19 @@ import { MemoryRouter } from "react-router";
 import { Offers } from "../../src/pages/Offers";
 import { MenuProvider } from "../../src/context/Menu/MenuContext";
 import { useAuthStore } from "../../src/store/auth.store";
+import { useSavedOffersStore } from "../../src/store/saved-offers.store";
 import mockOffers from "../../src/data/mockOffers.json";
 
 // `Offers` charge les offres via `OffersApi.getAll()` (`GET job-offering`) et
-// filtre le texte sur `?q=` (la barre de recherche est désormais celle du
-// header, qui navigue vers `/offers?q=...`). Ces specs testent la vue
-// connectée (onglets Recherche/Sauvegardées, alertes).
+// filtre le texte sur `?q=` (la barre de recherche est celle du header, qui
+// navigue vers `/offers?q=...`). Plus d'onglets : les offres sauvegardées ont
+// leur propre route `/offers/saved`.
 function mountOffers(entry = "/offers") {
   useAuthStore.setState({
     isAuthenticated: true,
     user: { id: "1", email: "c@t.dev", first_name: "C", last_name: "T" },
   });
+  useSavedOffersStore.setState({ savedIds: [] });
   cy.intercept("GET", "**/job-offering", { body: mockOffers }).as("offers");
   cy.mount(
     <MemoryRouter initialEntries={[entry]}>
@@ -27,15 +29,11 @@ function mountOffers(entry = "/offers") {
 describe("Offers", () => {
   afterEach(() => useAuthStore.getState().clearAuth());
 
-  it("affiche l'onglet Recherche actif avec toutes les offres par défaut", () => {
+  it("affiche toutes les offres par défaut", () => {
     mountOffers();
 
-    cy.contains("button", "Recherche").should(
-      "have.attr",
-      "aria-pressed",
-      "true",
-    );
     cy.contains(`${mockOffers.length} offres trouvées`).should("be.visible");
+    cy.contains("a", "Offres sauvegardées").should("be.visible");
   });
 
   it("filtre les offres via ?q=", () => {
@@ -56,7 +54,7 @@ describe("Offers", () => {
     );
   });
 
-  it("sauvegarde une offre et la retrouve dans l'onglet Sauvegardées", () => {
+  it("sauvegarde une offre : cœur en favori + compteur du lien mis à jour", () => {
     mountOffers("/offers?q=PixelWorks");
 
     cy.contains("Développeuse Frontend")
@@ -64,10 +62,12 @@ describe("Offers", () => {
       .find('button[aria-label="Sauvegarder l\'offre"]')
       .click();
 
-    cy.contains("button", "Sauvegardées").click();
+    cy.contains("Développeuse Frontend")
+      .closest("div.py-3")
+      .find('button[aria-label="Retirer des favoris"]')
+      .should("exist");
 
-    cy.contains("1 offre sauvegardée").should("be.visible");
-    cy.contains("Développeuse Frontend").should("be.visible");
+    cy.contains("a", "Offres sauvegardées").contains("1").should("be.visible");
   });
 
   it("masque une offre au clic sur la croix", () => {

@@ -1,19 +1,18 @@
 import { useRef, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Briefcase, Heart, RotateCw } from "lucide-react";
+import { Bookmark, Briefcase, ChevronRight, RotateCw } from "lucide-react";
 import { OfferCategorySelector } from "../components/Offers/OfferCategorySelector";
 import { OfferCategoryBanner } from "../components/Offers/OfferCategoryBanner";
 import { OfferList } from "../components/Offers/OfferList";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { Header } from "../components/Layout/Header";
 import { PageContainer } from "../components/Layout/PageContainer";
-import { SectionCard } from "../components/Layout/SectionCard";
-import { Tabs } from "../components/Layout/Tabs";
 import { offerCategories } from "../data/offerCategories";
 import { OffersApi } from "../api/offers.api";
 import { queryKeys } from "../api/query-keys";
 import { useAuthStore } from "../store/auth.store";
+import { useSavedOffersStore } from "../store/saved-offers.store";
 
 function pluralize(count: number, singular: string, plural: string) {
   return count > 1 ? plural : singular;
@@ -24,13 +23,12 @@ export function Offers() {
   // vers `/offers?q=...` : plus de barre de recherche propre à la page.
   const [searchParams] = useSearchParams();
   const searchQuery = (searchParams.get("q") ?? "").trim();
-  // En invité : pas d'onglets "Recherche/Sauvegardées" (rien à sauvegarder)
-  // ni d'alertes de catégorie.
+  // En invité : pas de sauvegarde d'offres ni d'alertes de catégorie.
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const savedIds = useSavedOffersStore((state) => state.savedIds);
+  const toggleSave = useSavedOffersStore((state) => state.toggle);
   // null = aucun filtre catégorie actif (toutes les offres affichées).
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"search" | "saved">("search");
-  const [savedIds, setSavedIds] = useState<number[]>([]);
   const [dismissedIds, setDismissedIds] = useState<number[]>([]);
   const [alertEnabled, setAlertEnabled] = useState(false);
   const pageTopRef = useRef<HTMLDivElement>(null);
@@ -48,14 +46,6 @@ export function Offers() {
   const activeCategoryData = offerCategories.find(
     (category) => category.key === activeCategory,
   );
-
-  const toggleSave = (id: number) => {
-    setSavedIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((savedId) => savedId !== id)
-        : [...prev, id],
-    );
-  };
 
   // Masquage local (le cache React Query reste la source) : l'offre rejetée
   // disparaît de la liste jusqu'au prochain rechargement des données.
@@ -93,14 +83,11 @@ export function Offers() {
     );
   });
 
-  const savedOffers = normalizedOffers.filter((offer) =>
-    savedIds.includes(offer.id),
-  );
   // Plus récent d'abord : postedHoursAgo croissant (petit nombre = publié il
   // y a peu de temps).
-  const visibleOffers = [
-    ...(activeTab === "search" ? searchedOffers : savedOffers),
-  ].sort((a, b) => a.postedHoursAgo - b.postedHoursAgo);
+  const visibleOffers = [...searchedOffers].sort(
+    (a, b) => a.postedHoursAgo - b.postedHoursAgo,
+  );
 
   const searchResultsLabel = loadError
     ? "Chargement impossible"
@@ -134,107 +121,73 @@ export function Offers() {
       <PageContainer className="pt-3 flex-1 flex flex-col">
         <div className="flex-1 flex flex-col">
           <div className="-mx-4 sm:mx-0 flex-1 flex flex-col">
-            <div className="flex flex-col divide-y divide-base-300">
+            <div className="bg-base-100">
               {isAuthenticated && (
-                <div className="rounded-none sm:rounded-box overflow-hidden">
-                  <div className="bg-base-200 shadow-sm px-4 pt-2 pb-3">
-                    <Tabs<"search" | "saved">
-                      items={[
-                        { key: "search", label: "Recherche" },
-                        { key: "saved", label: "Sauvegardées" },
-                      ]}
-                      value={activeTab}
-                      onChange={setActiveTab}
-                      variant="onMuted"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "search" && (
-                // Un seul bloc englobant bannière + badges + résultats : le
-                // `position: sticky` reste "collé" tant qu'on scrolle dans les
-                // limites de son parent direct. En englobant aussi les résultats
-                // (bien plus grands que le viewport), bannière et badges restent
-                // collés sur toute la hauteur de la liste.
-                <div className="bg-base-100">
-                  {/* top-16 = hauteur du Header (h-16, sticky top-0 z-30) :
-                      la bannière se colle juste en dessous, jamais dessus. */}
-                  <div className="sticky top-16 z-20">
-                    <OfferCategoryBanner
-                      label={bannerLabel}
-                      resultsLabel={searchResultsLabel}
-                      alertEnabled={alertEnabled}
-                      onAlertToggle={setAlertEnabled}
-                      showAlertToggle={isAuthenticated && !!activeCategoryData}
-                    />
-                  </div>
-                  {/* top-30 (120px) = header (64px) + bannière (56px, cf.
-                      OFFER_CATEGORY_BANNER_HEIGHT) : les badges se collent
-                      juste sous la bannière. */}
-                  <div className="sticky top-30 z-20 bg-base-100">
-                    <OfferCategorySelector
-                      active={activeCategory}
-                      onChange={handleCategoryChange}
-                    />
-                  </div>
-
-                  <div className="border-t border-base-300">
-                    {loading ? (
-                      <div className="p-4 text-sm text-base-content/60">
-                        Chargement des offres...
-                      </div>
-                    ) : loadError ? (
-                      offersErrorState
-                    ) : visibleOffers.length === 0 ? (
-                      <div className="p-4">
-                        <EmptyState
-                          icon={Briefcase}
-                          message="Aucune offre dans cette catégorie pour l'instant."
-                        />
-                      </div>
-                    ) : (
-                      <OfferList
-                        offers={visibleOffers}
-                        savedIds={savedIds}
-                        showActions={isAuthenticated}
-                        onToggleSave={toggleSave}
-                        onDismiss={dismissOffer}
-                      />
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "saved" && (
-                <SectionCard
-                  title={`${visibleOffers.length} ${pluralize(visibleOffers.length, "offre sauvegardée", "offres sauvegardées")}`}
-                  collapsible={false}
+                <Link
+                  to="/offers/saved"
+                  className="flex items-center gap-3 border-b border-base-200 px-4 py-3.5 text-sm font-semibold text-base-content transition-colors hover:bg-base-200"
                 >
-                  {loading ? (
-                    <div className="p-4 text-sm text-base-content/60">
-                      Chargement des offres...
-                    </div>
-                  ) : loadError ? (
-                    offersErrorState
-                  ) : visibleOffers.length === 0 ? (
-                    <EmptyState
-                      icon={Heart}
-                      message="Aucune offre sauvegardée pour l'instant. Cliquez sur le cœur pour en ajouter !"
-                    />
-                  ) : (
-                    <div className="-m-4">
-                      <OfferList
-                        offers={visibleOffers}
-                        savedIds={savedIds}
-                        showActions={isAuthenticated}
-                        onToggleSave={toggleSave}
-                        onDismiss={dismissOffer}
-                      />
-                    </div>
+                  <Bookmark className="h-5 w-5 text-primary" />
+                  <span className="flex-1">Offres sauvegardées</span>
+                  {savedIds.length > 0 && (
+                    <span className="badge badge-info badge-sm font-semibold">
+                      {savedIds.length}
+                    </span>
                   )}
-                </SectionCard>
+                  <ChevronRight className="h-4 w-4 text-base-content/50" />
+                </Link>
               )}
+
+              {/* Un seul bloc englobant bannière + badges + résultats : le
+                  `position: sticky` reste "collé" tant qu'on scrolle dans les
+                  limites de son parent direct. En englobant aussi les résultats
+                  (bien plus grands que le viewport), bannière et badges restent
+                  collés sur toute la hauteur de la liste. */}
+              {/* top-16 = hauteur du Header (h-16, sticky top-0 z-30) :
+                  la bannière se colle juste en dessous, jamais dessus. */}
+              <div className="sticky top-16 z-20">
+                <OfferCategoryBanner
+                  label={bannerLabel}
+                  resultsLabel={searchResultsLabel}
+                  alertEnabled={alertEnabled}
+                  onAlertToggle={setAlertEnabled}
+                  showAlertToggle={isAuthenticated && !!activeCategoryData}
+                />
+              </div>
+              {/* top-30 (120px) = header (64px) + bannière (56px, cf.
+                  OFFER_CATEGORY_BANNER_HEIGHT) : les badges se collent
+                  juste sous la bannière. */}
+              <div className="sticky top-30 z-20 bg-base-100">
+                <OfferCategorySelector
+                  active={activeCategory}
+                  onChange={handleCategoryChange}
+                />
+              </div>
+
+              <div className="border-t border-base-300">
+                {loading ? (
+                  <div className="p-4 text-sm text-base-content/60">
+                    Chargement des offres...
+                  </div>
+                ) : loadError ? (
+                  offersErrorState
+                ) : visibleOffers.length === 0 ? (
+                  <div className="p-4">
+                    <EmptyState
+                      icon={Briefcase}
+                      message="Aucune offre dans cette catégorie pour l'instant."
+                    />
+                  </div>
+                ) : (
+                  <OfferList
+                    offers={visibleOffers}
+                    savedIds={savedIds}
+                    showActions={isAuthenticated}
+                    onToggleSave={toggleSave}
+                    onDismiss={dismissOffer}
+                  />
+                )}
+              </div>
             </div>
 
             <div className="flex-1 bg-base-100" />

@@ -10,6 +10,7 @@ import { CandidatureDetail } from "./pages/Dashboard/CandidatureDetail";
 import { Entretiens } from "./pages/Dashboard/Entretiens";
 import { EntretienDetail } from "./pages/Dashboard/EntretienDetail";
 import { Offers } from "./pages/Offers";
+import { SavedOffers } from "./pages/SavedOffers";
 import { OfferDetail } from "./pages/OfferDetail";
 import { Network } from "./pages/Network";
 import { ManageNetwork } from "./pages/ManageNetwork";
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
       { path: "entretiens", Component: Entretiens },
       { path: "entretiens/:id", Component: EntretienDetail },
       { path: "offers", Component: Offers },
+      { path: "offers/saved", Component: SavedOffers },
       { path: "offers/:id", Component: OfferDetail },
       { path: "network", Component: Network },
       { path: "network/manage", Component: ManageNetwork },

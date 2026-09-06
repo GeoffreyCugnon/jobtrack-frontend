@@ -30,6 +30,12 @@ export class UserApi {
     return Array.isArray(data) ? data : [];
   }
 
+  /** `GET /user/:id` (protégé). `null` si introuvable. */
+  static async getById(id: number | string): Promise<User | null> {
+    const { data } = await api.get<User | null>(`user/${id}`);
+    return data ?? null;
+  }
+
   /**
    * Met à jour l'avatar de l'utilisateur courant (`PATCH /user/avatar`).
    * `avatarUrl` : URL https ou data URL d'image. Renvoie l'utilisateur à jour.

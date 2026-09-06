@@ -1,0 +1,87 @@
+import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  Building2,
+  CalendarDays,
+  Newspaper,
+  UserRound,
+  Users,
+  UsersRound,
+  type LucideIcon,
+} from "lucide-react";
+
+import { Header } from "../components/Layout/Header";
+import { ConnectionApi } from "../api/connection.api";
+import { queryKeys } from "../api/query-keys";
+import { useToastStore } from "../store/toast.store";
+
+const notify = () =>
+  useToastStore.getState().addToast("Bientôt disponible", "info");
+
+function ManageRow({
+  icon: Icon,
+  label,
+  count,
+  onClick,
+}: {
+  icon: LucideIcon;
+  label: string;
+  count?: number;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center gap-4 border-b border-base-200 px-4 py-4 text-left transition-colors last:border-b-0 hover:bg-base-200"
+    >
+      <Icon className="h-6 w-6 shrink-0 text-base-content/80" />
+      <span className="flex-1 font-semibold text-base-content">{label}</span>
+      {count !== undefined && (
+        <span className="badge badge-info badge-sm font-semibold">{count}</span>
+      )}
+    </button>
+  );
+}
+
+export function ManageNetwork() {
+  const navigate = useNavigate();
+
+  const { data: connections } = useQuery({
+    queryKey: queryKeys.connections.all,
+    queryFn: () => ConnectionApi.list(),
+  });
+
+  return (
+    <div className="flex-1 flex flex-col bg-base-200">
+      <Header />
+
+      <div className="flex items-center gap-3 border-b border-base-200 bg-base-100 px-4 py-4">
+        <button
+          type="button"
+          aria-label="Retour"
+          onClick={() => navigate("/network")}
+          className="text-base-content/70 hover:text-base-content"
+        >
+          <ArrowLeft size={22} />
+        </button>
+        <h1 className="text-xl font-bold text-base-content">Gérer mon réseau</h1>
+      </div>
+
+      <div className="bg-base-100">
+        <ManageRow
+          icon={Users}
+          label="Relations"
+          count={connections?.connections.length}
+          onClick={() => navigate("/network/relations")}
+        />
+        <ManageRow icon={UserRound} label="Suivi et abonnés" onClick={notify} />
+        <ManageRow icon={UsersRound} label="Groupes" onClick={notify} />
+        <ManageRow icon={CalendarDays} label="Événements" onClick={notify} />
+        <ManageRow icon={Building2} label="Pages" onClick={notify} />
+        <ManageRow icon={Newspaper} label="Newsletters" onClick={notify} />
+      </div>
+    </div>
+  );
+}

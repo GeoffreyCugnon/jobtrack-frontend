@@ -12,6 +12,8 @@ import { EntretienDetail } from "./pages/Dashboard/EntretienDetail";
 import { Offers } from "./pages/Offers";
 import { OfferDetail } from "./pages/OfferDetail";
 import { Network } from "./pages/Network";
+import { ManageNetwork } from "./pages/ManageNetwork";
+import { NetworkRelations } from "./pages/NetworkRelations";
 import { MemberProfile } from "./pages/MemberProfile";
 import { Documents } from "./pages/Documents/Documents";
 import { CVPreview } from "./pages/Documents/CVPreview";
@@ -57,6 +59,8 @@ export const router = createBrowserRouter([
       { path: "offers", Component: Offers },
       { path: "offers/:id", Component: OfferDetail },
       { path: "network", Component: Network },
+      { path: "network/manage", Component: ManageNetwork },
+      { path: "network/relations", Component: NetworkRelations },
       { path: "members/:id", Component: MemberProfile },
       {
         path: "documents",

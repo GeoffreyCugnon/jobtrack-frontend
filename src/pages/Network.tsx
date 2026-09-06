@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Check, X } from "lucide-react";
 
@@ -109,6 +110,7 @@ const ACTION_LABEL: Record<ConnectionStatus, string> = {
 };
 
 export function Network() {
+  const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const currentUser = useAuthStore((state) => state.user);
   const queryClient = useQueryClient();
@@ -195,7 +197,7 @@ export function Network() {
         <NavRow
           label="Gérer mon réseau"
           count={connections?.connections.length}
-          onClick={() => toast("Bientôt disponible")}
+          onClick={() => navigate("/network/manage")}
         />
       </div>
 

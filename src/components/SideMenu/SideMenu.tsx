@@ -10,6 +10,7 @@ import { useAuthStore } from "../../store/auth.store";
 import { useToastStore } from "../../store/toast.store";
 import { AuthApi } from "../../api/auth.api";
 import { getUserDisplay } from "../../utils/user-display";
+import { POST_LOGOUT_KEY } from "../../constants/auth";
 
 interface SideMenuProps {
   open: boolean;
@@ -54,6 +55,11 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
     } finally {
       useAuthStore.getState().clearAuth();
       useToastStore.getState().addToast("Déconnexion réussie", "success");
+      try {
+        sessionStorage.setItem(POST_LOGOUT_KEY, String(Date.now()));
+      } catch {
+        // sessionStorage indisponible : on perd juste la temporisation.
+      }
       onClose();
       navigate("/auth");
     }

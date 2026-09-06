@@ -1,11 +1,17 @@
-import { useState } from "react";
-import { Link } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { FileText, LayoutDashboard, Target } from "lucide-react";
 import { AuthLogo } from "../components/Auth/AuthLogo";
 import { AuthTabs } from "../components/Auth/AuthTabs";
 import { LoginForm } from "../components/Auth/LoginForm";
 import { SignupForm } from "../components/Auth/SignupForm";
 import { RecoveryPasswordForm } from "../components/Auth/RecoveryPasswordForm";
+import { useAuthStore } from "../store/auth.store";
+import {
+  POST_LOGOUT_DELAY_MS,
+  POST_LOGOUT_KEY,
+  POST_LOGOUT_STALE_MS,
+} from "../constants/auth";
 
 const HERO_FEATURES = [
   { icon: Target, label: "Centralisez vos candidatures et vos offres suivies" },
@@ -16,8 +22,71 @@ const HERO_FEATURES = [
   },
 ];
 
+const armedKey = `${POST_LOGOUT_KEY}_armed`;
+const readStorage = (key: string): string | null => {
+  try {
+    return sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+const clearPostLogout = () => {
+  try {
+    sessionStorage.removeItem(POST_LOGOUT_KEY);
+    sessionStorage.removeItem(armedKey);
+  } catch {
+    /* ignore */
+  }
+};
+
 export function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup" | "recovery">("login");
+  const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  // true dès que CE montage a armé la temporisation : permet de distinguer
+  // un rechargement de la page (nouveau montage, ref repartie à false).
+  const armedThisMount = useRef(false);
+
+  // Fenêtre post-déconnexion : on laisse `POST_LOGOUT_DELAY_MS` sur `/auth`
+  // puis on renvoie vers l'accueil. Un rechargement de la page pendant la
+  // fenêtre renvoie immédiatement.
+  useEffect(() => {
+    if (isAuthenticated) {
+      clearPostLogout();
+      return;
+    }
+    const raw = readStorage(POST_LOGOUT_KEY);
+    if (!raw) return;
+
+    // Marqueur périmé (pas une vraie déconnexion récente) : on nettoie sans
+    // rediriger, pour ne pas bloquer l'accès au formulaire.
+    if (Date.now() - Number(raw) > POST_LOGOUT_STALE_MS) {
+      clearPostLogout();
+      return;
+    }
+
+    if (readStorage(armedKey) === "1" && !armedThisMount.current) {
+      // Rechargement de `/auth` pendant la fenêtre -> accueil immédiat.
+      clearPostLogout();
+      navigate("/", { replace: true });
+      return;
+    }
+
+    if (readStorage(armedKey) !== "1") {
+      try {
+        sessionStorage.setItem(armedKey, "1");
+      } catch {
+        /* ignore */
+      }
+      armedThisMount.current = true;
+    }
+
+    const timer = window.setTimeout(() => {
+      clearPostLogout();
+      navigate("/", { replace: true });
+    }, POST_LOGOUT_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen w-full bg-base-200 lg:flex">

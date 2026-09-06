@@ -7,6 +7,10 @@ function axiosClient(): AxiosInstance {
   const api = axios.create({
     baseURL: `${import.meta.env.VITE_API_URL}/`,
     withCredentials: true,
+    // Sans timeout, une requête qui n'aboutit pas (API ou DB injoignable)
+    // reste bloquée indéfiniment côté client. 15 s : au-delà on rejette et
+    // l'appelant peut afficher une erreur / proposer un réessai.
+    timeout: 15000,
   });
 
   //REQUEST INTERCEPTOR

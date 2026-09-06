@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
-import { Briefcase, Heart } from "lucide-react";
+import { Briefcase, Heart, RotateCw } from "lucide-react";
 import { OfferSearchBar } from "../components/Offers/OfferSearchBar";
 import { OfferCategorySelector } from "../components/Offers/OfferCategorySelector";
 import { OfferCategoryBanner } from "../components/Offers/OfferCategoryBanner";
@@ -33,23 +33,27 @@ export function Offers() {
   const [alertEnabled, setAlertEnabled] = useState(false);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const pageTopRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const loadOffers = async () => {
-      try {
-        const data = await OffersApi.getAll();
-        setOffers(data);
-      } catch (error) {
-        console.error("Failed to load offers", error);
-        setOffers([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void loadOffers();
+  const loadOffers = useCallback(async () => {
+    setLoading(true);
+    setLoadError(false);
+    try {
+      const data = await OffersApi.getAll();
+      setOffers(data);
+    } catch (error) {
+      console.error("Failed to load offers", error);
+      setOffers([]);
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    void loadOffers();
+  }, [loadOffers]);
 
   const activeCategoryData = offerCategories.find(
     (category) => category.key === activeCategory,
@@ -104,10 +108,31 @@ export function Offers() {
     ...(activeTab === "search" ? searchedOffers : savedOffers),
   ].sort((a, b) => a.postedHoursAgo - b.postedHoursAgo);
 
-  const searchResultsLabel = `${searchedOffers.length} ${pluralize(searchedOffers.length, "offre trouvée", "offres trouvées")}`;
+  const searchResultsLabel = loadError
+    ? "Chargement impossible"
+    : `${searchedOffers.length} ${pluralize(searchedOffers.length, "offre trouvée", "offres trouvées")}`;
   const bannerLabel = activeCategoryData
     ? activeCategoryData.label
     : "Toutes les offres";
+
+  // Échec de chargement (API/DB injoignable) : distinct de « 0 offre trouvée »,
+  // avec un bouton pour relancer l'appel.
+  const offersErrorState = (
+    <div className="flex flex-col items-center gap-3 p-6">
+      <EmptyState
+        icon={Briefcase}
+        message="Impossible de charger les offres pour le moment."
+      />
+      <button
+        type="button"
+        onClick={() => void loadOffers()}
+        className="btn btn-sm btn-outline gap-2"
+      >
+        <RotateCw className="w-4 h-4" />
+        Réessayer
+      </button>
+    </div>
+  );
 
   return (
     <div className="flex-1 flex flex-col" ref={pageTopRef}>
@@ -187,6 +212,8 @@ export function Offers() {
                       <div className="p-4 text-sm text-base-content/60">
                         Chargement des offres...
                       </div>
+                    ) : loadError ? (
+                      offersErrorState
                     ) : visibleOffers.length === 0 ? (
                       <div className="p-4">
                         <EmptyState
@@ -215,6 +242,8 @@ export function Offers() {
                     <div className="p-4 text-sm text-base-content/60">
                       Chargement des offres...
                     </div>
+                  ) : loadError ? (
+                    offersErrorState
                   ) : visibleOffers.length === 0 ? (
                     <EmptyState
                       icon={Heart}

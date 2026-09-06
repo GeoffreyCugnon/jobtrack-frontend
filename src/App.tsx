@@ -5,6 +5,7 @@ import Toast from "./components/Overlay/Toast";
 import { MenuProvider } from "./context/Menu/MenuContext";
 import { AuthApi } from "./api/auth.api";
 import { useAuthStore } from "./store/auth.store";
+import { clearSessionHint, hasSessionHint } from "./utils/session-hint";
 
 export default function App() {
   // Le store d'auth est en mémoire : au chargement (ou après un refresh), on
@@ -16,13 +17,22 @@ export default function App() {
     if (started.current) return; // évite le double appel StrictMode en dev
     started.current = true;
 
+    // Aucune session connue (jamais connecté, ou déconnecté) : inutile de
+    // tenter un refresh qui répondra 401.
+    if (!hasSessionHint()) {
+      setRestoring(false);
+      return;
+    }
+
     AuthApi.refresh()
       .then(({ accessToken, user }) => {
         useAuthStore.getState().setUser(user);
         useAuthStore.getState().setAccessToken(accessToken);
       })
       .catch(() => {
-        // Pas de session valide -> on reste en invité.
+        // Session expirée / invalide -> invité, et on oublie l'indice pour
+        // ne plus retenter au prochain boot.
+        clearSessionHint();
       })
       .finally(() => setRestoring(false));
   }, []);

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { User } from "../types/user.type";
+import { clearSessionHint, markSessionHint } from "../utils/session-hint";
 
 type AuthState = {
   user: User | null;
@@ -16,9 +17,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   isAuthenticated: false,
   setUser: (user) => set({ user }),
-  setAccessToken: (token) =>
-    set({ accessToken: token, isAuthenticated: !!token }),
+  setAccessToken: (token) => {
+    set({ accessToken: token, isAuthenticated: !!token });
+    if (token) markSessionHint();
+    else clearSessionHint();
+  },
   setAuthenticated: (value) => set({ isAuthenticated: value }),
-  clearAuth: () =>
-    set({ user: null, accessToken: null, isAuthenticated: false }),
+  clearAuth: () => {
+    set({ user: null, accessToken: null, isAuthenticated: false });
+    clearSessionHint();
+  },
 }));

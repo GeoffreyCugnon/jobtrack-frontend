@@ -57,6 +57,16 @@ Un vrai flux d'auth relié au backend a été mis en place :
 
 **Audit v3 — code mort supprimé :** le cluster CRUD `components/Network/{Card,CompanyCard,CompanyForm,CompanyList,ContactCard,ContactForm,ContactsList,RelationsSearchInput}` + `schemas/{company,contact}.schemas.ts` + `types/{company,contact}.types.ts` (jamais montés par aucune page) ont été supprimés. `components/Network/` ne contient plus que `PeopleCard.tsx`.
 
+## Page Réseau — mise en relation
+
+`pages/Network.tsx` : plus d'onglets ni de mention « Premium ». Charge `UserApi.getAll()` (suggestions) + `ConnectionApi.list()` (`GET /connection` → `{ connections, incoming, outgoing }`).
+
+- `api/connection.api.ts` : `ConnectionApi.{list,request,accept,remove}` + `connectionStatusByUser(list)` → `Map<userId, "none"|"pending_out"|"pending_in"|"connected">`. Clé RQ `queryKeys.connections.all`.
+- Les mutations (`useMutation`) invalident `queryKeys.connections.all` au succès + toast.
+- Section « Invitations reçues » en tête quand `incoming.length > 0` (Accepter / Ignorer).
+- Les cartes de suggestion (`PeopleCard`, props `actionLabel` / `actionDisabled`) reflètent l'état ; les personnes déjà en relation ou en attente de ma réponse sont exclues du pool de suggestions.
+- `pages/MemberProfile.tsx` : bouton « Se connecter » branché sur la même logique.
+
 Le type d'une offre est **unique** : `src/types/offer.type.ts` (`Offer`). Il était dupliqué à l'identique dans `api/offers.api.ts` (`OfferApiItem`), `data/offerCategories.ts` (`CategoryOffer`, jamais importé) et `components/Offers/OfferList.tsx` — ces copies ont été remplacées par un import de `Offer`. `OffersApi` réexporte `Offer` par commodité.
 
 ## Skill existante à réutiliser

@@ -11,7 +11,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-import { Header } from "../components/Layout/Header";
 import { ConnectionApi } from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";
 import { useToastStore } from "../store/toast.store";
@@ -55,9 +54,7 @@ export function ManageNetwork() {
 
   return (
     <div className="flex-1 flex flex-col bg-base-200">
-      <Header />
-
-      <div className="flex items-center gap-3 border-b border-base-200 bg-base-100 px-4 py-4">
+      <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-base-200 bg-base-100 px-4 py-4">
         <button
           type="button"
           aria-label="Retour"

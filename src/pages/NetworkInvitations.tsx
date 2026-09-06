@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Check, RotateCw, Settings, UserPlus, X } from "lucide-react";
 
-import { Header } from "../components/Layout/Header";
 import { Avatar } from "../components/UI/Avatar";
 import { EmptyState } from "../components/Layout/EmptyState";
 import {
@@ -64,9 +63,7 @@ export function NetworkInvitations() {
 
   return (
     <div className="flex-1 flex flex-col bg-base-200">
-      <Header />
-
-      <div className="flex items-center gap-3 border-b border-base-200 bg-base-100 px-4 py-4">
+      <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-base-200 bg-base-100 px-4 py-4">
         <button
           type="button"
           aria-label="Retour"

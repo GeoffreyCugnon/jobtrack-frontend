@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { useMessaging } from "../../context/Messaging/useMessaging";
-import { CONVERSATIONS } from "../../constants/conversations";
+import {
+  CONVERSATIONS,
+  type Conversation,
+  type ConversationMessage,
+} from "../../constants/conversations";
 import { MessagingOverlay } from "./MessagingOverlay";
 import { MessagingHeader } from "./MessagingHeader";
 import { ConversationItem } from "./ConversationItem";
 import { ConversationThread } from "./ConversationThread";
 import { EmptyState } from "../Layout/EmptyState";
+
+function nowLabel(): string {
+  return new Date().toLocaleTimeString("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 export function MessagingPanel() {
   const {
@@ -26,14 +37,32 @@ export function MessagingPanel() {
   // ici on masque juste l'item de cette liste.
   const [archivedIds, setArchivedIds] = useState<string[]>([]);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
+  // Messages envoyés pendant la session : la messagerie n'a pas encore de
+  // backend, on les garde en mémoire et on les fusionne au fil mock.
+  const [sentByConv, setSentByConv] = useState<
+    Record<string, ConversationMessage[]>
+  >({});
+
+  const withSent = (conv: Conversation): Conversation => {
+    const sent = sentByConv[conv.id];
+    if (!sent?.length) return conv;
+    const last = sent[sent.length - 1];
+    return {
+      ...conv,
+      messages: [...conv.messages, ...sent],
+      lastMessage: last.text,
+      time: last.time,
+    };
+  };
 
   const visibleConversations = CONVERSATIONS.filter(
-    (conv) => !archivedIds.includes(conv.id) && !deletedIds.includes(conv.id)
-  );
+    (conv) => !archivedIds.includes(conv.id) && !deletedIds.includes(conv.id),
+  ).map(withSent);
 
-  const activeConversation = CONVERSATIONS.find(
-    (conv) => conv.id === activeConversationId
+  const baseActive = CONVERSATIONS.find(
+    (conv) => conv.id === activeConversationId,
   );
+  const activeConversation = baseActive ? withSent(baseActive) : undefined;
 
   const handleArchive = (id: string) => {
     setArchivedIds((prev) => [...prev, id]);
@@ -43,6 +72,23 @@ export function MessagingPanel() {
   const handleDelete = (id: string) => {
     setDeletedIds((prev) => [...prev, id]);
     setConversationUnread(id, false);
+  };
+
+  const handleSend = (text: string) => {
+    if (!activeConversationId) return;
+    setSentByConv((prev) => {
+      const current = prev[activeConversationId] ?? [];
+      const lastId =
+        current.at(-1)?.id ?? baseActive?.messages.at(-1)?.id ?? 0;
+      return {
+        ...prev,
+        [activeConversationId]: [
+          ...current,
+          { id: lastId + 1, from: "me", text, time: nowLabel() },
+        ],
+      };
+    });
+    setConversationUnread(activeConversationId, false);
   };
 
   // TODO: ouvrir le flow de composition d'une nouvelle conversation
@@ -64,6 +110,7 @@ export function MessagingPanel() {
             conversation={activeConversation}
             onBack={goToConversationList}
             onClose={closeMessaging}
+            onSend={handleSend}
           />
         ) : (
           <>
@@ -95,7 +142,7 @@ export function MessagingPanel() {
                     onToggleUnread={() =>
                       setConversationUnread(
                         conv.id,
-                        !unreadConversationIds.includes(conv.id)
+                        !unreadConversationIds.includes(conv.id),
                       )
                     }
                     onArchive={() => handleArchive(conv.id)}

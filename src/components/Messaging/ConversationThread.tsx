@@ -1,4 +1,5 @@
-import { ArrowLeft, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, Send, X } from "lucide-react";
 import type { Conversation } from "../../constants/conversations";
 import { Avatar } from "../UI/Avatar";
 
@@ -6,13 +7,36 @@ interface ConversationThreadProps {
   conversation: Conversation;
   onBack: () => void;
   onClose: () => void;
+  onSend: (text: string) => void;
 }
 
 export function ConversationThread({
   conversation,
   onBack,
   onClose,
+  onSend,
 }: ConversationThreadProps) {
+  const [draft, setDraft] = useState("");
+  const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Descend en bas du fil à l'ouverture d'une conversation et à chaque
+  // nouveau message.
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: "end" });
+  }, [conversation.id, conversation.messages.length]);
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const text = draft.trim();
+    if (!text) return;
+    onSend(text);
+    setDraft("");
+    // On garde le focus dans le champ : le clavier mobile reste ouvert pour
+    // enchaîner les messages.
+    inputRef.current?.focus();
+  };
+
   return (
     <div className="flex flex-col h-[calc(100%)]">
       <div className="flex items-center justify-between gap-2 border-b border-base-content/10 px-3 py-4">
@@ -64,7 +88,33 @@ export function ConversationThread({
             </span>
           </div>
         ))}
+        <div ref={endRef} />
       </div>
+
+      <form
+        onSubmit={submit}
+        className="flex items-center gap-2 border-t border-base-content/10 bg-base-100 px-3 py-2.5"
+      >
+        <input
+          ref={inputRef}
+          type="text"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="Écrire un message…"
+          aria-label="Écrire un message"
+          enterKeyHint="send"
+          autoComplete="off"
+          className="input input-sm flex-1 rounded-full bg-base-200"
+        />
+        <button
+          type="submit"
+          disabled={!draft.trim()}
+          aria-label="Envoyer le message"
+          className="btn btn-primary btn-sm btn-circle shrink-0"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </form>
     </div>
   );
 }

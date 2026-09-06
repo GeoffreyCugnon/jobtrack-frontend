@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router";
 import { Header } from "../../components/Layout/Header";
-import { LogoMark } from "../../components/Auth/LogoMark";
+import { AuthLogo } from "../../components/Auth/AuthLogo";
 import PublicationCard from "../../components/Publications/PublicationCard";
 
 import publications from "../../data/publications";
@@ -32,11 +32,7 @@ export function Publications({ showLogo = true }: PublicationsProps) {
         <Header search="feed" />
 
         <main className="flex-1 overflow-y-auto p-4 space-y-4">
-          {showLogo && (
-            <div className="flex justify-center py-1">
-              <LogoMark className="w-40 text-base-content" />
-            </div>
-          )}
+          {showLogo && <AuthLogo size="lg" />}
 
           {visiblePublications.length === 0 ? (
             <p className="py-8 text-center text-sm text-base-content/60">

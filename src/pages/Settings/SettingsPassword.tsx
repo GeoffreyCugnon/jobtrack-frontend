@@ -8,6 +8,8 @@ import { FieldError } from "../../components/Auth/FieldError";
 import { Header } from "../../components/Layout/Header";
 import { type ChangePasswordValues, changePasswordSchema } from "../../schemas/settings.schemas";
 import { INPUT_CLASS } from "../../constants/styles";
+import { UserApi } from "../../api/user.api";
+import axios from "axios";
 
 export function SettingsPassword() {
   const navigate = useNavigate();
@@ -20,13 +22,23 @@ export function SettingsPassword() {
     formState: { errors, isSubmitting },
   } = useForm<ChangePasswordValues>({ resolver: zodResolver(changePasswordSchema) });
 
-  const onSubmit = async () => {
+  const onSubmit = async (values: ChangePasswordValues) => {
     setServerError(null);
     try {
-      // TODO: brancher sur PATCH /user/password
+      await UserApi.changePassword({
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+      });
       successModalRef.current?.showModal();
-    } catch {
-      setServerError("Une erreur est survenue. Vérifie ton mot de passe actuel.");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        setServerError(
+          "Une erreur est survenue. Vérifie ton mot de passe actuel.",
+        );
+      } else {
+        console.error("Change password failed", error);
+        setServerError("Une erreur est survenue. Réessaie plus tard.");
+      }
     }
   };
 

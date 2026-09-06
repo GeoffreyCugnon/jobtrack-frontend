@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { UserApi } from "../../api/user.api";
+import { useToastStore } from "../../store/toast.store";
 import {
   Bell,
   Globe,
@@ -16,7 +18,8 @@ import { SettingsModal } from "../../components/Settings/SettingsModal";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";
-import { currentUser } from "../../data/currentUser";
+import { useAuthStore } from "../../store/auth.store";
+import { getUserDisplay } from "../../utils/user-display";
 import { INPUT_CLASS } from "../../constants/styles";
 
 interface UserSettings {
@@ -33,16 +36,29 @@ export function Settings() {
   });
   const [twoFA] = useState(false);
 
-  const user = currentUser;
+  const user = getUserDisplay(useAuthStore((state) => state.user));
 
   const aboutModalRef = useRef<HTMLDialogElement>(null);
   const deleteModalRef = useRef<HTMLDialogElement>(null);
 
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDeleteAccount = () => {
-    // TODO: brancher sur DELETE /user/account
-    deleteModalRef.current?.close();
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await UserApi.deleteAccount();
+      useAuthStore.getState().clearAuth();
+      useToastStore.getState().addToast("Compte supprimé", "success");
+      navigate("/auth");
+    } catch (error) {
+      console.error("Delete account failed", error);
+      useToastStore
+        .getState()
+        .addToast("La suppression du compte a échoué.", "error");
+      setIsDeleting(false);
+      deleteModalRef.current?.close();
+    }
   };
 
   return (
@@ -182,10 +198,10 @@ export function Settings() {
             </form>
             <button
               className="btn btn-error"
-              disabled={deleteConfirmText !== "SUPPRIMER"}
+              disabled={deleteConfirmText !== "SUPPRIMER" || isDeleting}
               onClick={handleDeleteAccount}
             >
-              Supprimer définitivement
+              {isDeleting ? "Suppression..." : "Supprimer définitivement"}
             </button>
           </div>
         </div>

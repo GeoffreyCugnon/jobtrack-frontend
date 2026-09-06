@@ -108,9 +108,9 @@ export function Header({ search = "app" }: HeaderProps) {
               }
               className="relative shrink-0 p-1 text-primary transition-opacity hover:opacity-80"
             >
-              <MessageCircle className="w-6 h-6" fill="currentColor" />
+              <MessageCircle className="w-8 h-8" fill="currentColor" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
+                <span className="absolute -top-1.5 -right-1.5 min-w-4.5 h-4.5 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center ring-2 ring-base-100">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}

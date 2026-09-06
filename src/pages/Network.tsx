@@ -26,6 +26,9 @@ import {
 import type { User } from "../types/user.type";
 
 const PER_SECTION = 4;
+// Nombre max d'invitations reçues affichées dans la section dédiée de la page
+// (le compteur du header et la pastille « Invitations » donnent le total).
+const MAX_INVITATIONS = 5;
 
 const toast = (message: string, type: "info" | "success" | "error" = "info") =>
   useToastStore.getState().addToast(message, type);
@@ -204,10 +207,12 @@ export function Network() {
       {incoming.length > 0 && (
         <section className="mt-2 bg-base-100 px-4 py-4">
           <h2 className="text-lg font-bold text-base-content">
-            Invitations reçues
+            Invitations reçues ({incoming.length})
           </h2>
+          {/* Liste plate des invitations en attente : pas de sous-groupe
+              « Vérifiés » / « Relations en commun » comme sur LinkedIn. */}
           <ul className="mt-3 divide-y divide-base-200">
-            {incoming.map(({ user }) => (
+            {incoming.slice(0, MAX_INVITATIONS).map(({ user }) => (
               <li key={user.id} className="flex items-center gap-3 py-3">
                 <Avatar
                   label={memberInitials(user)}
@@ -244,6 +249,13 @@ export function Network() {
               </li>
             ))}
           </ul>
+          {incoming.length > MAX_INVITATIONS && (
+            <p className="mt-3 text-sm text-base-content/60">
+              + {incoming.length - MAX_INVITATIONS} autre
+              {incoming.length - MAX_INVITATIONS > 1 ? "s" : ""} invitation
+              {incoming.length - MAX_INVITATIONS > 1 ? "s" : ""}
+            </p>
+          )}
         </section>
       )}
 

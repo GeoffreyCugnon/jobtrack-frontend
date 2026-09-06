@@ -112,7 +112,7 @@ function PeopleSection({
               key={user.id}
               user={user}
               index={index}
-              hiring={config.hiring}
+              hiring={Boolean(config.hiring)}
               caption={config.caption(user, index)}
               onAction={notify}
             />

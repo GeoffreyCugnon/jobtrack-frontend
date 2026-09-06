@@ -22,6 +22,7 @@ export function OfferList({
       {offers.map((offer) => (
         <OfferCard
           key={offer.id}
+          id={offer.id}
           role={offer.role}
           company={offer.company}
           location={offer.location}

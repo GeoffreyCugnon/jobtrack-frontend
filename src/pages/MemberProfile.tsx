@@ -21,7 +21,7 @@ import { queryKeys } from "../api/query-keys";
 import { useToastStore } from "../store/toast.store";
 import { memberHeadline, memberName } from "../utils/member";
 
-const FALLBACK_AVATAR = "https://api.dicebear.com/9.x/avataaars/svg?seed=jobtrack";
+const FALLBACK_AVATAR = "https://randomuser.me/api/portraits/lego/5.jpg";
 
 const CONNECT_LABEL: Record<ConnectionStatus, string> = {
   none: "Se connecter",

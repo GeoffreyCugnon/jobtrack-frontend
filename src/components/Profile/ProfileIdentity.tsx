@@ -16,7 +16,7 @@ interface UserType {
   salary: string;
 }
 
-const FALLBACK_AVATAR = "https://api.dicebear.com/9.x/avataaars/svg?seed=jobtrack";
+const FALLBACK_AVATAR = "https://randomuser.me/api/portraits/lego/5.jpg";
 
 interface ProfileIdentityProps {
   user: UserType;

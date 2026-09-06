@@ -10,7 +10,7 @@ Projet initialement développé à deux, repris en solo par Jeff. En l'absence d
 - TailwindCSS v4 (`@tailwindcss/vite`) + DaisyUI v5 — thèmes custom `moncrm-dark` / `moncrm-light` définis dans `src/index.css` (pas les thèmes DaisyUI par défaut, `themes: false`)
 - React Router v8 (package `react-router` unifié, pas `react-router-dom`)
 - Zustand — stores dans `src/store` (`auth.store.ts`, `toast.store.ts`)
-- TanStack React Query + axios (`src/utils/axios-client.ts`) pour les appels API
+- TanStack React Query + axios (`src/utils/axios-client.ts`) pour les appels API. **React Query est la couche de fetch des pages API** depuis l'audit v3 (`Network`, `Offers`, `OfferDetail`, `Publications`, `PublicationDetail`, `MemberProfile`) — plus de `useEffect` + `useState` manuels. `QueryClient` configuré dans `main.tsx` (`staleTime` 30 s, pas de `refetchOnWindowFocus`, `retry: 1`). Clés centralisées dans `src/api/query-keys.ts`. Pour une nouvelle page qui charge des données : `useQuery`, pas de fetch à la main. `cy.mount` (`cypress/support/component.ts`) enveloppe déjà un `QueryClientProvider`.
 - Zod + react-hook-form + `@hookform/resolvers` pour les formulaires (schémas dans `src/schemas`)
 - Lucide React pour les icônes
 - Cypress pour les tests e2e/composants
@@ -53,7 +53,9 @@ Un vrai flux d'auth relié au backend a été mis en place :
 
 ## Offres — intégration API réelle (nouveau)
 
-`pages/Offers.tsx` charge maintenant les offres via `OffersApi.getAll()` (`GET job-offering`, tolérant à une réponse `Offer[]` ou `{ offers: [...] }`) dans un `useEffect`, avec un état `loading`. Le filtrage par catégorie, la recherche texte et le tri (par `postedHoursAgo` croissant) restent 100% côté client sur le résultat déjà chargé. `data/offerCategories.ts` ne contient plus que les métadonnées de catégories (label/icône/couleur) affichées par `OfferCategorySelector`/`OfferCategoryBanner`.
+`pages/Offers.tsx` charge les offres via `useQuery` + `OffersApi.getAll()` (`GET job-offering`, tolérant à une réponse `Offer[]` ou `{ offers: [...] }`). Le filtrage par catégorie, la recherche texte et le tri (par `postedHoursAgo` croissant) restent 100% côté client sur le résultat en cache. Le rejet d'une offre passe par un state local `dismissedIds` (le cache React Query reste la source). `data/offerCategories.ts` ne contient plus que les métadonnées de catégories (label/icône/couleur) affichées par `OfferCategorySelector`/`OfferCategoryBanner`.
+
+**Audit v3 — code mort supprimé :** le cluster CRUD `components/Network/{Card,CompanyCard,CompanyForm,CompanyList,ContactCard,ContactForm,ContactsList,RelationsSearchInput}` + `schemas/{company,contact}.schemas.ts` + `types/{company,contact}.types.ts` (jamais montés par aucune page) ont été supprimés. `components/Network/` ne contient plus que `PeopleCard.tsx`.
 
 Le type d'une offre est **unique** : `src/types/offer.type.ts` (`Offer`). Il était dupliqué à l'identique dans `api/offers.api.ts` (`OfferApiItem`), `data/offerCategories.ts` (`CategoryOffer`, jamais importé) et `components/Offers/OfferList.tsx` — ces copies ont été remplacées par un import de `Offer`. `OffersApi` réexporte `Offer` par commodité.
 

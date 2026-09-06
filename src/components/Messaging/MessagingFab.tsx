@@ -7,6 +7,7 @@ import {
   STACK_BOTTOM_OFFSET,
   STACK_ITEM_GAP,
 } from "../../constants/layout";
+import { CONVERSATIONS, unreadMessageCount } from "../../constants/conversations";
 
 export function MessagingFab() {
   const { isMessagingOpen, unreadConversationIds, openMessaging, openConversation } =
@@ -17,15 +18,28 @@ export function MessagingFab() {
   const defaultBottom =
     STACK_BOTTOM_OFFSET +
     (toastStackHeight > 0 ? toastStackHeight + STACK_ITEM_GAP : 0);
-  const unreadCount = unreadConversationIds.length;
-  const displayCount = unreadCount > 9 ? "9+" : unreadCount;
-  const label = `Nouveau message${unreadCount > 1 ? "s" : ""}, ${unreadCount} non lu${unreadCount > 1 ? "s" : ""}`;
+  // Nb de conversations avec des non-lus (comme le bouton Messages du header).
+  const unreadConvCount = unreadConversationIds.length;
+  const unreadConvDisplay = unreadConvCount > 9 ? "9+" : unreadConvCount;
+
+  // Le fab mobile pointe vers UNE conversation (la plus récente non lue) :
+  // son badge compte les nouveaux messages DANS cette conversation.
+  const targetConversation = CONVERSATIONS.find(
+    (c) => c.id === unreadConversationIds[0],
+  );
+  const fabMessageCount = targetConversation
+    ? unreadMessageCount(targetConversation) || 1
+    : 0;
+  const fabMessageDisplay = fabMessageCount > 9 ? "9+" : fabMessageCount;
+  const fabLabel = targetConversation
+    ? `${fabMessageCount} nouveau message${fabMessageCount > 1 ? "s" : ""} de ${targetConversation.name}`
+    : "Nouveau message";
 
   // Le bouton flottant mobile ne sert qu'à signaler un message non lu et
   // ouvrir directement la conversation concernée : pas d'accès permanent,
   // contrairement à la barre desktop et à l'entrée "Messages" de la bottom
   // nav qui restent, elles, toujours disponibles.
-  const showMobileFab = unreadCount > 0 && !isMessagingOpen;
+  const showMobileFab = unreadConvCount > 0 && !isMessagingOpen;
 
   const openMostRecentUnread = () => {
     if (unreadConversationIds[0]) openConversation(unreadConversationIds[0]);
@@ -77,12 +91,12 @@ export function MessagingFab() {
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
-            aria-label={label}
+            aria-label={fabLabel}
             className="relative w-11 h-11 rounded-full bg-primary text-primary-content flex items-center justify-center shadow-lg hover:bg-primary/90 active:scale-95 active:bg-primary/80 transition touch-none pointer-events-auto"
           >
             <MessageCircle className="w-5 h-5" />
             <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
-              {displayCount}
+              {fabMessageDisplay}
             </span>
           </button>
         </div>
@@ -103,9 +117,9 @@ export function MessagingFab() {
         >
           <span className="relative flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-content shrink-0">
             <MessageCircle className="w-4 h-4" />
-            {unreadCount > 0 && (
+            {unreadConvCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
-                {displayCount}
+                {unreadConvDisplay}
               </span>
             )}
           </span>

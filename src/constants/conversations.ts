@@ -18,6 +18,21 @@ export interface Conversation {
   messages: ConversationMessage[];
 }
 
+/**
+ * Nombre de messages "nouveaux" dans une conversation : la série ininterrompue
+ * de messages entrants (`from: "them"`) en fin de fil — ceux reçus depuis votre
+ * dernière réponse. Faute de marqueur de lecture par message, c'est l'approche
+ * la plus fidèle avec les données actuelles.
+ */
+export function unreadMessageCount(conversation: Conversation): number {
+  let count = 0;
+  for (let i = conversation.messages.length - 1; i >= 0; i--) {
+    if (conversation.messages[i].from !== "them") break;
+    count++;
+  }
+  return count;
+}
+
 export const CONVERSATIONS: Conversation[] = [
   {
     id: "techcorp-rh",

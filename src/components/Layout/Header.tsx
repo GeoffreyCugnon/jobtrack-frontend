@@ -42,7 +42,7 @@ export function Header({ search = "app" }: HeaderProps) {
   const showLogo = search === "none";
 
   return (
-    <header className="sticky top-0 z-30 bg-base-300 shadow-sm h-16">
+    <header className="sticky top-0 z-30 bg-base-100 border-b border-base-300 h-16">
       <div className="max-w-5xl mx-auto h-full">
         <PageContainer className="h-full flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -106,7 +106,7 @@ export function Header({ search = "app" }: HeaderProps) {
                   ? `Messages, ${unreadCount} message${unreadCount > 1 ? "s" : ""} non lu${unreadCount > 1 ? "s" : ""}`
                   : "Messages"
               }
-              className="relative w-10 h-10 shrink-0 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-100 hover:text-base-content transition-colors translate-y-1"
+              className="relative w-10 h-10 shrink-0 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-300 hover:text-base-content transition-colors translate-y-1"
             >
               <MessageCircle className="w-5 h-5" />
               {unreadCount > 0 && (

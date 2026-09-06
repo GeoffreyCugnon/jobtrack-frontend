@@ -52,7 +52,7 @@ function RootContent() {
         {!isAuthenticated ? null : <MessagingFab />}
 
         <nav
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-base-300 px-2 py-3 shadow-lg z-40"
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-300 px-2 py-3 z-40"
           style={{ height: BOTTOM_NAV_HEIGHT }}
         >
           <div className="max-w-5xl mx-auto h-full">

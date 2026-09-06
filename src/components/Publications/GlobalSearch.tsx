@@ -316,7 +316,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
           aria-label={ariaLabel}
-          className={`input input-sm h-10 w-full rounded-full bg-base-100 border-base-200 focus:border-primary focus:outline-none pl-9 ${
+          className={`input input-sm h-10 w-full rounded-full bg-base-100 border-2 border-base-300 focus:border-primary focus:outline-none pl-9 ${
             query ? "pr-9" : ""
           }`}
         />

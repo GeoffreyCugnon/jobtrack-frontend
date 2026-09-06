@@ -49,7 +49,7 @@ export function Header({ search = "app" }: HeaderProps) {
             {canOpenMenu && (
               <button
                 onClick={openMenu}
-                className="shrink-0 translate-y-1 rounded-full transition-transform hover:scale-105"
+                className="shrink-0 rounded-full transition-transform hover:scale-105"
                 aria-label="Ouvrir le menu"
               >
                 <Avatar
@@ -106,11 +106,11 @@ export function Header({ search = "app" }: HeaderProps) {
                   ? `Messages, ${unreadCount} message${unreadCount > 1 ? "s" : ""} non lu${unreadCount > 1 ? "s" : ""}`
                   : "Messages"
               }
-              className="relative w-10 h-10 shrink-0 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-300 hover:text-base-content transition-colors translate-y-1"
+              className="relative shrink-0 p-1 text-primary transition-opacity hover:opacity-80"
             >
-              <MessageCircle className="w-5 h-5" />
+              <MessageCircle className="w-6 h-6" fill="currentColor" />
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}

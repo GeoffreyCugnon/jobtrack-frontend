@@ -295,8 +295,8 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
 
   const placeholder =
     effectiveScope === "feed"
-      ? "Rechercher une actu ou une offre..."
-      : "Rechercher...";
+      ? "Chercher une actu ou une offre..."
+      : "Chercher";
   const ariaLabel =
     effectiveScope === "feed"
       ? "Rechercher parmi les actus et les offres"
@@ -316,7 +316,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
           aria-label={ariaLabel}
-          className={`input input-sm h-10 w-full rounded-full bg-base-100 border border-base-content/25 focus:border-primary focus:outline-none pl-9 ${
+          className={`input input-sm h-10 w-full rounded-full bg-base-100 border-2 border-base-content/25 focus:border-primary focus:outline-none pl-9 ${
             query ? "pr-9" : ""
           }`}
         />

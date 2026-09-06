@@ -1,22 +1,28 @@
 // src/components/Layout/Header.tsx
-import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router";
 import { User, Menu, LogIn } from "lucide-react";
 import { PageContainer } from "./PageContainer";
 import { useMenu } from "../../context/Menu/useMenu";
 import { AuthLogo } from "../Auth/AuthLogo";
+import { GlobalSearch } from "../Publications/GlobalSearch";
 import { getMainNavItems, isNavItemActive } from "../../constants/nav";
 import { useAuthStore } from "../../store/auth.store";
 
 interface HeaderProps {
   /**
-   * Contenu affiché à la place du logo (ex. barre de recherche globale sur le
-   * fil d'actus). Le logo bascule alors dans le contenu de la page.
+   * Contenu affiché à la place du logo :
+   * - "app" (défaut) : recherche large (actus, offres, utilisateurs,
+   *   documents, conversations)
+   * - "feed" : recherche restreinte au fil d'actus (actus + offres)
+   * - "none" : le logo (renvoie vers l'accueil)
+   *
+   * Quand une recherche est affichée, le logo est censé vivre dans le
+   * contenu de la page (cf. `Publications`).
    */
-  centerSlot?: ReactNode;
+  search?: "app" | "feed" | "none";
 }
 
-export function Header({ centerSlot }: HeaderProps) {
+export function Header({ search = "app" }: HeaderProps) {
   const { openMenu } = useMenu();
   const location = useLocation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -25,6 +31,7 @@ export function Header({ centerSlot }: HeaderProps) {
   // un utilisateur connecté. En invité, toute la navigation tient dans la barre
   // du bas — même expérience sur `/` et sur `/offers`.
   const canOpenMenu = isAuthenticated;
+  const showLogo = search === "none";
 
   return (
     <header className="sticky top-0 z-30 bg-base-300 shadow-sm h-16">
@@ -41,33 +48,33 @@ export function Header({ centerSlot }: HeaderProps) {
               </button>
             )}
 
-            {centerSlot ? (
-              <div className="min-w-0 flex-1">{centerSlot}</div>
-            ) : (
+            {showLogo ? (
               <Link to="/" aria-label="Retour à l'accueil" className="-ml-2">
                 <AuthLogo size="sm" align="left" />
               </Link>
+            ) : (
+              <div className="min-w-0 flex-1 lg:max-w-sm">
+                <GlobalSearch scope={search} />
+              </div>
             )}
           </div>
 
-          {!centerSlot && (
-            <nav className="hidden lg:flex items-center h-full">
-              {navItems.map(({ path, icon: Icon, label }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  className={`flex flex-col items-center justify-center gap-0.5 h-full px-4 text-xs transition-colors ${
-                    isNavItemActive(location.pathname, path)
-                      ? "text-primary font-medium"
-                      : "text-base-content/60 hover:text-base-content"
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span>{label}</span>
-                </Link>
-              ))}
-            </nav>
-          )}
+          <nav className="hidden lg:flex items-center h-full">
+            {navItems.map(({ path, icon: Icon, label }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex flex-col items-center justify-center gap-0.5 h-full px-4 text-xs transition-colors ${
+                  isNavItemActive(location.pathname, path)
+                    ? "text-primary font-medium"
+                    : "text-base-content/60 hover:text-base-content"
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                <span>{label}</span>
+              </Link>
+            ))}
+          </nav>
 
           {!isAuthenticated ? (
             <Link

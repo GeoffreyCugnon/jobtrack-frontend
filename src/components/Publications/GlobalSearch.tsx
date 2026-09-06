@@ -1,26 +1,68 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { Search, X, Newspaper, Briefcase } from "lucide-react";
+import {
+  Search,
+  X,
+  Newspaper,
+  Briefcase,
+  FileText,
+  MessageCircle,
+  Users,
+  Building2,
+  type LucideIcon,
+} from "lucide-react";
 import publications from "../../data/publications";
+import { cvItems, letterItems } from "../../data/documents";
+import { CONVERSATIONS } from "../../constants/conversations";
 import { OffersApi } from "../../api/offers.api";
+import { UserApi } from "../../api/user.api";
+import { useAuthStore } from "../../store/auth.store";
+import { useMessagingOptional } from "../../context/Messaging/useMessaging";
 import type { Offer } from "../../types/offer.type";
+import type { User } from "../../types/user.type";
 
 const MAX_PER_GROUP = 4;
 
+interface GlobalSearchProps {
+  /**
+   * "feed" (accueil / fil d'actus) : cherche dans les actus + les offres.
+   * "app" (toutes les autres pages) : ajoute utilisateurs, documents et
+   *   conversations — et les entreprises dès qu'une source sera branchée.
+   */
+  scope?: "feed" | "app";
+}
+
+interface ResultItem {
+  key: string;
+  title: string;
+  subtitle?: string;
+  onSelect: () => void;
+}
+
+interface ResultGroup {
+  label: string;
+  icon: LucideIcon;
+  items: ResultItem[];
+}
+
 /**
- * Barre de recherche du fil d'actus : cherche en même temps dans les
- * publications (`data/publications`) et dans les offres d'emploi
- * (`OffersApi`, chargées à la première ouverture). Les résultats renvoient
- * vers `/publications?q=` ou `/offers?q=`, qui pré-filtrent leur liste.
+ * Barre de recherche du header. Cherche en direct dans plusieurs sources
+ * (actus et offres toujours ; utilisateurs / documents / conversations en
+ * scope "app") et affiche un dropdown groupé. Offres et utilisateurs sont
+ * chargés à la première ouverture.
  */
-export function GlobalSearch() {
+export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   const navigate = useNavigate();
+  const messaging = useMessagingOptional();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Offres chargées une seule fois, à la première ouverture du champ.
+  // Offres : chargées une seule fois, à la première ouverture (route publique).
   useEffect(() => {
     if (!open || offers.length > 0) return;
     let cancelled = false;
@@ -35,6 +77,23 @@ export function GlobalSearch() {
       cancelled = true;
     };
   }, [open, offers.length]);
+
+  // Utilisateurs : scope "app" et session authentifiée uniquement
+  // (`GET /user` est protégé par AuthGuard).
+  useEffect(() => {
+    if (scope !== "app" || !open || !isAuthenticated || users.length > 0) return;
+    let cancelled = false;
+    UserApi.getAll()
+      .then((data) => {
+        if (!cancelled) setUsers(data);
+      })
+      .catch((error) =>
+        console.error("Recherche : chargement des utilisateurs échoué", error),
+      );
+    return () => {
+      cancelled = true;
+    };
+  }, [scope, open, isAuthenticated, users.length]);
 
   // Fermeture au clic extérieur / touche Échap.
   useEffect(() => {
@@ -56,42 +115,159 @@ export function GlobalSearch() {
   }, [open]);
 
   const q = query.trim().toLowerCase();
+  const suffix = query.trim() ? `?q=${encodeURIComponent(query.trim())}` : "";
+  const go = (to: string) => {
+    setOpen(false);
+    navigate(to);
+  };
 
-  const matchingPubs = useMemo(() => {
-    if (!q) return [];
-    return publications.filter(
+  const buildGroups = (): ResultGroup[] => {
+    const groups: ResultGroup[] = [];
+
+    const pubs = publications.filter(
       (p) =>
         p.author.toLowerCase().includes(q) ||
         p.description.toLowerCase().includes(q) ||
         p.tags.some((tag) => tag.toLowerCase().includes(q)),
     );
-  }, [q]);
+    if (pubs.length) {
+      groups.push({
+        label: "Actus",
+        icon: Newspaper,
+        items: pubs.map((p) => ({
+          key: `pub-${p.id}`,
+          title: p.author,
+          subtitle: p.description,
+          onSelect: () => go(`/publications${suffix}`),
+        })),
+      });
+    }
 
-  const matchingOffers = useMemo(() => {
-    if (!q) return [];
-    return offers.filter(
+    const offs = offers.filter(
       (o) =>
         o.role.toLowerCase().includes(q) ||
         o.company.toLowerCase().includes(q) ||
         o.location.toLowerCase().includes(q),
     );
-  }, [q, offers]);
+    if (offs.length) {
+      groups.push({
+        label: "Offres",
+        icon: Briefcase,
+        items: offs.map((o) => ({
+          key: `off-${o.id}`,
+          title: o.role,
+          subtitle: `${o.company} · ${o.location}`,
+          onSelect: () => go(`/offers${suffix}`),
+        })),
+      });
+    }
 
-  const hasResults = matchingPubs.length > 0 || matchingOffers.length > 0;
+    if (scope !== "app") return groups;
 
-  const closeAndGo = (to: string) => {
-    setOpen(false);
-    navigate(to);
+    const matchedUsers = users.filter(
+      (u) =>
+        `${u.first_name} ${u.last_name}`.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q),
+    );
+    if (matchedUsers.length) {
+      groups.push({
+        label: "Utilisateurs",
+        icon: Users,
+        items: matchedUsers.map((u) => ({
+          key: `usr-${u.id}`,
+          title: `${u.first_name} ${u.last_name}`.trim() || u.email,
+          subtitle: u.email,
+          onSelect: () => go("/network"),
+        })),
+      });
+    }
+
+    // Entreprises : pas encore de source de données (cf. `Network`, liste
+    // locale vide). Le groupe apparaîtra dès qu'on branchera une liste ici.
+    const companies: { id: number; name: string; sector?: string }[] = [];
+    const matchedCompanies = companies.filter((c) =>
+      c.name.toLowerCase().includes(q),
+    );
+    if (matchedCompanies.length) {
+      groups.push({
+        label: "Entreprises",
+        icon: Building2,
+        items: matchedCompanies.map((c) => ({
+          key: `cmp-${c.id}`,
+          title: c.name,
+          subtitle: c.sector,
+          onSelect: () => go("/network"),
+        })),
+      });
+    }
+
+    const docs = [
+      ...cvItems.map((d) => ({ ...d, kind: "cv" as const })),
+      ...letterItems.map((d) => ({ ...d, kind: "letter" as const })),
+    ].filter((d) => d.title.toLowerCase().includes(q));
+    if (docs.length) {
+      groups.push({
+        label: "Documents",
+        icon: FileText,
+        items: docs.map((d) => ({
+          key: `doc-${d.id}`,
+          title: d.title,
+          subtitle: `${d.kind === "cv" ? "CV" : "Lettre"} · modifié le ${d.updatedAt}`,
+          onSelect: () =>
+            go(
+              d.kind === "cv"
+                ? `/documents/cv/${d.id}`
+                : `/documents/letters/${d.id}`,
+            ),
+        })),
+      });
+    }
+
+    const convs = CONVERSATIONS.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.lastMessage.toLowerCase().includes(q) ||
+        c.messages.some((m) => m.text.toLowerCase().includes(q)),
+    );
+    if (convs.length) {
+      groups.push({
+        label: "Conversations",
+        icon: MessageCircle,
+        items: convs.map((c) => ({
+          key: `cnv-${c.id}`,
+          title: c.name,
+          subtitle: c.lastMessage,
+          onSelect: () => {
+            setOpen(false);
+            if (messaging) messaging.openConversation(c.id);
+            else navigate("/messaging/manage");
+          },
+        })),
+      });
+    }
+
+    return groups;
   };
-  const suffix = query.trim() ? `?q=${encodeURIComponent(query.trim())}` : "";
-  const goActus = () => closeAndGo(`/publications${suffix}`);
-  const goOffers = () => closeAndGo(`/offers${suffix}`);
+
+  const groups = q ? buildGroups() : [];
+  const totalResults = groups.reduce((sum, g) => sum + g.items.length, 0);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (matchingOffers.length > 0 && matchingPubs.length === 0) goOffers();
-    else goActus();
+    const offs = groups.find((g) => g.label === "Offres");
+    const pubs = groups.find((g) => g.label === "Actus");
+    if (scope === "feed" && offs && !pubs) go(`/offers${suffix}`);
+    else go(`/publications${suffix}`);
   };
+
+  const placeholder =
+    scope === "feed"
+      ? "Rechercher une actu ou une offre..."
+      : "Rechercher...";
+  const ariaLabel =
+    scope === "feed"
+      ? "Rechercher parmi les actus et les offres"
+      : "Rechercher parmi les actus, offres, utilisateurs, documents et conversations";
 
   return (
     <div ref={rootRef} className="relative w-full">
@@ -105,8 +281,8 @@ export function GlobalSearch() {
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          placeholder="Rechercher une actu ou une offre..."
-          aria-label="Rechercher parmi les actus et les offres"
+          placeholder={placeholder}
+          aria-label={ariaLabel}
           className={`input input-sm h-10 w-full rounded-full bg-base-100 border-base-200 focus:border-primary focus:outline-none pl-9 ${
             query ? "pr-9" : ""
           }`}
@@ -128,71 +304,52 @@ export function GlobalSearch() {
 
       {open && q.length > 0 && (
         <div className="absolute left-0 right-0 top-full mt-2 z-50 rounded-box border border-base-200 bg-base-100 shadow-xl overflow-hidden">
-          {!hasResults ? (
+          {totalResults === 0 ? (
             <p className="px-4 py-3 text-sm text-base-content/60">
               Aucun résultat pour «&nbsp;{query.trim()}&nbsp;»
             </p>
           ) : (
             <div className="max-h-[70vh] overflow-y-auto py-1">
-              {matchingPubs.length > 0 && (
-                <section>
-                  <p className="px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-base-content/50">
-                    Actus
-                  </p>
-                  {matchingPubs.slice(0, MAX_PER_GROUP).map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={goActus}
-                      className="flex w-full items-start gap-3 px-4 py-2 text-left hover:bg-base-200"
-                    >
-                      <Newspaper className="mt-0.5 w-4 h-4 shrink-0 text-base-content/40" />
-                      <span className="min-w-0">
-                        <span className="block text-sm font-medium truncate">
-                          {p.author}
+              {groups.map((group) => {
+                const GroupIcon = group.icon;
+                return (
+                  <section key={group.label}>
+                    <p className="px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-base-content/50">
+                      {group.label}
+                    </p>
+                    {group.items.slice(0, MAX_PER_GROUP).map((item) => (
+                      <button
+                        key={item.key}
+                        type="button"
+                        onClick={item.onSelect}
+                        className="flex w-full items-start gap-3 px-4 py-2 text-left hover:bg-base-200"
+                      >
+                        <GroupIcon className="mt-0.5 w-4 h-4 shrink-0 text-base-content/40" />
+                        <span className="min-w-0">
+                          <span className="block text-sm font-medium truncate">
+                            {item.title}
+                          </span>
+                          {item.subtitle && (
+                            <span className="block text-xs text-base-content/60 truncate">
+                              {item.subtitle}
+                            </span>
+                          )}
                         </span>
-                        <span className="block text-xs text-base-content/60 truncate">
-                          {p.description}
-                        </span>
-                      </span>
-                    </button>
-                  ))}
-                </section>
-              )}
+                      </button>
+                    ))}
+                  </section>
+                );
+              })}
 
-              {matchingOffers.length > 0 && (
-                <section>
-                  <p className="px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-base-content/50">
-                    Offres
-                  </p>
-                  {matchingOffers.slice(0, MAX_PER_GROUP).map((o) => (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={goOffers}
-                      className="flex w-full items-start gap-3 px-4 py-2 text-left hover:bg-base-200"
-                    >
-                      <Briefcase className="mt-0.5 w-4 h-4 shrink-0 text-base-content/40" />
-                      <span className="min-w-0">
-                        <span className="block text-sm font-medium truncate">
-                          {o.role}
-                        </span>
-                        <span className="block text-xs text-base-content/60 truncate">
-                          {o.company} · {o.location}
-                        </span>
-                      </span>
-                    </button>
-                  ))}
-                </section>
+              {scope === "feed" && (
+                <button
+                  type="button"
+                  onClick={() => go(`/publications${suffix}`)}
+                  className="block w-full border-t border-base-200 px-4 py-2 text-center text-xs font-medium text-primary hover:bg-base-200"
+                >
+                  Voir tous les résultats
+                </button>
               )}
-
-              <button
-                type="button"
-                onClick={goActus}
-                className="block w-full border-t border-base-200 px-4 py-2 text-center text-xs font-medium text-primary hover:bg-base-200"
-              >
-                Voir tous les résultats
-              </button>
             </div>
           )}
         </div>

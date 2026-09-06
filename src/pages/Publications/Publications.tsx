@@ -1,7 +1,6 @@
 import { useSearchParams } from "react-router";
 import { Header } from "../../components/Layout/Header";
 import { LogoMark } from "../../components/Auth/LogoMark";
-import { GlobalSearch } from "../../components/Publications/GlobalSearch";
 import PublicationCard from "../../components/Publications/PublicationCard";
 
 import publications from "../../data/publications";
@@ -22,7 +21,7 @@ export function Publications() {
   return (
     <div className="bg-base-200 h-screen flex justify-center">
       <div className="w-full max-w-md bg-base-100 flex flex-col">
-        <Header centerSlot={<GlobalSearch />} />
+        <Header search="feed" />
 
         <main className="flex-1 overflow-y-auto p-4 space-y-4">
           <div className="flex justify-center py-1">

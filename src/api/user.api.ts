@@ -1,4 +1,5 @@
 import { api } from "../utils/axios-client";
+import type { User } from "../types/user.type";
 
 /**
  * Endpoints liés au compte de l'utilisateur connecté.
@@ -18,5 +19,14 @@ export class UserApi {
 
   static async deleteAccount(): Promise<void> {
     await api.delete("user/account");
+  }
+
+  /**
+   * Liste des utilisateurs (`GET /user`, protégé par `AuthGuard`). Utilisé
+   * par la recherche globale ; tolère une réponse non-tableau.
+   */
+  static async getAll(): Promise<User[]> {
+    const { data } = await api.get<User[]>("user");
+    return Array.isArray(data) ? data : [];
   }
 }

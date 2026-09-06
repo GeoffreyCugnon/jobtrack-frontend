@@ -1,12 +1,14 @@
 // src/components/Layout/Header.tsx
 import { Link, useLocation } from "react-router";
-import { User, MessageCircle, LogIn } from "lucide-react";
+import { MessageCircle, LogIn } from "lucide-react";
 import { PageContainer } from "./PageContainer";
 import { useMenu } from "../../context/Menu/useMenu";
 import { AuthLogo } from "../Auth/AuthLogo";
+import { Avatar } from "../UI/Avatar";
 import { GlobalSearch } from "../Publications/GlobalSearch";
 import { getMainNavItems, isNavItemActive } from "../../constants/nav";
 import { useAuthStore } from "../../store/auth.store";
+import { getUserDisplay } from "../../utils/user-display";
 import { useMessagingOptional } from "../../context/Messaging/useMessaging";
 
 interface HeaderProps {
@@ -28,6 +30,9 @@ export function Header({ search = "app" }: HeaderProps) {
   const messaging = useMessagingOptional();
   const location = useLocation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const currentUser = useAuthStore((state) => state.user);
+  const { initials: userInitials, avatarUrl: userAvatarUrl } =
+    getUserDisplay(currentUser);
   const navItems = getMainNavItems(isAuthenticated);
   const unreadCount = messaging?.unreadConversationIds.length ?? 0;
   // Le SideMenu (profil, paramètres, déconnexion...) ne s'ouvre que pour un
@@ -44,10 +49,14 @@ export function Header({ search = "app" }: HeaderProps) {
             {canOpenMenu && (
               <button
                 onClick={openMenu}
-                className="cursor-pointer w-9 h-9 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-100 hover:text-base-content transition-colors translate-y-1 shrink-0"
+                className="shrink-0 translate-y-1 rounded-full transition-transform hover:scale-105"
                 aria-label="Ouvrir le menu"
               >
-                <User className="w-5 h-5" />
+                <Avatar
+                  label={userInitials}
+                  avatarUrl={userAvatarUrl}
+                  size="sm"
+                />
               </button>
             )}
 

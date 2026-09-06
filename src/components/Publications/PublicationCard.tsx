@@ -19,7 +19,7 @@ export default function PublicationCard({ publication }: Props) {
             <div>
               <h2 className="font-semibold">{publication.author}</h2>
 
-              <p className="text-xs text-gray-500">{publication.date}</p>
+              <p className="text-xs text-base-content/60">{publication.date}</p>
             </div>
           </div>
 

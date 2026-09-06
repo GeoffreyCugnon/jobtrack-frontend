@@ -293,14 +293,15 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
     go(groups[0]?.href ?? "/publications");
   };
 
-  const placeholder =
-    effectiveScope === "feed"
-      ? "Chercher une actu ou une offre..."
-      : "Chercher";
-  const ariaLabel =
-    effectiveScope === "feed"
-      ? "Rechercher parmi les actus et les offres"
-      : "Rechercher parmi les actus, offres, utilisateurs, documents et conversations";
+  // Le libellé suit l'état de connexion, pas le `scope` : un membre connecté
+  // voit toujours "Chercher" quelle que soit la page (le `scope` ne pilote
+  // que les sources réellement interrogées).
+  const placeholder = isAuthenticated
+    ? "Chercher"
+    : "Chercher une actu ou une offre...";
+  const ariaLabel = isAuthenticated
+    ? "Chercher parmi les actus, offres, utilisateurs, documents et conversations"
+    : "Chercher parmi les actus et les offres";
 
   return (
     <div ref={rootRef} className="relative w-full">

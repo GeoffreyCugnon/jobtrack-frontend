@@ -50,22 +50,22 @@ export function MessagingHeader({
             {
               label: "Gérer les conversations",
               icon: ListChecks,
-              onClick: () => goTo("/app/messaging/manage"),
+              onClick: () => goTo("/messaging/manage"),
             },
             {
               label: "Préférences de messagerie",
               icon: SlidersHorizontal,
-              onClick: () => goTo("/app/messaging/preferences"),
+              onClick: () => goTo("/messaging/preferences"),
             },
             {
               label: "Messages archivés",
               icon: Archive,
-              onClick: () => goTo("/app/messaging/archived"),
+              onClick: () => goTo("/messaging/archived"),
             },
             {
               label: "Message d'absence",
               icon: CalendarClock,
-              onClick: () => goTo("/app/messaging/away-message"),
+              onClick: () => goTo("/messaging/away-message"),
             },
           ]}
         />

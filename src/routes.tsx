@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router";
-import { Home } from "./pages/Home";
 import { AuthPage } from "./pages/AuthPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { Root } from "./pages/Root";
@@ -33,27 +32,25 @@ import { MessagingArchived } from "./pages/Messaging/MessagingArchived";
 import { MessagingAwayMessage } from "./pages/Messaging/MessagingAwayMessage";
 
 export const router = createBrowserRouter([
-  { path: "/", Component: Home },
   { path: "/auth", Component: AuthPage },
   { path: "/auth/reset-password", Component: ResetPasswordPage },
   {
-    path: "/app",
+    // Layout unique de l'app. Pas de préfixe "/app" : le contexte
+    // invité / membre est géré dans `Root` (barre de nav, vue d'accueil,
+    // messagerie...) selon `useAuthStore().isAuthenticated`.
+    path: "/",
     Component: Root,
     children: [
-      // Sous-routes du dashboard regroupées sans segment "/dashboard" dans
-      // l'URL : ce sont bien des enfants directs de "/app".
-      {
-        children: [
-          { index: true, Component: Dashboard },
-          { path: "dashboard", Component: Dashboard },
-          { path: "relances", Component: Relances },
-          { path: "historique", Component: Historique },
-          { path: "candidatures", Component: Candidatures },
-          { path: "candidatures/:id", Component: CandidatureDetail },
-          { path: "entretiens", Component: Entretiens },
-          { path: "entretiens/:id", Component: EntretienDetail },
-        ],
-      },
+      // "/" et "/dashboard" pointent sur le même écran ; en invité `Root`
+      // affiche `Publications` à la place (vue d'accueil publique).
+      { index: true, Component: Dashboard },
+      { path: "dashboard", Component: Dashboard },
+      { path: "relances", Component: Relances },
+      { path: "historique", Component: Historique },
+      { path: "candidatures", Component: Candidatures },
+      { path: "candidatures/:id", Component: CandidatureDetail },
+      { path: "entretiens", Component: Entretiens },
+      { path: "entretiens/:id", Component: EntretienDetail },
       { path: "offers", Component: Offers },
       { path: "network", Component: Network },
       {

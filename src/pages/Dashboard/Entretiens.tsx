@@ -31,7 +31,7 @@ export function Entretiens() {
                 {entretienItems.map((entretien) => (
                   <ClickableRow
                     key={entretien.id}
-                    to={`/app/entretiens/${entretien.id}`}
+                    to={`/entretiens/${entretien.id}`}
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-sm text-base-content/90 truncate">

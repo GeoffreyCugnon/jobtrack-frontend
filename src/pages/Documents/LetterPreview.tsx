@@ -14,7 +14,7 @@ export function LetterPreview() {
       <Header />
       <div className="mx-auto max-w-2xl px-4 py-6">
         <button
-          onClick={() => navigate("/app/documents")}
+          onClick={() => navigate("/documents")}
           className="mb-6 flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
         >
           <ArrowLeft size={16} />
@@ -42,7 +42,7 @@ export function LetterPreview() {
               {item ? (
                 <button
                   onClick={() =>
-                    navigate(`/app/documents/letters/${item.id}/edit`)
+                    navigate(`/documents/letters/${item.id}/edit`)
                   }
                   className={`btn btn-sm btn-secondary gap-1.5 ${BTN_FOCUS_RING.secondary}`}
                 >

@@ -47,7 +47,7 @@ export function SettingsPassword() {
       <Header />
       <div className="mx-auto max-w-2xl px-4 py-6">
         <button
-          onClick={() => navigate("/app/settings")}
+          onClick={() => navigate("/settings")}
           className="mb-6 flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
         >
           <ArrowLeft size={16} />
@@ -121,7 +121,7 @@ export function SettingsPassword() {
           </p>
           <button
             className="btn btn-primary mt-2"
-            onClick={() => navigate("/app/settings")}
+            onClick={() => navigate("/settings")}
           >
             Retour aux paramètres
           </button>

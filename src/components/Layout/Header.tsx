@@ -12,14 +12,17 @@ export function Header() {
   const location = useLocation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const navItems = getMainNavItems(isAuthenticated);
-  const isGuestHome = !isAuthenticated && location.pathname === "/";
+  // Le burger n'ouvre le SideMenu (profil, paramètres, déconnexion...) que pour
+  // un utilisateur connecté. En invité, toute la navigation tient dans la barre
+  // du bas — même expérience sur `/` et sur `/offers`.
+  const canOpenMenu = isAuthenticated;
 
   return (
     <header className="sticky top-0 z-30 bg-base-300 shadow-sm h-16">
       <div className="max-w-5xl mx-auto h-full">
         <PageContainer className="h-full flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {!isGuestHome && (
+            {canOpenMenu && (
               <button
                 onClick={openMenu}
                 className="cursor-pointer w-9 h-9 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-100 hover:text-base-content transition-colors translate-y-1"
@@ -29,7 +32,7 @@ export function Header() {
               </button>
             )}
 
-            <Link to="/app" aria-label="Retour à l'accueil" className="-ml-2">
+            <Link to="/" aria-label="Retour à l'accueil" className="-ml-2">
               <AuthLogo size="sm" align="left" />
             </Link>
           </div>
@@ -62,7 +65,7 @@ export function Header() {
             </Link>
           ) : (
             <Link
-              to="/app/profile"
+              to="/profile"
               className="w-10 h-10 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-100 hover:text-base-content transition-colors translate-y-1"
               aria-label="Voir mon profil"
             >

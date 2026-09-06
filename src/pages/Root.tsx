@@ -24,7 +24,7 @@ function RootContent() {
 
   const guestHomeView =
     !isAuthenticated &&
-    (location.pathname === "/app" || location.pathname === "/app/dashboard");
+    (location.pathname === "/" || location.pathname === "/dashboard");
 
   return (
     <>

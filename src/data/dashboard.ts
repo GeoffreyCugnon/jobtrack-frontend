@@ -12,19 +12,19 @@ export const dashboardStats: DashboardStat[] = [
     label: "Candidatures actives",
     count: 12,
     icon: TrendingUp,
-    to: "/app/candidatures",
+    to: "/candidatures",
   },
   {
     label: "Entretiens prévus",
     count: 3,
     icon: Calendar,
-    to: "/app/entretiens",
+    to: "/entretiens",
   },
   {
     label: "Offres disponibles",
     count: 1,
     icon: Briefcase,
-    to: "/app/offers",
+    to: "/offers",
   },
 ];
 

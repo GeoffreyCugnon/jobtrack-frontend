@@ -39,7 +39,7 @@ export function SignupForm() {
       useAuthStore.getState().setUser(loginResponse.user);
       useAuthStore.getState().setAccessToken(loginResponse.accessToken);
       useToastStore.getState().addToast("Compte créé et connecté", "success");
-      navigate("/app/dashboard");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Signup failed", error);
       useToastStore

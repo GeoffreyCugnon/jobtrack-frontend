@@ -66,15 +66,15 @@ export function Profile() {
         <div className="-mx-4 sm:mx-0 mt-3">
           <ProfileIdentity
             user={user}
-            onEdit={() => navigate("/app/profile/edit")}
+            onEdit={() => navigate("/profile/edit")}
           />
           <ProfileContact
             user={user}
-            onAdd={() => navigate("/app/profile/contact/edit")}
+            onAdd={() => navigate("/profile/contact/edit")}
           />
           <ProfileSkills
             skills={skills}
-            onAdd={() => navigate("/app/profile/skills/edit")}
+            onAdd={() => navigate("/profile/skills/edit")}
           />
         </div>
       </PageContainer>

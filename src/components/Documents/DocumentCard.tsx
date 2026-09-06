@@ -24,11 +24,11 @@ export function DocumentCard({ item, basePath, onCopyLink, onDelete }: DocumentC
     <div
       role="button"
       tabIndex={0}
-      onClick={() => navigate(`/app/documents/${basePath}/${item.id}`)}
+      onClick={() => navigate(`/documents/${basePath}/${item.id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          navigate(`/app/documents/${basePath}/${item.id}`);
+          navigate(`/documents/${basePath}/${item.id}`);
         }
       }}
       className="flex items-center justify-between gap-3 p-4 first:pt-0 last:pb-0 cursor-pointer hover:bg-base-200/60 transition-colors"
@@ -59,7 +59,7 @@ export function DocumentCard({ item, basePath, onCopyLink, onDelete }: DocumentC
         <button
           type="button"
           aria-label="Modifier"
-          onClick={stop(() => navigate(`/app/documents/${basePath}/${item.id}/edit`))}
+          onClick={stop(() => navigate(`/documents/${basePath}/${item.id}/edit`))}
           className="btn btn-ghost btn-circle w-11 h-11 min-h-0 text-base-content/50 hover:bg-base-200 hover:text-secondary"
         >
           <Pencil className="w-5 h-5" />

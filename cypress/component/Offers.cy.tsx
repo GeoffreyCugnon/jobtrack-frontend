@@ -5,7 +5,7 @@ import { mockOffers } from "../../src/data/offerCategories";
 
 function mountOffers() {
   cy.mount(
-    <MemoryRouter initialEntries={["/app/offers"]}>
+    <MemoryRouter initialEntries={["/offers"]}>
       <MenuProvider>
         <Offers />
       </MenuProvider>

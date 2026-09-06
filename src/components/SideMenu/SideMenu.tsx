@@ -44,16 +44,16 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
   const mainLinks = isAuthenticated
     ? [
         ...mainNavItems
-          .filter((item) => item.path !== "/app/dashboard")
+          .filter((item) => item.path !== "/dashboard")
           .map(({ path, label, icon }) => ({ to: path, label, icon })),
-        { to: "/app/profile", label: "Profil", icon: User },
+        { to: "/profile", label: "Profil", icon: User },
       ]
     : mainNavItems.map(({ path, label, icon }) => ({ to: path, label, icon }));
 
   const secondaryLinks = isAuthenticated
     ? [
-        { to: "/app/publications", label: "Actus", icon: Megaphone },
-        { to: "/app/statistics", label: "Statistiques", icon: BarChart3 },
+        { to: "/publications", label: "Actus", icon: Megaphone },
+        { to: "/statistics", label: "Statistiques", icon: BarChart3 },
       ]
     : [];
 
@@ -117,7 +117,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
             <ul className="menu menu-vertical w-full py-4">
               <ThemeToggle />
               <MenuLink
-                to="/app/settings"
+                to="/settings"
                 label="Paramètres"
                 onClick={onClose}
                 icon={Settings}

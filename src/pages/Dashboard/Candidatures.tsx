@@ -39,7 +39,7 @@ export function Candidatures() {
                 {candidatureItems.map((candidature) => (
                   <ClickableRow
                     key={candidature.id}
-                    to={`/app/candidatures/${candidature.id}`}
+                    to={`/candidatures/${candidature.id}`}
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-sm text-base-content/90 truncate">

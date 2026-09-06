@@ -21,11 +21,11 @@ const SEEN_EVENTS_KEY = "dashboard-seen-event-ids";
 
 function mountDashboard() {
   cy.mount(
-    <MemoryRouter initialEntries={["/app"]}>
+    <MemoryRouter initialEntries={["/"]}>
       <MenuProvider>
         <Routes>
-          <Route path="/app" element={<Dashboard />} />
-          <Route path="/app/historique" element={<div>Historique complet</div>} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/historique" element={<div>Historique complet</div>} />
         </Routes>
       </MenuProvider>
     </MemoryRouter>,

@@ -26,7 +26,7 @@ export function TaskRow({
   const label = type === "relance" ? `Relancer ${company} (${role})` : text;
   // TODO: cibler la candidature/l'entretien précis une fois les pages de
   // détail disponibles ; pour l'instant on renvoie vers la liste concernée.
-  const to = type === "relance" ? "/app/relances" : "/app/entretiens";
+  const to = type === "relance" ? "/relances" : "/entretiens";
 
   return (
     <Link

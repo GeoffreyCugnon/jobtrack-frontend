@@ -24,7 +24,7 @@ export function DocumentList({ items, basePath }: DocumentListProps) {
 
   const handleCopyLink = (item: DocumentItem) => {
     navigator.clipboard.writeText(
-      `${window.location.origin}/app/documents/${basePath}/${item.id}`
+      `${window.location.origin}/documents/${basePath}/${item.id}`
     );
   };
 

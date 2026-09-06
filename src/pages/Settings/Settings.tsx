@@ -136,13 +136,13 @@ export function Settings() {
               <SettingsItem
                 icon={<Lock size={18} />}
                 label="Mot de passe"
-                onClick={() => navigate("/app/settings/password")}
+                onClick={() => navigate("/settings/password")}
               />
               <SettingsItem
                 icon={<ShieldCheck size={18} />}
                 label="Authentification 2FA"
                 value={twoFA ? "Activée" : "Désactivée"}
-                onClick={() => navigate("/app/settings/2fa")}
+                onClick={() => navigate("/settings/2fa")}
               />
             </SettingsSection>
 
@@ -150,7 +150,7 @@ export function Settings() {
               <SettingsItem
                 icon={<HelpCircle size={18} />}
                 label="Centre d'aide"
-                onClick={() => navigate("/app/settings/help")}
+                onClick={() => navigate("/settings/help")}
               />
               <SettingsItem
                 icon={<Info size={18} />}

@@ -31,7 +31,7 @@ export function ProfileEdit() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: brancher sur PATCH /user/profile
-    navigate("/app/profile");
+    navigate("/profile");
   };
 
   return (
@@ -39,7 +39,7 @@ export function ProfileEdit() {
       <Header />
       <div className="mx-auto max-w-2xl px-4 py-6">
         <button
-          onClick={() => navigate("/app/profile")}
+          onClick={() => navigate("/profile")}
           className="mb-6 flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
         >
           <ArrowLeft size={16} />

@@ -26,7 +26,7 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
       useAuthStore.getState().setUser(response.user);
       useAuthStore.getState().setAccessToken(response.accessToken);
       useToastStore.getState().addToast("Connexion réussie", "success");
-      navigate("/app/dashboard");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed", error);
       useToastStore

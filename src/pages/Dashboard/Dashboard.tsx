@@ -113,7 +113,7 @@ export function Dashboard() {
               collapsible={false}
               {...(showTasksSeeAll
                 ? {
-                    headerTo: "/app/relances",
+                    headerTo: "/relances",
                     headerAction: (
                       <span className="flex items-center gap-1 text-sm">
                         Voir tout
@@ -143,7 +143,7 @@ export function Dashboard() {
             <SectionCard
               title="Derniers événements"
               collapsible={false}
-              headerTo="/app/historique"
+              headerTo="/historique"
               onHeaderClick={markEventsAsSeen}
               headerAction={
                 <span className="flex items-center gap-1 text-sm">

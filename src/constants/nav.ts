@@ -7,23 +7,27 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 
+// Barre de navigation d'un visiteur non connecté : identique sur l'accueil
+// (`/`) et sur les pages accessibles en invité (`/offers`), pour ne pas
+// donner l'impression que le contexte change.
+
 export const MAIN_NAV_ITEMS = [
-  { path: "/app", icon: Home, label: "Accueil", shortLabel: "Accueil" },
+  { path: "/", icon: Home, label: "Accueil", shortLabel: "Accueil" },
   {
-    path: "/app/offers",
+    path: "/offers",
     icon: Briefcase,
     label: "Offres",
     shortLabel: "Offres",
   },
-  { path: "/app/network", icon: Users, label: "Réseau", shortLabel: "Réseau" },
+  { path: "/network", icon: Users, label: "Réseau", shortLabel: "Réseau" },
   {
-    path: "/app/dashboard",
+    path: "/dashboard",
     icon: LayoutDashboard,
     label: "Dashboard",
     shortLabel: "Dashboard",
   },
   {
-    path: "/app/documents",
+    path: "/documents",
     icon: FileText,
     label: "Documents",
     shortLabel: "Docs",
@@ -31,24 +35,20 @@ export const MAIN_NAV_ITEMS = [
 ];
 
 export const GUEST_NAV_ITEMS = [
-  { path: "/app", icon: Home, label: "Accueil", shortLabel: "Accueil" },
+  { path: "/", icon: Home, label: "Accueil", shortLabel: "Accueil" },
   {
-    path: "/app/offers",
+    path: "/offers",
     icon: Briefcase,
     label: "Offres",
     shortLabel: "Offres",
   },
-  {
-    path: "/app/dashboard",
-    icon: LayoutDashboard,
-    label: "Dashboard",
-    shortLabel: "Dashboard",
-  },
 ];
 
 export function isNavItemActive(pathname: string, path: string) {
-  return path === "/app"
-    ? pathname === "/app" || pathname === "/app/dashboard"
+  // "Accueil" (`/`) et "Dashboard" (`/dashboard`) rendent le même écran :
+  // l'onglet Accueil est actif sur les deux.
+  return path === "/"
+    ? pathname === "/" || pathname === "/dashboard"
     : pathname.startsWith(path);
 }
 

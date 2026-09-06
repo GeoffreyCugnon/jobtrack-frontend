@@ -5,16 +5,16 @@ import { cvItems, letterItems } from "../../src/data/documents";
 
 function mountDocuments() {
   cy.mount(
-    <MemoryRouter initialEntries={["/app/documents"]}>
+    <MemoryRouter initialEntries={["/documents"]}>
       <MenuProvider>
         <Routes>
-          <Route path="/app/documents" element={<Documents />} />
+          <Route path="/documents" element={<Documents />} />
           <Route
-            path="/app/documents/cv/:id"
+            path="/documents/cv/:id"
             element={<div>Prévisualisation CV</div>}
           />
           <Route
-            path="/app/documents/letters/:id"
+            path="/documents/letters/:id"
             element={<div>Prévisualisation lettre</div>}
           />
         </Routes>

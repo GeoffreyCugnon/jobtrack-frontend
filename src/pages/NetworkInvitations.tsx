@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Check, RotateCw, UserPlus, X } from "lucide-react";
+import { ArrowLeft, Check, RotateCw, Settings, UserPlus, X } from "lucide-react";
 
 import { Header } from "../components/Layout/Header";
-import { Tabs } from "../components/Layout/Tabs";
 import { Avatar } from "../components/UI/Avatar";
 import { EmptyState } from "../components/Layout/EmptyState";
 import {
@@ -21,6 +20,11 @@ import {
 } from "../utils/member";
 
 type Tab = "received" | "sent";
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: "received", label: "Reçues" },
+  { key: "sent", label: "Envoyées" },
+];
 
 export function NetworkInvitations() {
   const navigate = useNavigate();
@@ -76,16 +80,40 @@ export function NetworkInvitations() {
         </h1>
       </div>
 
-      <div className="border-b border-base-200 bg-base-100 px-4 py-3">
-        <Tabs<Tab>
-          items={[
-            { key: "received", label: `Reçues (${received.length})` },
-            { key: "sent", label: `Envoyées (${sent.length})` },
-          ]}
-          value={tab}
-          onChange={setTab}
-          variant="onMuted"
-        />
+      <div className="flex items-center border-b border-base-200 bg-base-100 px-2">
+        {TABS.map(({ key, label }) => {
+          const active = tab === key;
+          const count = key === "received" ? received.length : sent.length;
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setTab(key)}
+              aria-pressed={active}
+              className={`relative px-4 py-3.5 text-sm font-semibold transition-colors ${
+                active
+                  ? "text-success"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              {label}
+              {count > 0 && ` (${count})`}
+              {active && (
+                <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-success" />
+              )}
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          aria-label="Paramètres des invitations"
+          onClick={() =>
+            useToastStore.getState().addToast("Bientôt disponible", "info")
+          }
+          className="ml-auto p-3 text-base-content/60 hover:text-base-content"
+        >
+          <Settings size={20} />
+        </button>
       </div>
 
       {isPending ? (

@@ -107,9 +107,9 @@ export default function PublicationCard({
               type="button"
               aria-label="Masquer ce post"
               onClick={onHide ?? notify}
-              className="btn btn-ghost btn-circle btn-sm"
+              className="btn btn-ghost btn-sm btn-square"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>

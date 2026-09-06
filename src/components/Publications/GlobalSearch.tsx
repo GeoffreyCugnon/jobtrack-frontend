@@ -58,6 +58,12 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   const messaging = useMessagingOptional();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
+  // Un invité ne voit jamais les groupes "app" (documents, conversations,
+  // utilisateurs, entreprises) : ces données sont privées. Quel que soit le
+  // scope demandé par la page, on retombe sur "feed" tant qu'on n'est pas
+  // connecté (utile après une déconnexion sur une page en scope "app").
+  const effectiveScope: "feed" | "app" = isAuthenticated ? scope : "feed";
+
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -83,7 +89,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   // Utilisateurs : scope "app" et session authentifiée uniquement
   // (`GET /user` est protégé par AuthGuard).
   useEffect(() => {
-    if (scope !== "app" || !open || !isAuthenticated || users.length > 0) return;
+    if (effectiveScope !== "app" || !open || users.length > 0) return;
     let cancelled = false;
     UserApi.getAll()
       .then((data) => {
@@ -95,7 +101,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
     return () => {
       cancelled = true;
     };
-  }, [scope, open, isAuthenticated, users.length]);
+  }, [effectiveScope, open, users.length]);
 
   // Fermeture au clic extérieur / touche Échap.
   useEffect(() => {
@@ -165,7 +171,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       });
     }
 
-    if (scope !== "app") return groups;
+    if (effectiveScope !== "app") return groups;
 
     const matchedUsers = users.filter(
       (u) =>
@@ -267,11 +273,11 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   };
 
   const placeholder =
-    scope === "feed"
+    effectiveScope === "feed"
       ? "Rechercher une actu ou une offre..."
       : "Rechercher...";
   const ariaLabel =
-    scope === "feed"
+    effectiveScope === "feed"
       ? "Rechercher parmi les actus et les offres"
       : "Rechercher parmi les actus, offres, utilisateurs, documents et conversations";
 

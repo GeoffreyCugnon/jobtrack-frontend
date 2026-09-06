@@ -21,6 +21,8 @@ interface OfferCardProps {
   applicantCount?: number;
   saved: boolean;
   verified?: boolean;
+  /** Boutons favori / masquer : masqués en vue invité (rien à sauvegarder). */
+  showActions?: boolean;
   onToggleSave: () => void;
   onDismiss: () => void;
 }
@@ -34,6 +36,7 @@ export function OfferCard({
   applicantCount,
   saved,
   verified,
+  showActions = true,
   onToggleSave,
   onDismiss,
 }: OfferCardProps) {
@@ -60,28 +63,35 @@ export function OfferCard({
           {/* w-11 h-11 (44px) : zone tactile recommandée, sans agrandir la
               rangée du titre grâce à la marge négative qui absorbe le
               débordement (bouton centré sur la ligne de texte de 16px). */}
-          <div className="flex items-center gap-1 shrink-0 -mt-3.5 -mb-3.5 -mr-2">
-            <button
-              type="button"
-              aria-label={saved ? "Retirer des favoris" : "Sauvegarder l'offre"}
-              onClick={onToggleSave}
-              className={`btn btn-ghost btn-circle w-11 h-11 min-h-0 ${
-                saved
-                  ? "text-primary"
-                  : "text-base-content/40 hover:text-primary"
-              }`}
-            >
-              <Heart className="w-5 h-5" fill={saved ? "currentColor" : "none"} />
-            </button>
-            <button
-              type="button"
-              aria-label="Masquer cette offre"
-              onClick={onDismiss}
-              className="btn btn-ghost btn-circle w-11 h-11 min-h-0 text-base-content/40 hover:text-error"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+          {showActions && (
+            <div className="flex items-center gap-1 shrink-0 -mt-3.5 -mb-3.5 -mr-2">
+              <button
+                type="button"
+                aria-label={
+                  saved ? "Retirer des favoris" : "Sauvegarder l'offre"
+                }
+                onClick={onToggleSave}
+                className={`btn btn-ghost btn-circle w-11 h-11 min-h-0 ${
+                  saved
+                    ? "text-primary"
+                    : "text-base-content/40 hover:text-primary"
+                }`}
+              >
+                <Heart
+                  className="w-5 h-5"
+                  fill={saved ? "currentColor" : "none"}
+                />
+              </button>
+              <button
+                type="button"
+                aria-label="Masquer cette offre"
+                onClick={onDismiss}
+                className="btn btn-ghost btn-circle w-11 h-11 min-h-0 text-base-content/40 hover:text-error"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          )}
         </div>
 
         <p className="text-sm text-base-content/70 font-medium truncate">{company}</p>

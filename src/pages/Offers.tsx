@@ -197,6 +197,7 @@ export function Offers() {
                       <OfferList
                         offers={visibleOffers}
                         savedIds={savedIds}
+                        showActions={isAuthenticated}
                         onToggleSave={toggleSave}
                         onDismiss={dismissOffer}
                       />
@@ -226,6 +227,7 @@ export function Offers() {
                       <OfferList
                         offers={visibleOffers}
                         savedIds={savedIds}
+                        showActions={isAuthenticated}
                         onToggleSave={toggleSave}
                         onDismiss={dismissOffer}
                       />

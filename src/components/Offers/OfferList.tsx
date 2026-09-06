@@ -4,6 +4,8 @@ import type { Offer } from "../../types/offer.type";
 interface OfferListProps {
   offers: Offer[];
   savedIds: number[];
+  /** Boutons favori / masquer par offre : masqués en vue invité. */
+  showActions?: boolean;
   onToggleSave: (id: number) => void;
   onDismiss: (id: number) => void;
 }
@@ -11,6 +13,7 @@ interface OfferListProps {
 export function OfferList({
   offers,
   savedIds,
+  showActions = true,
   onToggleSave,
   onDismiss,
 }: OfferListProps) {
@@ -27,6 +30,7 @@ export function OfferList({
           applicantCount={offer.applicantCount}
           verified={offer.verified}
           saved={savedIds.includes(offer.id)}
+          showActions={showActions}
           onToggleSave={() => onToggleSave(offer.id)}
           onDismiss={() => onDismiss(offer.id)}
         />

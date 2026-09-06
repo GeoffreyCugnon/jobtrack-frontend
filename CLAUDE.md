@@ -12,7 +12,7 @@ Projet initialement développé à deux, repris en solo par Jeff. En l'absence d
 - Zustand — stores dans `src/store` (`auth.store.ts`, `toast.store.ts`)
 - TanStack React Query + axios (`src/utils/axios-client.ts`) pour les appels API. **React Query est la couche de fetch des pages API** depuis l'audit v3 (`Network`, `Offers`, `OfferDetail`, `Publications`, `PublicationDetail`, `MemberProfile`) — plus de `useEffect` + `useState` manuels. `QueryClient` configuré dans `main.tsx` (`staleTime` 30 s, pas de `refetchOnWindowFocus`, `retry: 1`). Clés centralisées dans `src/api/query-keys.ts`. Pour une nouvelle page qui charge des données : `useQuery`, pas de fetch à la main. `cy.mount` (`cypress/support/component.ts`) enveloppe déjà un `QueryClientProvider`.
 - Zod + react-hook-form + `@hookform/resolvers` pour les formulaires (schémas dans `src/schemas`)
-- Lucide React pour les icônes
+- **Phosphor Icons** (`@phosphor-icons/react`) pour les icônes. Ne pas importer depuis `@phosphor-icons/react` directement : passer par `src/lib/icons.ts`, qui réexporte les noms **Lucide historiques** (`Search`, `MessageCircle`, `MoreVertical`…) mappés sur Phosphor. `import { X } from "@/lib/icons"`. Alias `@` → `src` (vite + tsconfig). Poids par défaut Phosphor = `regular` ; `weight="fill"` pour une icône pleine (ex. cœur sauvegardé).
 - Cypress pour les tests e2e/composants
 
 ## Architecture & conventions

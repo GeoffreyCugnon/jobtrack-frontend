@@ -15,4 +15,10 @@ export class OffersApi {
         : [];
     return items;
   }
+
+  /** `GET job-offering/:id` (route publique). `null` si l'offre n'existe pas. */
+  static async getById(id: number | string): Promise<Offer | null> {
+    const { data } = await api.get<Offer | null>(`job-offering/${id}`);
+    return data ?? null;
+  }
 }

@@ -42,6 +42,8 @@ interface ResultItem {
 interface ResultGroup {
   label: string;
   icon: LucideIcon;
+  /** Cible de l'en-tête de groupe cliquable (page "voir tout" correspondante). */
+  href: string;
   items: ResultItem[];
 }
 
@@ -115,7 +117,6 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   }, [open]);
 
   const q = query.trim().toLowerCase();
-  const suffix = query.trim() ? `?q=${encodeURIComponent(query.trim())}` : "";
   const go = (to: string) => {
     setOpen(false);
     navigate(to);
@@ -134,11 +135,12 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       groups.push({
         label: "Actus",
         icon: Newspaper,
+        href: "/publications",
         items: pubs.map((p) => ({
           key: `pub-${p.id}`,
           title: p.author,
           subtitle: p.description,
-          onSelect: () => go(`/publications${suffix}`),
+          onSelect: () => go(`/publications/${p.id}`),
         })),
       });
     }
@@ -153,11 +155,12 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       groups.push({
         label: "Offres",
         icon: Briefcase,
+        href: "/offers",
         items: offs.map((o) => ({
           key: `off-${o.id}`,
           title: o.role,
           subtitle: `${o.company} · ${o.location}`,
-          onSelect: () => go(`/offers${suffix}`),
+          onSelect: () => go(`/offers/${o.id}`),
         })),
       });
     }
@@ -173,6 +176,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       groups.push({
         label: "Utilisateurs",
         icon: Users,
+        href: "/network",
         items: matchedUsers.map((u) => ({
           key: `usr-${u.id}`,
           title: `${u.first_name} ${u.last_name}`.trim() || u.email,
@@ -192,6 +196,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       groups.push({
         label: "Entreprises",
         icon: Building2,
+        href: "/network",
         items: matchedCompanies.map((c) => ({
           key: `cmp-${c.id}`,
           title: c.name,
@@ -209,6 +214,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       groups.push({
         label: "Documents",
         icon: FileText,
+        href: "/documents",
         items: docs.map((d) => ({
           key: `doc-${d.id}`,
           title: d.title,
@@ -233,6 +239,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       groups.push({
         label: "Conversations",
         icon: MessageCircle,
+        href: "/messaging/manage",
         items: convs.map((c) => ({
           key: `cnv-${c.id}`,
           title: c.name,
@@ -254,10 +261,9 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const offs = groups.find((g) => g.label === "Offres");
-    const pubs = groups.find((g) => g.label === "Actus");
-    if (scope === "feed" && offs && !pubs) go(`/offers${suffix}`);
-    else go(`/publications${suffix}`);
+    // Entrée : ouvre la page "voir tout" du premier groupe qui a des résultats
+    // (à défaut, le fil d'actus).
+    go(groups[0]?.href ?? "/publications");
   };
 
   const placeholder =
@@ -314,9 +320,16 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
                 const GroupIcon = group.icon;
                 return (
                   <section key={group.label}>
-                    <p className="px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-base-content/50">
+                    <button
+                      type="button"
+                      onClick={() => go(group.href)}
+                      className="flex w-full items-center justify-between px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-base-content/50 hover:text-primary"
+                    >
                       {group.label}
-                    </p>
+                      <span className="normal-case tracking-normal text-[0.7rem] font-medium">
+                        voir tout
+                      </span>
+                    </button>
                     {group.items.slice(0, MAX_PER_GROUP).map((item) => (
                       <button
                         key={item.key}
@@ -340,16 +353,6 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
                   </section>
                 );
               })}
-
-              {scope === "feed" && (
-                <button
-                  type="button"
-                  onClick={() => go(`/publications${suffix}`)}
-                  className="block w-full border-t border-base-200 px-4 py-2 text-center text-xs font-medium text-primary hover:bg-base-200"
-                >
-                  Voir tous les résultats
-                </button>
-              )}
             </div>
           )}
         </div>

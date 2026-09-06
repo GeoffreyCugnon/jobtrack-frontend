@@ -10,6 +10,7 @@ import { CandidatureDetail } from "./pages/Dashboard/CandidatureDetail";
 import { Entretiens } from "./pages/Dashboard/Entretiens";
 import { EntretienDetail } from "./pages/Dashboard/EntretienDetail";
 import { Offers } from "./pages/Offers";
+import { OfferDetail } from "./pages/OfferDetail";
 import { Network } from "./pages/Network";
 import { Documents } from "./pages/Documents/Documents";
 import { CVPreview } from "./pages/Documents/CVPreview";
@@ -17,6 +18,7 @@ import { CVEdit } from "./pages/Documents/CVEdit";
 import { LetterPreview } from "./pages/Documents/LetterPreview";
 import { LetterEdit } from "./pages/Documents/LetterEdit";
 import { Publications } from "./pages/Publications/Publications";
+import { PublicationDetail } from "./pages/Publications/PublicationDetail";
 import { Statistics } from "./pages/Statistics";
 import { Settings } from "./pages/Settings/Settings";
 import { Profile } from "./pages/Profile/Profile";
@@ -52,6 +54,7 @@ export const router = createBrowserRouter([
       { path: "entretiens", Component: Entretiens },
       { path: "entretiens/:id", Component: EntretienDetail },
       { path: "offers", Component: Offers },
+      { path: "offers/:id", Component: OfferDetail },
       { path: "network", Component: Network },
       {
         path: "documents",
@@ -64,6 +67,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "publications", Component: Publications },
+      { path: "publications/:id", Component: PublicationDetail },
       { path: "statistics", Component: Statistics },
       {
         path: "messaging",

@@ -14,4 +14,8 @@ export type Offer = {
   workMode?: "onSite" | "Remote" | "Hybrid";
   applicantCount?: number;
   verified?: boolean;
+  // Renseignés par `findOne` / `findAll` du Backend (peuvent manquer si l'API
+  // n'a pas encore été redéployée).
+  description?: string;
+  contractType?: string;
 };

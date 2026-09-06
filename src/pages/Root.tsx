@@ -1,12 +1,10 @@
 import { Outlet, Link, useLocation } from "react-router";
-import { MessageCircle } from "lucide-react";
 import { SideMenu } from "../components/SideMenu/SideMenu";
 import { MessagingFab } from "../components/Messaging/MessagingFab";
 import { MessagingPanel } from "../components/Messaging/MessagingPanel";
 import { MenuProvider } from "../context/Menu/MenuContext";
 import { useMenu } from "../context/Menu/useMenu";
 import { MessagingProvider } from "../context/Messaging/MessagingContext";
-import { useMessaging } from "../context/Messaging/useMessaging";
 import { useSwipeGestures } from "../hooks/useSwipeGestures";
 import { BOTTOM_NAV_HEIGHT } from "../constants/layout";
 import { getMainNavItems, isNavItemActive } from "../constants/nav";
@@ -16,9 +14,7 @@ import { Publications } from "./Publications/Publications";
 function RootContent() {
   const location = useLocation();
   const { isMenuOpen, closeMenu } = useMenu();
-  const { openMessaging, unreadConversationIds } = useMessaging();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const unreadCount = unreadConversationIds.length;
   const navItems = getMainNavItems(isAuthenticated);
   useSwipeGestures();
 
@@ -58,21 +54,6 @@ function RootContent() {
                   <span className="text-xs">{shortLabel}</span>
                 </Link>
               ))}
-              {isAuthenticated && (
-                <button
-                  type="button"
-                  onClick={openMessaging}
-                  aria-label={
-                    unreadCount > 0
-                      ? `Messages, ${unreadCount} message${unreadCount > 1 ? "s" : ""} non lu${unreadCount > 1 ? "s" : ""}`
-                      : "Messages"
-                  }
-                  className="flex flex-col items-center gap-1 px-3 py-2 rounded-field transition-colors text-base-content/50 hover:text-base-content/80"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  <span className="text-xs">Messages</span>
-                </button>
-              )}
             </div>
           </div>
         </nav>

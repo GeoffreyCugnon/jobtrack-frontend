@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from "react-router";
 import {
   Megaphone,
   BarChart3,
-  User,
   Settings,
   LogOut,
   ArrowLeft,
@@ -41,13 +40,12 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
     isNavItemActive(location.pathname, path),
   );
 
+  // "Profil" n'est plus un lien de liste : l'en-tête du menu (identité +
+  // chevron) est devenu le point d'entrée vers le profil.
   const mainLinks = isAuthenticated
-    ? [
-        ...mainNavItems
-          .filter((item) => item.path !== "/dashboard")
-          .map(({ path, label, icon }) => ({ to: path, label, icon })),
-        { to: "/profile", label: "Profil", icon: User },
-      ]
+    ? mainNavItems
+        .filter((item) => item.path !== "/dashboard")
+        .map(({ path, label, icon }) => ({ to: path, label, icon }))
     : mainNavItems.map(({ path, label, icon }) => ({ to: path, label, icon }));
 
   const secondaryLinks = isAuthenticated
@@ -83,6 +81,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
           name={displayName}
           email={displayEmail}
           initials={displayInitials}
+          profileHref={isAuthenticated ? "/profile" : undefined}
           onClose={onClose}
         />
 

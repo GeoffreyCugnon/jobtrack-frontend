@@ -1,12 +1,13 @@
 // src/components/Layout/Header.tsx
 import { Link, useLocation } from "react-router";
-import { User, Menu, LogIn } from "lucide-react";
+import { User, MessageCircle, LogIn } from "lucide-react";
 import { PageContainer } from "./PageContainer";
 import { useMenu } from "../../context/Menu/useMenu";
 import { AuthLogo } from "../Auth/AuthLogo";
 import { GlobalSearch } from "../Publications/GlobalSearch";
 import { getMainNavItems, isNavItemActive } from "../../constants/nav";
 import { useAuthStore } from "../../store/auth.store";
+import { useMessagingOptional } from "../../context/Messaging/useMessaging";
 
 interface HeaderProps {
   /**
@@ -24,11 +25,13 @@ interface HeaderProps {
 
 export function Header({ search = "app" }: HeaderProps) {
   const { openMenu } = useMenu();
+  const messaging = useMessagingOptional();
   const location = useLocation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const navItems = getMainNavItems(isAuthenticated);
-  // Le burger n'ouvre le SideMenu (profil, paramètres, déconnexion...) que pour
-  // un utilisateur connecté. En invité, toute la navigation tient dans la barre
+  const unreadCount = messaging?.unreadConversationIds.length ?? 0;
+  // Le SideMenu (profil, paramètres, déconnexion...) ne s'ouvre que pour un
+  // utilisateur connecté. En invité, toute la navigation tient dans la barre
   // du bas — même expérience sur `/` et sur `/offers`.
   const canOpenMenu = isAuthenticated;
   const showLogo = search === "none";
@@ -44,7 +47,7 @@ export function Header({ search = "app" }: HeaderProps) {
                 className="cursor-pointer w-9 h-9 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-100 hover:text-base-content transition-colors translate-y-1 shrink-0"
                 aria-label="Ouvrir le menu"
               >
-                <Menu className="w-5 h-5" />
+                <User className="w-5 h-5" />
               </button>
             )}
 
@@ -86,13 +89,23 @@ export function Header({ search = "app" }: HeaderProps) {
               Connexion
             </Link>
           ) : (
-            <Link
-              to="/profile"
-              className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-100 hover:text-base-content transition-colors translate-y-1"
-              aria-label="Voir mon profil"
+            <button
+              type="button"
+              onClick={() => messaging?.openMessaging()}
+              aria-label={
+                unreadCount > 0
+                  ? `Messages, ${unreadCount} message${unreadCount > 1 ? "s" : ""} non lu${unreadCount > 1 ? "s" : ""}`
+                  : "Messages"
+              }
+              className="relative w-10 h-10 shrink-0 rounded-full flex items-center justify-center bg-base-200 text-base-content/70 hover:bg-base-100 hover:text-base-content transition-colors translate-y-1"
             >
-              <User className="w-5 h-5" />
-            </Link>
+              <MessageCircle className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </button>
           )}
         </PageContainer>
       </div>

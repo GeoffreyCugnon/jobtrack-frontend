@@ -42,6 +42,10 @@ export function Publications({ showLogo = true }: PublicationsProps) {
     <div className="flex-1 flex flex-col bg-base-200 pb-6">
       <Header search="feed" />
 
+      {/* Démarcation sous le header : même hauteur que l'espace entre les
+          publications (bande base-200). */}
+      <div className="h-1.5 shrink-0" />
+
       {showLogo && (
         <div className="bg-base-100 pt-2">
           <AuthLogo size="lg" />
@@ -79,7 +83,7 @@ export function Publications({ showLogo = true }: PublicationsProps) {
       )}
 
       {!isPending && !isError && visible.length > 0 && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           {visible.map((publication) => (
             <PublicationCard key={publication.id} publication={publication} />
           ))}

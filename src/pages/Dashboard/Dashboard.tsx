@@ -3,7 +3,7 @@
 // overlap, et sections en cartes repliables (même pattern que
 // ProfileContact/ProfileSkills) via SectionCard.
 import { useMemo, useState } from "react";
-import { ChevronRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { ChevronRight, Sparkles, CheckCircle2 } from "@/lib/icons";
 import { StatCard } from "../../components/Dashboard/StatsCards/StatCard";
 import { TodoGroup } from "../../components/Dashboard/UrgentTasks/TodoGroup";
 import { EventRow } from "../../components/Dashboard/RecentEvents/EventRow";

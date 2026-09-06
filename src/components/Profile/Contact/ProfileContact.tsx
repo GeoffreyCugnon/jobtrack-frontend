@@ -1,4 +1,4 @@
-import { Mail, Phone, Globe } from "lucide-react";
+import { Mail, Phone, Globe } from "@/lib/icons";
 import { ContactRow } from "./ContactRow";
 import { SectionCard } from "../../Layout/SectionCard";
 

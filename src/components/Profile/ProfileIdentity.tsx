@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Loader2, MapPin, Edit2, Camera } from "lucide-react";
+import { Loader2, MapPin, Edit2, Camera } from "@/lib/icons";
 import { fileToAvatarDataUrl } from "../../utils/image";
 
 interface UserType {

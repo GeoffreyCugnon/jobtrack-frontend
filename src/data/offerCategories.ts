@@ -13,7 +13,7 @@ import {
   PiggyBank,
   Laptop,
   type LucideIcon,
-} from "lucide-react";
+} from "@/lib/icons";
 
 export interface OfferCategory {
   key: string;

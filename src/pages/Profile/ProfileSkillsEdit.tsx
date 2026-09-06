@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, Sparkles, X } from "lucide-react";
+import { ArrowLeft, Sparkles, X } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 

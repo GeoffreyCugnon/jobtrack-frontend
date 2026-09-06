@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { FileText, Pencil, Copy, Trash2 } from "lucide-react";
+import { FileText, Pencil, Copy, Trash2 } from "@/lib/icons";
 import type { DocumentItem } from "../../data/documents";
 
 interface DocumentCardProps {

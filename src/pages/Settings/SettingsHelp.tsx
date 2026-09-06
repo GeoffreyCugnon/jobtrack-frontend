@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { ArrowLeft, HelpCircle } from "lucide-react";
+import { ArrowLeft, HelpCircle } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 
 export function SettingsHelp() {

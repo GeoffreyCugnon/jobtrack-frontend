@@ -1,6 +1,6 @@
 // src/pages/Dashboard/CandidatureDetail.tsx
 import { useParams } from "react-router";
-import { TrendingUp, FileQuestion } from "lucide-react";
+import { TrendingUp, FileQuestion } from "@/lib/icons";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";

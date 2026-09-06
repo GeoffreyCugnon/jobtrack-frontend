@@ -1,4 +1,4 @@
-import { Mail, Eye, TrendingUp, Calendar, Briefcase, XCircle, type LucideIcon } from "lucide-react";
+import { Mail, Eye, TrendingUp, Calendar, Briefcase, XCircle, type LucideIcon } from "@/lib/icons";
 
 export interface DashboardStat {
   label: string;

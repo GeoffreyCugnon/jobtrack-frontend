@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, UserRound } from "lucide-react";
+import { ArrowLeft, UserRound } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { INPUT_CLASS, TEXTAREA_CLASS } from "../../constants/styles";
 import { useAuthStore } from "../../store/auth.store";

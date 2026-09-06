@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Send, X } from "lucide-react";
+import { ArrowLeft, Send, X } from "@/lib/icons";
 import type { Conversation } from "../../constants/conversations";
 import { Avatar } from "../UI/Avatar";
 

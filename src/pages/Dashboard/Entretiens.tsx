@@ -1,5 +1,5 @@
 // src/pages/Dashboard/Entretiens.tsx
-import { Calendar } from "lucide-react";
+import { Calendar } from "@/lib/icons";
 import { ClickableRow } from "../../components/Layout/ClickableRow";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";

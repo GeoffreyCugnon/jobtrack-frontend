@@ -1,4 +1,4 @@
-import { CalendarClock } from "lucide-react";
+import { CalendarClock } from "@/lib/icons";
 import { ComingSoonPage } from "../../components/Layout/ComingSoonPage";
 
 export function MessagingAwayMessage() {

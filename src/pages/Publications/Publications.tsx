@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { RotateCw } from "lucide-react";
+import { RotateCw } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { AuthLogo } from "../../components/Auth/AuthLogo";
 import PublicationCard from "../../components/Publications/PublicationCard";
@@ -18,6 +19,9 @@ interface PublicationsProps {
 export function Publications({ showLogo = true }: PublicationsProps) {
   const [searchParams] = useSearchParams();
   const query = (searchParams.get("q") ?? "").trim().toLowerCase();
+  // Masquage local d'un post (pas d'endpoint dédié) : disparaît du fil
+  // jusqu'au prochain rechargement.
+  const [hiddenIds, setHiddenIds] = useState<number[]>([]);
 
   const {
     data: publications = [],
@@ -29,14 +33,16 @@ export function Publications({ showLogo = true }: PublicationsProps) {
     queryFn: () => PublicationsApi.getAll(),
   });
 
-  const visible = query
-    ? publications.filter(
-        (p) =>
-          p.authorName.toLowerCase().includes(query) ||
-          p.title.toLowerCase().includes(query) ||
-          p.content.toLowerCase().includes(query),
-      )
-    : publications;
+  const visible = (
+    query
+      ? publications.filter(
+          (p) =>
+            p.authorName.toLowerCase().includes(query) ||
+            p.title.toLowerCase().includes(query) ||
+            p.content.toLowerCase().includes(query),
+        )
+      : publications
+  ).filter((p) => !hiddenIds.includes(p.id));
 
   return (
     <div className="flex-1 flex flex-col bg-base-200 pb-6">
@@ -85,7 +91,13 @@ export function Publications({ showLogo = true }: PublicationsProps) {
       {!isPending && !isError && visible.length > 0 && (
         <div className="flex flex-col gap-1.25">
           {visible.map((publication) => (
-            <PublicationCard key={publication.id} publication={publication} />
+            <PublicationCard
+              key={publication.id}
+              publication={publication}
+              onHide={() =>
+                setHiddenIds((prev) => [...prev, publication.id])
+              }
+            />
           ))}
         </div>
       )}

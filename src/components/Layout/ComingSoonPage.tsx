@@ -1,4 +1,4 @@
-import { Construction, type LucideIcon } from "lucide-react";
+import { Construction, type LucideIcon } from "@/lib/icons";
 import { Header } from "./Header";
 import { PageContainer } from "./PageContainer";
 import { PageTitle } from "./PageTitle";

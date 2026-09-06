@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "@/lib/icons";
 import { isNavItemActive } from "../../constants/nav";
 
 interface MenuLinkProps {

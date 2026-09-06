@@ -8,7 +8,7 @@ import {
   Send,
   ThumbsUp,
   X,
-} from "lucide-react";
+} from "@/lib/icons";
 
 import { Avatar } from "../UI/Avatar";
 import { useToastStore } from "../../store/toast.store";
@@ -19,8 +19,8 @@ interface Props {
   /** true (défaut) : la carte renvoie vers `/publications/:id`. false sur la
    *  page de détail elle-même, où la publication est déjà le sujet. */
   linkToDetail?: boolean;
-  /** Fournie sur la page de détail : affiche une croix de fermeture. */
-  onClose?: () => void;
+  /** Croix en haut à droite : masque le post (fil) ou ferme le détail. */
+  onHide?: () => void;
 }
 
 const CLAMP_CHARS = 280;
@@ -36,14 +36,10 @@ function authorInitials(name: string): string {
   return `${a[0] ?? ""}${b[0] ?? ""}`.toUpperCase() || "?";
 }
 
-function plural(n: number, word: string): string {
-  return `${n} ${word}${n > 1 ? "s" : ""}`;
-}
-
 export default function PublicationCard({
   publication,
   linkToDetail = true,
-  onClose,
+  onHide,
 }: Props) {
   const to = `/publications/${publication.id}`;
   const [expanded, setExpanded] = useState(false);
@@ -90,6 +86,9 @@ export default function PublicationCard({
     </Link>
   );
 
+  const actionBtn =
+    "flex items-center gap-1.5 rounded-field px-2.5 py-2 text-sm hover:bg-base-200";
+
   return (
     <article className="bg-base-100">
       <div className="px-4 pt-3">
@@ -104,16 +103,14 @@ export default function PublicationCard({
             >
               <MoreHorizontal className="h-5 w-5" />
             </button>
-            {onClose && (
-              <button
-                type="button"
-                aria-label="Fermer"
-                onClick={onClose}
-                className="btn btn-ghost btn-circle btn-sm"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            )}
+            <button
+              type="button"
+              aria-label="Masquer ce post"
+              onClick={onHide ?? notify}
+              className="btn btn-ghost btn-circle btn-sm"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
         </div>
 
@@ -134,67 +131,52 @@ export default function PublicationCard({
         </div>
       </div>
 
-      {/* Résumé des réactions (façon LinkedIn) : petit cumul d'icônes + total,
-          puis nombre de commentaires / republications. */}
-      <div className="mt-3 flex items-center justify-between px-4 text-xs text-base-content/50">
-        <span className="flex items-center gap-1.5">
+      {/* Une seule ligne : actions à gauche, résumé des réactions à droite. */}
+      <div className="mt-2 flex items-center justify-between border-t border-base-200 px-2 py-1 text-base-content/60">
+        <div className="flex items-center">
+          <button type="button" onClick={notify} className={actionBtn}>
+            <ThumbsUp className="h-4 w-4" />
+            {publication.likesCount}
+          </button>
+
+          {linkToDetail ? (
+            <Link to={to} className={actionBtn}>
+              <MessageCircle className="h-4 w-4" />
+              {publication.commentsCount}
+            </Link>
+          ) : (
+            <span className={actionBtn}>
+              <MessageCircle className="h-4 w-4" />
+              {publication.commentsCount}
+            </span>
+          )}
+
+          <button type="button" onClick={notify} className={actionBtn}>
+            <Repeat2 className="h-4 w-4" />
+            {publication.sharesCount}
+          </button>
+
+          <button
+            type="button"
+            onClick={notify}
+            aria-label="Partager"
+            className={actionBtn}
+          >
+            <Send className="h-4 w-4" />
+          </button>
+        </div>
+
+        <span className="flex items-center gap-1 pr-2 text-xs text-base-content/50">
           <span className="flex -space-x-1">
             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-content ring-1 ring-base-100">
-              <ThumbsUp className="h-2.5 w-2.5" fill="currentColor" />
+              <ThumbsUp className="h-2.5 w-2.5" weight="fill" />
             </span>
             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-error text-error-content ring-1 ring-base-100">
-              <Heart className="h-2.5 w-2.5" fill="currentColor" />
+              <Heart className="h-2.5 w-2.5" weight="fill" />
             </span>
           </span>
           {publication.likesCount}
         </span>
-        <span>
-          {plural(publication.commentsCount, "commentaire")} ·{" "}
-          {plural(publication.sharesCount, "republication")}
-        </span>
-      </div>
-
-      <div className="mt-1 flex items-center justify-between border-t border-base-200 px-2 py-1 text-base-content/60">
-        <button
-          type="button"
-          onClick={notify}
-          className="flex items-center gap-1.5 rounded-field px-3 py-2 text-sm hover:bg-base-200 hover:text-primary"
-        >
-          <ThumbsUp className="h-4 w-4" />
-          {publication.likesCount}
-        </button>
-
-        {linkToDetail ? (
-          <Link
-            to={to}
-            className="flex items-center gap-1.5 rounded-field px-3 py-2 text-sm hover:bg-base-200"
-          >
-            <MessageCircle className="h-4 w-4" />
-            {publication.commentsCount}
-          </Link>
-        ) : (
-          <span className="flex items-center gap-1.5 px-3 py-2 text-sm">
-            <MessageCircle className="h-4 w-4" />
-            {publication.commentsCount}
-          </span>
-        )}
-
-        <button
-          type="button"
-          onClick={notify}
-          className="flex items-center gap-1.5 rounded-field px-3 py-2 text-sm hover:bg-base-200"
-        >
-          <Repeat2 className="h-4 w-4" />
-          {publication.sharesCount}
-        </button>
-
-        <button
-          type="button"
-          onClick={notify}
-          className="flex items-center gap-1.5 rounded-field px-3 py-2 text-sm hover:bg-base-200"
-        >
-          <Send className="h-4 w-4" />
-        </button>
       </div>
     </article>
   );

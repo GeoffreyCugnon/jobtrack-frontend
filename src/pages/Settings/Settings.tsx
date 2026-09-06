@@ -10,7 +10,7 @@ import {
   HelpCircle,
   Info,
   Settings as SettingsIcon,
-} from "lucide-react";
+} from "@/lib/icons";
 import SettingsProfileCard from "../../components/Settings/SettingsProfileCard";
 import { SettingsSection } from "../../components/Settings/SettingsSection";
 import SettingsItem from "../../components/Settings/SettingsItem";

@@ -1,7 +1,7 @@
 // src/pages/Dashboard/EntretienDetail.tsx
 import { useState } from "react";
 import { useParams } from "react-router";
-import { Calendar, MapPin, Video, FileQuestion, CheckCircle2 } from "lucide-react";
+import { Calendar, MapPin, Video, FileQuestion, CheckCircle2 } from "@/lib/icons";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";

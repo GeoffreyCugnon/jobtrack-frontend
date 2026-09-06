@@ -10,7 +10,7 @@ import {
   Users,
   Building2,
   type LucideIcon,
-} from "lucide-react";
+} from "@/lib/icons";
 import { cvItems, letterItems } from "../../data/documents";
 import { CONVERSATIONS } from "../../constants/conversations";
 import { OffersApi } from "../../api/offers.api";

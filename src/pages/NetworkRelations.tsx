@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, RotateCw, Users } from "lucide-react";
+import { ArrowLeft, RotateCw, Users } from "@/lib/icons";
 
 import { Avatar } from "../components/UI/Avatar";
 import { EmptyState } from "../components/Layout/EmptyState";

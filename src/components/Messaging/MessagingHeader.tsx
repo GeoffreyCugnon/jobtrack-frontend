@@ -7,7 +7,7 @@ import {
   SlidersHorizontal,
   Archive,
   CalendarClock,
-} from "lucide-react";
+} from "@/lib/icons";
 import { DropdownMenu } from "../UI/DropdownMenu";
 
 interface MessagingHeaderProps {

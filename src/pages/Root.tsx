@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Outlet, Link, useLocation } from "react-router";
-import { Plus } from "lucide-react";
+import { Plus } from "@/lib/icons";
 import { SideMenu } from "../components/SideMenu/SideMenu";
 import { MessagingFab } from "../components/Messaging/MessagingFab";
 import { MessagingPanel } from "../components/Messaging/MessagingPanel";

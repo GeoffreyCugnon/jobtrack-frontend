@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, FileQuestion, RotateCw, Send } from "lucide-react";
+import { ArrowLeft, FileQuestion, RotateCw, Send } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import PublicationCard from "../../components/Publications/PublicationCard";
@@ -105,7 +105,7 @@ export function PublicationDetail() {
         <PublicationCard
           publication={publication}
           linkToDetail={false}
-          onClose={() => navigate("/publications")}
+          onHide={() => navigate("/publications")}
         />
       </div>
 

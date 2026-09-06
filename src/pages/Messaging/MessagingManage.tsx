@@ -1,4 +1,4 @@
-import { ListChecks } from "lucide-react";
+import { ListChecks } from "@/lib/icons";
 import { ComingSoonPage } from "../../components/Layout/ComingSoonPage";
 
 export function MessagingManage() {

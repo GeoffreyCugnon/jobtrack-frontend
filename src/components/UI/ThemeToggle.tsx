@@ -1,4 +1,4 @@
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "@/lib/icons";
 import { useTheme } from "../../context/Theme/useTheme";
 import { THEME_DARK } from "../../context/Theme/themeContextInstance";
 

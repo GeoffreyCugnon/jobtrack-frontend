@@ -1,5 +1,5 @@
 import { MenuLink } from "./MenuLink";
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "@/lib/icons";
 
 interface LinkItem {
   to: string;

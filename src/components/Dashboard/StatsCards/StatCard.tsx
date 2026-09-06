@@ -1,4 +1,4 @@
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight, type LucideIcon } from "@/lib/icons";
 import { Link } from "react-router";
 
 interface StatCardProps {

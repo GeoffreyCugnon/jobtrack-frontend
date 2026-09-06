@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Bookmark, Briefcase, ChevronRight, RotateCw } from "lucide-react";
+import { Bookmark, Briefcase, ChevronRight, RotateCw } from "@/lib/icons";
 import { OfferCategorySelector } from "../components/Offers/OfferCategorySelector";
 import { OfferCategoryBanner } from "../components/Offers/OfferCategoryBanner";
 import { OfferList } from "../components/Offers/OfferList";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Bookmark, RotateCw } from "lucide-react";
+import { ArrowLeft, Bookmark, RotateCw } from "@/lib/icons";
 
 import { EmptyState } from "../components/Layout/EmptyState";
 import { OfferList } from "../components/Offers/OfferList";

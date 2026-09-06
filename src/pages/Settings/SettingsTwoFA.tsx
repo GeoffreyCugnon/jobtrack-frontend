@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { INPUT_CLASS } from "../../constants/styles";
 

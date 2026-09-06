@@ -10,7 +10,7 @@ import {
   MapPin,
   RotateCw,
   Users,
-} from "lucide-react";
+} from "@/lib/icons";
 import { Header } from "../components/Layout/Header";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { OffersApi } from "../api/offers.api";

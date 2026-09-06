@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, Lock } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Lock } from "@/lib/icons";
 import { SettingsModal } from "../../components/Settings/SettingsModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useRef } from "react";

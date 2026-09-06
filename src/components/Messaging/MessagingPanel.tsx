@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle } from "@/lib/icons";
 import { useMessaging } from "../../context/Messaging/useMessaging";
 import {
   CONVERSATIONS,

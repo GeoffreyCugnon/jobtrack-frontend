@@ -1,5 +1,5 @@
 // src/pages/Dashboard/Candidatures.tsx
-import { TrendingUp } from "lucide-react";
+import { TrendingUp } from "@/lib/icons";
 import { ClickableRow } from "../../components/Layout/ClickableRow";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";

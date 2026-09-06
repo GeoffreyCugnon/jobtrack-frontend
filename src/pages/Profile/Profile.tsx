@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { User } from "lucide-react";
+import { User } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";

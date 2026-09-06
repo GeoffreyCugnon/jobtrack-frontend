@@ -1,4 +1,4 @@
-import { ChevronRight, X } from "lucide-react";
+import { ChevronRight, X } from "@/lib/icons";
 import { Link } from "react-router";
 import { Avatar } from "../UI/Avatar";
 

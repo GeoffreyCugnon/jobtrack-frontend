@@ -1,4 +1,4 @@
-import { MoreVertical, Circle, CheckCircle2, Archive, Trash2 } from "lucide-react";
+import { MoreVertical, Circle, CheckCircle2, Archive, Trash2 } from "@/lib/icons";
 import { Avatar } from "../UI/Avatar";
 import { DropdownMenu } from "../UI/DropdownMenu";
 

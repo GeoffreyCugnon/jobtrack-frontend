@@ -1,5 +1,5 @@
 // src/components/dashboard/taskRow.tsx
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight, type LucideIcon } from "@/lib/icons";
 import { Link } from "react-router";
 
 export type TaskDueCategory = "today" | "upcoming";

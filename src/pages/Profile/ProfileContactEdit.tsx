@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, Contact as ContactIcon } from "lucide-react";
+import { ArrowLeft, Contact as ContactIcon } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { INPUT_CLASS } from "../../constants/styles";
 import { useAuthStore } from "../../store/auth.store";

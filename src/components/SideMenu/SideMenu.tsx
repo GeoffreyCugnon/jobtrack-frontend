@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
-import { BarChart3, Settings, LogOut, ArrowLeft } from "lucide-react";
+import { BarChart3, Settings, LogOut, ArrowLeft } from "@/lib/icons";
 import { MenuOverlay } from "./MenuOverlay";
 import { MenuHeader } from "./MenuHeader";
 import { MenuSection } from "./MenuSection";

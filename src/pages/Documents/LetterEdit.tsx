@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ArrowLeft, Pencil } from "lucide-react";
+import { ArrowLeft, Pencil } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { letterItems } from "../../data/documents";
 import { INPUT_CLASS } from "../../constants/styles";

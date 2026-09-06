@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router";
-import { ArrowLeft, FileText, Pencil } from "lucide-react";
+import { ArrowLeft, FileText, Pencil } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { cvItems } from "../../data/documents";
 import { BTN_FOCUS_RING } from "../../constants/styles";

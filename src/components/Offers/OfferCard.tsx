@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { MapPin, Clock, Heart, X, BadgeCheck } from "lucide-react";
+import { MapPin, Clock, Heart, X, BadgeCheck } from "@/lib/icons";
 
 type WorkMode = "onSite" | "Remote" | "Hybrid";
 
@@ -119,7 +119,7 @@ export function OfferCard({
               saved ? "text-primary" : "text-base-content/40 hover:text-primary"
             }`}
           >
-            <Heart className="w-5 h-5" fill={saved ? "currentColor" : "none"} />
+            <Heart className="w-5 h-5" weight={saved ? "fill" : "regular"} />
           </button>
           <button
             type="button"

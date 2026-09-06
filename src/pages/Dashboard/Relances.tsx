@@ -1,5 +1,5 @@
 // src/pages/Dashboard/Relances.tsx
-import { Mail, Link as LinkIcon, Phone, CheckCircle2 } from "lucide-react";
+import { Mail, Link as LinkIcon, Phone, CheckCircle2 } from "@/lib/icons";
 import { TaskRow } from "../../components/Dashboard/UrgentTasks/TaskRow";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";

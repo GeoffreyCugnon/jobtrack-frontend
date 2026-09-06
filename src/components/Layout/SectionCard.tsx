@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, Plus } from "@/lib/icons";
 import { Link } from "react-router";
 
 interface SectionCardBaseProps {

@@ -1,5 +1,5 @@
 import type { MouseEvent as ReactMouseEvent } from "react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle } from "@/lib/icons";
 import { useMessaging } from "../../context/Messaging/useMessaging";
 import { useDraggableFab } from "../../hooks/useDraggableFab";
 import { useToastStore } from "../../store/toast.store";

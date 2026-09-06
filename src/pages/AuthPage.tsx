@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { FileText, LayoutDashboard, Target } from "lucide-react";
+import { FileText, LayoutDashboard, Target } from "@/lib/icons";
 import { AuthLogo } from "../components/Auth/AuthLogo";
 import { AuthTabs } from "../components/Auth/AuthTabs";
 import { LoginForm } from "../components/Auth/LoginForm";

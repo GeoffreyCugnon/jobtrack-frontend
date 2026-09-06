@@ -1,4 +1,4 @@
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "@/lib/icons";
 import { ComingSoonPage } from "../../components/Layout/ComingSoonPage";
 
 export function MessagingPreferences() {

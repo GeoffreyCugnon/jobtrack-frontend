@@ -9,7 +9,7 @@ import {
   Users,
   UsersRound,
   type LucideIcon,
-} from "lucide-react";
+} from "@/lib/icons";
 
 import { ConnectionApi } from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";

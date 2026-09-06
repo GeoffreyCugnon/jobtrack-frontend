@@ -1,5 +1,5 @@
 // src/constants/nav.ts
-import { Home, Briefcase, Users, FileText, Newspaper } from "lucide-react";
+import { Home, Briefcase, Users, FileText, Newspaper } from "@/lib/icons";
 
 // Barre de navigation d'un visiteur non connecté : identique sur l'accueil
 // (`/`) et sur les pages accessibles en invité (`/offers`), pour ne pas

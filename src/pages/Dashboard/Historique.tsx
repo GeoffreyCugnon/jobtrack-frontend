@@ -6,7 +6,7 @@ import {
   Mail,
   CheckCircle2,
   Sparkles,
-} from "lucide-react";
+} from "@/lib/icons";
 import { EventRow } from "../../components/Dashboard/RecentEvents/EventRow";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";

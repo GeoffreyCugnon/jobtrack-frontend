@@ -1,4 +1,4 @@
-import { BarChart3, Construction } from "lucide-react";
+import { BarChart3, Construction } from "@/lib/icons";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { Header } from "../components/Layout/Header";
 import { PageContainer } from "../components/Layout/PageContainer";

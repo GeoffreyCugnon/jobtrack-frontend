@@ -24,6 +24,9 @@ interface Props {
 }
 
 const CLAMP_CHARS = 280;
+// Une image dont le ratio hauteur/largeur dépasse ce seuil est repliée
+// (hauteur max) avec un « … plus » pour l'afficher en entier.
+const TALL_IMAGE_RATIO = 0.9;
 
 const TYPE_LABEL: Record<string, string> = {
   ARTICLE: "Article",
@@ -43,6 +46,8 @@ export default function PublicationCard({
 }: Props) {
   const to = `/publications/${publication.id}`;
   const [expanded, setExpanded] = useState(false);
+  const [imageExpanded, setImageExpanded] = useState(false);
+  const [imageTall, setImageTall] = useState(false);
   const notify = () =>
     useToastStore.getState().addToast("Bientôt disponible", "info");
 
@@ -130,6 +135,36 @@ export default function PublicationCard({
           )}
         </div>
       </div>
+
+      {publication.imageUrl && (
+        <div
+          className={`relative mt-3 overflow-hidden ${
+            imageTall && !imageExpanded ? "max-h-112" : ""
+          }`}
+        >
+          <img
+            src={publication.imageUrl}
+            alt=""
+            loading="lazy"
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              setImageTall(
+                img.naturalHeight / img.naturalWidth > TALL_IMAGE_RATIO,
+              );
+            }}
+            className="w-full object-cover"
+          />
+          {imageTall && !imageExpanded && (
+            <button
+              type="button"
+              onClick={() => setImageExpanded(true)}
+              className="absolute inset-x-0 bottom-0 flex items-end justify-center bg-linear-to-t from-base-100 via-base-100/80 to-transparent pt-12 pb-2 text-sm font-medium text-primary"
+            >
+              … plus
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Une seule ligne : actions à gauche, résumé des réactions à droite. */}
       <div className="mt-2 flex items-center justify-between border-t border-base-200 px-2 py-1 text-base-content/60">

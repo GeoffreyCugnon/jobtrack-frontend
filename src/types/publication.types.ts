@@ -7,6 +7,7 @@ export interface Publication {
   authorAvatarUrl: string | null;
   title: string;
   content: string;
+  imageUrl: string | null;
   type: string;
   createdAt: string;
   timeAgo: string;

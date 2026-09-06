@@ -1,11 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
-import {
-  Megaphone,
-  BarChart3,
-  Settings,
-  LogOut,
-  ArrowLeft,
-} from "lucide-react";
+import { BarChart3, Settings, LogOut, ArrowLeft } from "lucide-react";
 import { MenuOverlay } from "./MenuOverlay";
 import { MenuHeader } from "./MenuHeader";
 import { MenuSection } from "./MenuSection";
@@ -42,17 +36,14 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
 
   // "Profil" n'est plus un lien de liste : l'en-tête du menu (identité +
   // chevron) est devenu le point d'entrée vers le profil.
-  const mainLinks = isAuthenticated
-    ? mainNavItems
-        .filter((item) => item.path !== "/dashboard")
-        .map(({ path, label, icon }) => ({ to: path, label, icon }))
-    : mainNavItems.map(({ path, label, icon }) => ({ to: path, label, icon }));
+  const mainLinks = mainNavItems.map(({ path, label, icon }) => ({
+    to: path,
+    label,
+    icon,
+  }));
 
   const secondaryLinks = isAuthenticated
-    ? [
-        { to: "/publications", label: "Actus", icon: Megaphone },
-        { to: "/statistics", label: "Statistiques", icon: BarChart3 },
-      ]
+    ? [{ to: "/statistics", label: "Statistiques", icon: BarChart3 }]
     : [];
 
   const handleLogout = async () => {

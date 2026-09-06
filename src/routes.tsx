@@ -66,7 +66,8 @@ export const router = createBrowserRouter([
           { path: "letters/:id/edit", Component: LetterEdit },
         ],
       },
-      { path: "publications", Component: Publications },
+      // Onglet "Actus" de l'app : même composant que l'accueil, sans le logo.
+      { path: "publications", element: <Publications showLogo={false} /> },
       { path: "publications/:id", Component: PublicationDetail },
       { path: "statistics", Component: Statistics },
       {

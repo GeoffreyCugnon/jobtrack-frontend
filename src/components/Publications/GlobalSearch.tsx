@@ -123,6 +123,9 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   }, [open]);
 
   const q = query.trim().toLowerCase();
+  // Les pages liste "Actus" et "Offres" filtrent sur `?q=` : l'en-tête de
+  // groupe y renvoie avec le terme courant.
+  const qSuffix = query.trim() ? `?q=${encodeURIComponent(query.trim())}` : "";
   const go = (to: string) => {
     setOpen(false);
     navigate(to);
@@ -141,7 +144,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       groups.push({
         label: "Actus",
         icon: Newspaper,
-        href: "/publications",
+        href: `/publications${qSuffix}`,
         items: pubs.map((p) => ({
           key: `pub-${p.id}`,
           title: p.author,
@@ -161,7 +164,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       groups.push({
         label: "Offres",
         icon: Briefcase,
-        href: "/offers",
+        href: `/offers${qSuffix}`,
         items: offs.map((o) => ({
           key: `off-${o.id}`,
           title: o.role,

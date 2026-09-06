@@ -3,12 +3,13 @@ import { Offers } from "../../src/pages/Offers";
 import { MenuProvider } from "../../src/context/Menu/MenuContext";
 import mockOffers from "../../src/data/mockOffers.json";
 
-// `Offers` charge les offres via `OffersApi.getAll()` (`GET job-offering`) :
-// on intercepte la requête avec le jeu d'offres mock.
-function mountOffers() {
+// `Offers` charge les offres via `OffersApi.getAll()` (`GET job-offering`) et
+// filtre le texte sur `?q=` (la barre de recherche est désormais celle du
+// header, qui navigue vers `/offers?q=...`).
+function mountOffers(entry = "/offers") {
   cy.intercept("GET", "**/job-offering", { body: mockOffers }).as("offers");
   cy.mount(
-    <MemoryRouter initialEntries={["/offers"]}>
+    <MemoryRouter initialEntries={[entry]}>
       <MenuProvider>
         <Offers />
       </MenuProvider>
@@ -16,8 +17,6 @@ function mountOffers() {
   );
   cy.wait("@offers");
 }
-
-const SEARCH = 'input[placeholder="Rechercher une offre..."]';
 
 describe("Offers", () => {
   it("affiche l'onglet Recherche actif avec toutes les offres par défaut", () => {
@@ -31,10 +30,8 @@ describe("Offers", () => {
     cy.contains(`${mockOffers.length} offres trouvées`).should("be.visible");
   });
 
-  it("filtre les offres via la barre de recherche", () => {
-    mountOffers();
-
-    cy.get(SEARCH).type("PixelWorks");
+  it("filtre les offres via ?q=", () => {
+    mountOffers("/offers?q=PixelWorks");
 
     cy.contains("1 offre trouvée").should("be.visible");
     cy.contains("Développeuse Frontend").should("be.visible");
@@ -52,14 +49,12 @@ describe("Offers", () => {
   });
 
   it("sauvegarde une offre et la retrouve dans l'onglet Sauvegardées", () => {
-    mountOffers();
+    mountOffers("/offers?q=PixelWorks");
 
-    cy.get(SEARCH).type("PixelWorks");
     cy.contains("Développeuse Frontend")
       .closest("div.py-3")
       .find('button[aria-label="Sauvegarder l\'offre"]')
       .click();
-    cy.get(SEARCH).clear();
 
     cy.contains("button", "Sauvegardées").click();
 
@@ -68,9 +63,8 @@ describe("Offers", () => {
   });
 
   it("masque une offre au clic sur la croix", () => {
-    mountOffers();
+    mountOffers("/offers?q=PixelWorks");
 
-    cy.get(SEARCH).type("PixelWorks");
     cy.contains("Développeuse Frontend")
       .closest("div.py-3")
       .find('button[aria-label="Masquer cette offre"]')

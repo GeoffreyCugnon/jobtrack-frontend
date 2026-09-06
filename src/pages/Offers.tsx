@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Briefcase, Heart, RotateCw } from "lucide-react";
-import { OfferSearchBar } from "../components/Offers/OfferSearchBar";
 import { OfferCategorySelector } from "../components/Offers/OfferCategorySelector";
 import { OfferCategoryBanner } from "../components/Offers/OfferCategoryBanner";
 import { OfferList } from "../components/Offers/OfferList";
@@ -20,15 +19,13 @@ function pluralize(count: number, singular: string, plural: string) {
 }
 
 export function Offers() {
-  // `?q=` permet d'arriver ici depuis la recherche globale du fil d'actus
-  // avec la recherche déjà remplie.
+  // La recherche texte se fait depuis la barre globale du header, qui navigue
+  // vers `/offers?q=...` : plus de barre de recherche propre à la page.
   const [searchParams] = useSearchParams();
+  const searchQuery = (searchParams.get("q") ?? "").trim();
   // null = aucun filtre catégorie actif (toutes les offres affichées).
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"search" | "saved">("search");
-  const [searchQuery, setSearchQuery] = useState(
-    () => searchParams.get("q") ?? "",
-  );
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [alertEnabled, setAlertEnabled] = useState(false);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -72,8 +69,8 @@ export function Offers() {
   };
 
   // Sélection ET désélection (retour à "Toutes les offres") remontent en
-  // haut : la search bar (qui n'est pas sticky) redevient visible et les
-  // nouveaux résultats s'affichent depuis le début de la liste.
+  // haut : la bannière redevient visible et les nouveaux résultats
+  // s'affichent depuis le début de la liste.
   const handleCategoryChange = (key: string | null) => {
     setActiveCategory(key);
     pageTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -90,7 +87,7 @@ export function Offers() {
       : normalizedOffers.filter((offer) => offer.category === activeCategory);
 
   const searchedOffers = categoryOffers.filter((offer) => {
-    const query = searchQuery.trim().toLowerCase();
+    const query = searchQuery.toLowerCase();
     if (!query) return true;
     return (
       offer.role.toLowerCase().includes(query) ||
@@ -162,14 +159,11 @@ export function Offers() {
               </div>
 
               {activeTab === "search" && (
-                // Un seul bloc englobant bannière + badges + search bar +
-                // résultats : position: sticky reste "collé" tant qu'on
-                // scrolle dans les limites de SON PARENT direct. Si la
-                // bannière/les badges n'avaient que la search bar comme
-                // parent (~90px), le sticky se décollait dès que ce petit
-                // parent avait fini de défiler. En englobant aussi les
-                // résultats (bien plus grands que le viewport), les deux
-                // restent collés sur toute la hauteur de la liste.
+                // Un seul bloc englobant bannière + badges + résultats : le
+                // `position: sticky` reste "collé" tant qu'on scrolle dans les
+                // limites de son parent direct. En englobant aussi les résultats
+                // (bien plus grands que le viewport), bannière et badges restent
+                // collés sur toute la hauteur de la liste.
                 <div className="bg-base-100">
                   {/* top-16 = hauteur du Header (h-16, sticky top-0 z-30) :
                       la bannière se colle juste en dessous, jamais dessus. */}
@@ -189,21 +183,6 @@ export function Offers() {
                     <OfferCategorySelector
                       active={activeCategory}
                       onChange={handleCategoryChange}
-                    />
-                  </div>
-                  {/* Sticky uniquement quand la recherche contient du texte :
-                      une recherche vide n'a pas besoin de rester accessible
-                      en permanence, elle scrolle avec le reste comme avant.
-                      top-42 (168px) = header (64) + bannière (56) + badges
-                      (48) : elle se colle juste sous les badges. */}
-                  <div
-                    className={
-                      searchQuery ? "sticky top-42 z-20 bg-base-100" : ""
-                    }
-                  >
-                    <OfferSearchBar
-                      value={searchQuery}
-                      onChange={setSearchQuery}
                     />
                   </div>
 

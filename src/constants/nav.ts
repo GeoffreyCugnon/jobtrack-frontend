@@ -1,11 +1,5 @@
 // src/constants/nav.ts
-import {
-  Home,
-  Briefcase,
-  Users,
-  FileText,
-  LayoutDashboard,
-} from "lucide-react";
+import { Home, Briefcase, Users, FileText, Newspaper } from "lucide-react";
 
 // Barre de navigation d'un visiteur non connecté : identique sur l'accueil
 // (`/`) et sur les pages accessibles en invité (`/offers`), pour ne pas
@@ -21,10 +15,10 @@ export const MAIN_NAV_ITEMS = [
   },
   { path: "/network", icon: Users, label: "Réseau", shortLabel: "Réseau" },
   {
-    path: "/dashboard",
-    icon: LayoutDashboard,
-    label: "Dashboard",
-    shortLabel: "Dashboard",
+    path: "/publications",
+    icon: Newspaper,
+    label: "Actus",
+    shortLabel: "Actus",
   },
   {
     path: "/documents",

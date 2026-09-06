@@ -5,7 +5,15 @@ import PublicationCard from "../../components/Publications/PublicationCard";
 
 import publications from "../../data/publications";
 
-export function Publications() {
+interface PublicationsProps {
+  /**
+   * Logo JobTrack en tête du fil : présent sur l'accueil (`/`), absent sur
+   * l'onglet "Actus" de l'app (`/publications`) — même composant, deux usages.
+   */
+  showLogo?: boolean;
+}
+
+export function Publications({ showLogo = true }: PublicationsProps) {
   const [searchParams] = useSearchParams();
   const query = (searchParams.get("q") ?? "").trim().toLowerCase();
 
@@ -24,9 +32,11 @@ export function Publications() {
         <Header search="feed" />
 
         <main className="flex-1 overflow-y-auto p-4 space-y-4">
-          <div className="flex justify-center py-1">
-            <LogoMark className="w-40 text-base-content" />
-          </div>
+          {showLogo && (
+            <div className="flex justify-center py-1">
+              <LogoMark className="w-40 text-base-content" />
+            </div>
+          )}
 
           {visiblePublications.length === 0 ? (
             <p className="py-8 text-center text-sm text-base-content/60">

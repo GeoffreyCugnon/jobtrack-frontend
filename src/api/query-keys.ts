@@ -17,4 +17,7 @@ export const queryKeys = {
     all: ["users"] as const,
     detail: (id: string | number) => ["users", "detail", String(id)] as const,
   },
+  connections: {
+    all: ["connections"] as const,
+  },
 } as const;

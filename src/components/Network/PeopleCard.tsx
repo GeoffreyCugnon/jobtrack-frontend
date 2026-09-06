@@ -6,6 +6,10 @@ import type { User } from "../../types/user.type";
 interface PeopleCardProps {
   user: User;
   index: number;
+  /** Libellé du bouton d'action (défaut « Se connecter »). */
+  actionLabel?: string;
+  /** Bouton grisé (invitation déjà envoyée, relation déjà en place…). */
+  actionDisabled?: boolean;
   onAction: () => void;
   /** Ligne secondaire sous le nom. Défaut : intitulé de poste dérivé. */
   caption?: string;
@@ -16,6 +20,8 @@ interface PeopleCardProps {
 export function PeopleCard({
   user,
   index,
+  actionLabel = "Se connecter",
+  actionDisabled = false,
   onAction,
   caption,
   hiring = true,
@@ -69,9 +75,10 @@ export function PeopleCard({
         <button
           type="button"
           onClick={onAction}
-          className="btn btn-outline btn-primary btn-sm w-full rounded-full"
+          disabled={actionDisabled}
+          className="btn btn-outline btn-primary btn-sm w-full rounded-full disabled:btn-outline"
         >
-          Se connecter
+          {actionLabel}
         </button>
       </div>
     </div>

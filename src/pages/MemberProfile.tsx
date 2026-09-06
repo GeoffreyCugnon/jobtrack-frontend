@@ -1,18 +1,39 @@
 import { Link, useNavigate, useParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, FileQuestion, Mail, MessageSquare, RotateCw, UserPlus } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  Check,
+  FileQuestion,
+  Mail,
+  MessageSquare,
+  RotateCw,
+  UserPlus,
+} from "lucide-react";
 import { Header } from "../components/Layout/Header";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { UserApi } from "../api/user.api";
+import {
+  ConnectionApi,
+  connectionStatusByUser,
+  type ConnectionStatus,
+} from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";
 import { useToastStore } from "../store/toast.store";
 import { memberHeadline, memberName } from "../utils/member";
 
 const FALLBACK_AVATAR = "https://api.dicebear.com/9.x/avataaars/svg?seed=jobtrack";
 
+const CONNECT_LABEL: Record<ConnectionStatus, string> = {
+  none: "Se connecter",
+  pending_out: "Invitation envoyée",
+  pending_in: "Accepter l'invitation",
+  connected: "En relation",
+};
+
 export function MemberProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     data: member,
@@ -23,6 +44,38 @@ export function MemberProfile() {
     queryKey: queryKeys.users.detail(id ?? ""),
     queryFn: () => UserApi.getById(id!),
     enabled: !!id,
+  });
+
+  const { data: connections } = useQuery({
+    queryKey: queryKeys.connections.all,
+    queryFn: () => ConnectionApi.list(),
+  });
+
+  const connectStatus: ConnectionStatus =
+    member && connections
+      ? (connectionStatusByUser(connections).get(member.id) ?? "none")
+      : "none";
+
+  const connectMut = useMutation({
+    mutationFn: (action: "request" | "accept") =>
+      action === "request"
+        ? ConnectionApi.request(member!.id)
+        : ConnectionApi.accept(member!.id),
+    onSuccess: (_data, action) => {
+      useToastStore
+        .getState()
+        .addToast(
+          action === "request" ? "Invitation envoyée" : "Invitation acceptée",
+          "success",
+        );
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.connections.all,
+      });
+    },
+    onError: () =>
+      useToastStore
+        .getState()
+        .addToast("Une erreur est survenue", "error"),
   });
 
   const notify = () =>
@@ -101,11 +154,24 @@ export function MemberProfile() {
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={notify}
+            onClick={() => {
+              if (connectStatus === "none") connectMut.mutate("request");
+              else if (connectStatus === "pending_in")
+                connectMut.mutate("accept");
+            }}
+            disabled={
+              connectMut.isPending ||
+              connectStatus === "pending_out" ||
+              connectStatus === "connected"
+            }
             className="btn btn-primary btn-sm gap-1.5"
           >
-            <UserPlus className="h-4 w-4" />
-            Se connecter
+            {connectStatus === "pending_in" ? (
+              <Check className="h-4 w-4" />
+            ) : (
+              <UserPlus className="h-4 w-4" />
+            )}
+            {CONNECT_LABEL[connectStatus]}
           </button>
           <button
             type="button"

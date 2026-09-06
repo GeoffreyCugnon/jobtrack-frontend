@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Link } from "react-router";
-import { Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
+import { ThumbsUp, MessageCircle, Repeat2, Send } from "lucide-react";
 
+import { Avatar } from "../UI/Avatar";
 import type { Publication } from "../../types/publication.types";
 
 interface Props {
@@ -10,85 +12,117 @@ interface Props {
   linkToDetail?: boolean;
 }
 
+const CLAMP_CHARS = 280;
+
+const TYPE_LABEL: Record<string, string> = {
+  ARTICLE: "Article",
+  ANNONCE: "Annonce",
+  ACTU: "Actu",
+};
+
+function authorInitials(name: string): string {
+  const [a = "", b = ""] = name.trim().split(/\s+/);
+  return `${a[0] ?? ""}${b[0] ?? ""}`.toUpperCase() || "?";
+}
+
 export default function PublicationCard({
   publication,
   linkToDetail = true,
 }: Props) {
   const to = `/publications/${publication.id}`;
+  const [expanded, setExpanded] = useState(false);
+
+  const isLong = publication.content.length > CLAMP_CHARS;
+  const shown =
+    !isLong || expanded
+      ? publication.content
+      : publication.content.slice(0, CLAMP_CHARS).trimEnd() + "…";
 
   const header = (
-    <div className="flex gap-3 min-w-0">
-      <div className="avatar">
-        <div className="w-12 rounded-full bg-linear-to-r from-blue-500 to-purple-500" />
-      </div>
-      <div className="min-w-0">
-        <h2 className="font-semibold truncate">{publication.author}</h2>
-        <p className="text-xs text-base-content/60">{publication.date}</p>
+    <div className="flex items-start gap-3">
+      <Avatar
+        label={authorInitials(publication.authorName)}
+        avatarUrl={publication.authorAvatarUrl ?? undefined}
+        size="md"
+      />
+      <div className="min-w-0 leading-tight">
+        <p className="font-semibold text-base-content truncate">
+          {publication.authorName}
+        </p>
+        <p className="text-xs text-base-content/50">
+          {TYPE_LABEL[publication.type] ?? publication.type} ·{" "}
+          {publication.timeAgo}
+        </p>
       </div>
     </div>
   );
 
   return (
-    <div className="card bg-base-100 shadow-md border">
-      <div className="card-body">
-        <div className="flex justify-between">
-          {linkToDetail ? (
-            <Link to={to} className="min-w-0 hover:opacity-80">
-              {header}
-            </Link>
-          ) : (
-            header
-          )}
-
-          <button className="btn btn-ghost btn-circle btn-sm">
-            <Bookmark />
-          </button>
-        </div>
-
+    <article className="bg-base-100">
+      <div className="px-4 pt-3">
         {linkToDetail ? (
-          <Link to={to} className="block leading-7 hover:opacity-80">
-            {publication.description}
+          <Link to={to} className="block hover:opacity-90">
+            {header}
           </Link>
         ) : (
-          <p className="leading-7">{publication.description}</p>
+          header
         )}
 
-        <div className="flex gap-2 flex-wrap">
-          {publication.tags.map((tag) => (
-            <div key={tag} className="badge badge-outline">
-              {tag}
-            </div>
-          ))}
-        </div>
-
-        <div className="divider my-1" />
-
-        <div className="flex justify-between">
-          <div className="flex gap-5">
-            <button className="btn btn-ghost btn-sm">
-              <Heart />
-              {publication.likes}
+        <div className="mt-2 text-[15px] leading-relaxed text-base-content/90 whitespace-pre-line">
+          {publication.title && (
+            <span className="font-medium">{publication.title}. </span>
+          )}
+          {shown}
+          {isLong && !expanded && (
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="ml-1 text-sm font-medium text-base-content/50 hover:text-primary"
+            >
+              plus
             </button>
-
-            {linkToDetail ? (
-              <Link to={to} className="btn btn-ghost btn-sm">
-                <MessageCircle />
-                {publication.comments}
-              </Link>
-            ) : (
-              <span className="btn btn-ghost btn-sm pointer-events-none">
-                <MessageCircle />
-                {publication.comments}
-              </span>
-            )}
-          </div>
-
-          <button className="btn btn-ghost btn-sm">
-            <Share2 />
-            Partager
-          </button>
+          )}
         </div>
       </div>
-    </div>
+
+      <div className="mt-2 flex items-center justify-between border-t border-base-200 px-2 py-1 text-base-content/60">
+        <button
+          type="button"
+          className="flex items-center gap-1.5 rounded-field px-3 py-2 text-sm hover:bg-base-200 hover:text-primary"
+        >
+          <ThumbsUp className="h-4 w-4" />
+          {publication.likesCount}
+        </button>
+
+        {linkToDetail ? (
+          <Link
+            to={to}
+            className="flex items-center gap-1.5 rounded-field px-3 py-2 text-sm hover:bg-base-200"
+          >
+            <MessageCircle className="h-4 w-4" />
+            {publication.commentsCount}
+          </Link>
+        ) : (
+          <span className="flex items-center gap-1.5 px-3 py-2 text-sm">
+            <MessageCircle className="h-4 w-4" />
+            {publication.commentsCount}
+          </span>
+        )}
+
+        <button
+          type="button"
+          className="flex items-center gap-1.5 rounded-field px-3 py-2 text-sm hover:bg-base-200"
+        >
+          <Repeat2 className="h-4 w-4" />
+        </button>
+
+        <button
+          type="button"
+          className="flex items-center gap-1.5 rounded-field px-3 py-2 text-sm hover:bg-base-200"
+        >
+          <Send className="h-4 w-4" />
+        </button>
+      </div>
+    </article>
   );
 }

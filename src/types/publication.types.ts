@@ -1,15 +1,14 @@
+// Publication telle que renvoyée par l'API (`GET publication`), produite côté
+// Backend par `publication.service.ts#toDto`.
 export interface Publication {
   id: number;
-
-  author: string;
-
-  date: string;
-
-  description: string;
-
-  tags: string[];
-
-  likes: number;
-
-  comments: number;
+  authorName: string;
+  authorAvatarUrl: string | null;
+  title: string;
+  content: string;
+  type: string;
+  createdAt: string;
+  timeAgo: string;
+  likesCount: number;
+  commentsCount: number;
 }

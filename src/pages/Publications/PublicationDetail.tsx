@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
-import { ArrowLeft, FileQuestion, Send } from "lucide-react";
+import { ArrowLeft, FileQuestion, RotateCw, Send } from "lucide-react";
 import { Header } from "../../components/Layout/Header";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import PublicationCard from "../../components/Publications/PublicationCard";
-import publications from "../../data/publications";
+import { PublicationsApi } from "../../api/publications.api";
+import type { Publication } from "../../types/publication.types";
 import {
   publicationComments,
   type PublicationComment,
@@ -13,30 +14,72 @@ import { INPUT_CLASS } from "../../constants/styles";
 
 export function PublicationDetail() {
   const { id } = useParams();
-  const publication = publications.find((p) => String(p.id) === id);
-
-  const [comments, setComments] = useState<PublicationComment[]>(
-    () => (publication ? (publicationComments[publication.id] ?? []) : []),
+  const [publication, setPublication] = useState<Publication | null>(null);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
   );
+  const [comments, setComments] = useState<PublicationComment[]>([]);
   const [draft, setDraft] = useState("");
 
+  const load = useCallback(async () => {
+    if (!id) return;
+    setStatus("loading");
+    try {
+      const data = await PublicationsApi.getById(id);
+      setPublication(data);
+      setComments(data ? (publicationComments[data.id] ?? []) : []);
+      setStatus("ready");
+    } catch (error) {
+      console.error("Failed to load publication", error);
+      setStatus("error");
+    }
+  }, [id]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
   const shell = (children: React.ReactNode) => (
-    <div className="bg-base-200 min-h-screen flex justify-center">
-      <div className="w-full max-w-md bg-base-100 flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-1 overflow-y-auto p-4 space-y-4">
-          <Link
-            to="/publications"
-            className="flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
-          >
-            <ArrowLeft size={16} />
-            Retour aux actus
-          </Link>
-          {children}
-        </main>
+    <div className="min-h-full bg-base-200 pb-6">
+      <Header />
+      <div className="p-4">
+        <Link
+          to="/publications"
+          className="mb-3 flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
+        >
+          <ArrowLeft size={16} />
+          Retour aux actus
+        </Link>
+        {children}
       </div>
     </div>
   );
+
+  if (status === "loading") {
+    return shell(
+      <p className="p-6 text-center text-sm text-base-content/60">
+        Chargement…
+      </p>,
+    );
+  }
+
+  if (status === "error") {
+    return shell(
+      <div className="flex flex-col items-center gap-3 p-6 text-center">
+        <p className="text-sm text-base-content/60">
+          Impossible de charger cette publication.
+        </p>
+        <button
+          type="button"
+          onClick={() => void load()}
+          className="btn btn-sm btn-outline gap-2"
+        >
+          <RotateCw className="h-4 w-4" />
+          Réessayer
+        </button>
+      </div>,
+    );
+  }
 
   if (!publication) {
     return shell(
@@ -61,9 +104,11 @@ export function PublicationDetail() {
 
   return shell(
     <>
-      <PublicationCard publication={publication} linkToDetail={false} />
+      <div className="overflow-hidden rounded-box border border-base-200">
+        <PublicationCard publication={publication} linkToDetail={false} />
+      </div>
 
-      <section className="space-y-3">
+      <section className="mt-4 space-y-3">
         <h2 className="text-sm font-semibold text-base-content/70">
           Commentaires ({comments.length})
         </h2>

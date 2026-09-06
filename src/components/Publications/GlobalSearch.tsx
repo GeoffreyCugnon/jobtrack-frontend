@@ -11,14 +11,15 @@ import {
   Building2,
   type LucideIcon,
 } from "lucide-react";
-import publications from "../../data/publications";
 import { cvItems, letterItems } from "../../data/documents";
 import { CONVERSATIONS } from "../../constants/conversations";
 import { OffersApi } from "../../api/offers.api";
+import { PublicationsApi } from "../../api/publications.api";
 import { UserApi } from "../../api/user.api";
 import { useAuthStore } from "../../store/auth.store";
 import { useMessagingOptional } from "../../context/Messaging/useMessaging";
 import type { Offer } from "../../types/offer.type";
+import type { Publication } from "../../types/publication.types";
 import type { User } from "../../types/user.type";
 
 const MAX_PER_GROUP = 4;
@@ -67,10 +68,12 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [publications, setPublications] = useState<Publication[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Offres : chargées une seule fois, à la première ouverture (route publique).
+  // Offres + actus : chargées une seule fois, à la première ouverture
+  // (routes publiques).
   useEffect(() => {
     if (!open || offers.length > 0) return;
     let cancelled = false;
@@ -85,6 +88,21 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       cancelled = true;
     };
   }, [open, offers.length]);
+
+  useEffect(() => {
+    if (!open || publications.length > 0) return;
+    let cancelled = false;
+    PublicationsApi.getAll()
+      .then((data) => {
+        if (!cancelled) setPublications(data);
+      })
+      .catch((error) =>
+        console.error("Recherche : chargement des actus échoué", error),
+      );
+    return () => {
+      cancelled = true;
+    };
+  }, [open, publications.length]);
 
   // Utilisateurs : scope "app" et session authentifiée uniquement
   // (`GET /user` est protégé par AuthGuard).
@@ -136,9 +154,9 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
 
     const pubs = publications.filter(
       (p) =>
-        p.author.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.tags.some((tag) => tag.toLowerCase().includes(q)),
+        p.authorName.toLowerCase().includes(q) ||
+        p.title.toLowerCase().includes(q) ||
+        p.content.toLowerCase().includes(q),
     );
     if (pubs.length) {
       groups.push({
@@ -147,8 +165,8 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
         href: `/publications${qSuffix}`,
         items: pubs.map((p) => ({
           key: `pub-${p.id}`,
-          title: p.author,
-          subtitle: p.description,
+          title: p.title || p.authorName,
+          subtitle: p.content,
           onSelect: () => go(`/publications/${p.id}`),
         })),
       });

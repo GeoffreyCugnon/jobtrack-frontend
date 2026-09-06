@@ -10,6 +10,7 @@ export type LoginResponse = {
 
 export type RefreshResponse = {
   accessToken: string;
+  user: User;
 };
 
 export type RegisterBody = {
@@ -45,7 +46,7 @@ export class AuthApi {
   }
 
   static async refresh(): Promise<RefreshResponse> {
-    const { data } = await axios.post(
+    const { data } = await axios.post<RefreshResponse>(
       `${import.meta.env.VITE_API_URL}/auth/refresh`,
       {},
       { withCredentials: true },

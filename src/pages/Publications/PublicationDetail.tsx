@@ -40,7 +40,7 @@ export function PublicationDetail() {
   }, [load]);
 
   const shell = (children: React.ReactNode) => (
-    <div className="min-h-full bg-base-200 pb-6">
+    <div className="flex-1 flex flex-col bg-base-200 pb-6">
       <Header />
       <div className="p-4">
         <Link

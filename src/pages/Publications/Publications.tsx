@@ -49,7 +49,7 @@ export function Publications({ showLogo = true }: PublicationsProps) {
     : publications;
 
   return (
-    <div className="min-h-full bg-base-200 pb-6">
+    <div className="flex-1 flex flex-col bg-base-200 pb-6">
       <Header search="feed" />
 
       {showLogo && (

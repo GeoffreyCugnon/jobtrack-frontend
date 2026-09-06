@@ -2,6 +2,7 @@
 // Backend par `publication.service.ts#toDto`.
 export interface Publication {
   id: number;
+  authorId: number;
   authorName: string;
   authorAvatarUrl: string | null;
   title: string;

@@ -38,7 +38,7 @@ export default function PublicationCard({
       ? publication.content
       : publication.content.slice(0, CLAMP_CHARS).trimEnd() + "…";
 
-  const header = (
+  const identity = (
     <div className="flex items-start gap-3">
       <Avatar
         label={authorInitials(publication.authorName)}
@@ -57,16 +57,25 @@ export default function PublicationCard({
     </div>
   );
 
+  // Dans le fil, tout l'en-tête mène au détail du post. Sur la page de détail
+  // (le post est déjà le sujet), l'en-tête mène à la fiche de l'auteur.
+  const header = linkToDetail ? (
+    <Link to={to} className="block hover:opacity-90">
+      {identity}
+    </Link>
+  ) : (
+    <Link
+      to={`/members/${publication.authorId}`}
+      className="inline-block hover:opacity-90"
+    >
+      {identity}
+    </Link>
+  );
+
   return (
     <article className="bg-base-100">
       <div className="px-4 pt-3">
-        {linkToDetail ? (
-          <Link to={to} className="block hover:opacity-90">
-            {header}
-          </Link>
-        ) : (
-          header
-        )}
+        {header}
 
         <div className="mt-2 text-[15px] leading-relaxed text-base-content/90 whitespace-pre-line">
           {publication.title && (

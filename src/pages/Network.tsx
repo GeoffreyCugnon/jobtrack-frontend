@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Plus, Users } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { Header } from "../components/Layout/Header";
 import { PageContainer } from "../components/Layout/PageContainer";
-import { PageTitle } from "../components/Layout/PageTitle";
 import { Tabs } from "../components/Layout/Tabs";
 
 import { RelationsSearchInput } from "../components/Network/RelationsSearchInput";
@@ -87,8 +86,6 @@ export function Network() {
       <Header />
 
       <PageContainer className="py-3 space-y-3">
-        <PageTitle title="Relations" icon={Users} />
-
         <Tabs
           items={[
             { key: "companies", label: "Entreprises" },

@@ -3,7 +3,7 @@
 // overlap, et sections en cartes repliables (même pattern que
 // ProfileContact/ProfileSkills) via SectionCard.
 import { useMemo, useState } from "react";
-import { Home, ChevronRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { ChevronRight, Sparkles, CheckCircle2 } from "lucide-react";
 import { StatCard } from "../../components/Dashboard/StatsCards/StatCard";
 import { TodoGroup } from "../../components/Dashboard/UrgentTasks/TodoGroup";
 import { EventRow } from "../../components/Dashboard/RecentEvents/EventRow";
@@ -11,7 +11,6 @@ import { DashboardHeroBanner } from "../../components/Dashboard/DashboardHeroBan
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
-import { PageTitle } from "../../components/Layout/PageTitle";
 import { SectionCard } from "../../components/Layout/SectionCard";
 import { useAuthStore } from "../../store/auth.store";
 import { getUserDisplay } from "../../utils/user-display";
@@ -87,12 +86,6 @@ export function Dashboard() {
     <div className="flex-1 flex flex-col">
       <Header />
       <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
-        <PageTitle
-          title="Accueil"
-          description="Vue d'ensemble de votre recherche d'emploi"
-          icon={Home}
-        />
-
         {/* Même convention que ProfileIdentity/Contact/Skills : sections en
             pleine largeur sur mobile (-mx-4), avec la marge de page qui
             revient à partir de sm. */}

@@ -3,7 +3,6 @@ import { FileText } from "lucide-react";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
-import { PageTitle } from "../../components/Layout/PageTitle";
 import { Tabs } from "../../components/Layout/Tabs";
 import { DocumentList } from "../../components/Documents/DocumentList";
 import { cvItems, letterItems } from "../../data/documents";
@@ -17,12 +16,6 @@ export function Documents() {
       <Header />
 
       <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
-        <PageTitle
-          title="Documents"
-          description="Vos CV et lettres de motivation"
-          icon={FileText}
-        />
-
         <div className="flex-1 flex flex-col">
           <div className="-mx-4 sm:mx-0 flex-1 flex flex-col">
             <div className="rounded-none sm:rounded-box overflow-hidden">

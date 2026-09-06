@@ -7,7 +7,6 @@ import { OfferList } from "../components/Offers/OfferList";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { Header } from "../components/Layout/Header";
 import { PageContainer } from "../components/Layout/PageContainer";
-import { PageTitle } from "../components/Layout/PageTitle";
 import { SectionCard } from "../components/Layout/SectionCard";
 import { Tabs } from "../components/Layout/Tabs";
 import { offerCategories } from "../data/offerCategories";
@@ -135,12 +134,6 @@ export function Offers() {
     <div className="flex-1 flex flex-col" ref={pageTopRef}>
       <Header />
       <PageContainer className="pt-3 flex-1 flex flex-col">
-        <PageTitle
-          title="Offres"
-          description="Retrouvez les offres qui correspondent à votre profil"
-          icon={Briefcase}
-        />
-
         <div className="flex-1 flex flex-col">
           <div className="-mx-4 sm:mx-0 flex-1 flex flex-col">
             <div className="flex flex-col divide-y divide-base-300">

@@ -29,7 +29,7 @@ export function Avatar({ label, avatarUrl, size = "md" }: AvatarProps) {
       <div
         className={`${SIZE_CLASSES[size]} rounded-full ring-2 ring-primary/30 ${
           avatarUrl
-            ? ""
+            ? "bg-base-300"
             : "bg-linear-to-br from-primary to-secondary text-primary-content"
         }`}
       >

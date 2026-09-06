@@ -19,7 +19,7 @@ export function DashboardHeroBanner({
         <div className="absolute left-4 -top-8 avatar placeholder">
           <div
             className={`w-16 h-16 rounded-full ring-4 ring-base-100 shadow-md overflow-hidden flex items-center justify-center font-semibold ${
-              avatarUrl ? "" : "bg-primary text-primary-content"
+              avatarUrl ? "bg-base-300" : "bg-primary text-primary-content"
             }`}
           >
             {avatarUrl ? (

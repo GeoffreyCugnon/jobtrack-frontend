@@ -26,3 +26,8 @@ dist-ssr
 # Claude Code : config projet partagée (settings.json, skills) versionnée,
 # seuls les réglages locaux à la machine sont ignorés
 .claude/settings.local.json
+
+# Cypress artefacts (générés par les runs)
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/

@@ -304,35 +304,38 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
 
   return (
     <div ref={rootRef} className="relative w-full">
-      <form onSubmit={handleSubmit} className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-base-content/70" />
-        <input
-          type="text"
-          value={query}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            setOpen(true);
-          }}
-          onFocus={() => setOpen(true)}
-          placeholder={placeholder}
-          aria-label={ariaLabel}
-          className={`input input-sm h-10 w-full rounded-full bg-base-100 border border-base-content/70 focus:border-primary focus:outline-none pl-9 ${
-            query ? "pr-9" : ""
-          }`}
-        />
-        {query && (
-          <button
-            type="button"
-            aria-label="Effacer la recherche"
-            onClick={() => {
-              setQuery("");
-              setOpen(false);
+      <form onSubmit={handleSubmit}>
+        {/* Pattern DaisyUI 5 : l'icône est un enfant du champ (jamais masquée
+            par le fond de l'input, contrairement à un icône en position
+            absolue). */}
+        <label className="input input-sm h-10 w-full items-center gap-2 rounded-full border border-base-content/70 bg-base-100 focus-within:border-primary focus-within:outline-none">
+          <Search className="w-4 h-4 shrink-0 text-base-content/70" />
+          <input
+            type="text"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setOpen(true);
             }}
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 btn btn-ghost btn-circle btn-xs text-base-content/40 hover:text-base-content"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
+            onFocus={() => setOpen(true)}
+            placeholder={placeholder}
+            aria-label={ariaLabel}
+            className="grow"
+          />
+          {query && (
+            <button
+              type="button"
+              aria-label="Effacer la recherche"
+              onClick={() => {
+                setQuery("");
+                setOpen(false);
+              }}
+              className="btn btn-ghost btn-circle btn-xs shrink-0 text-base-content/40 hover:text-base-content"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </label>
       </form>
 
       {open && q.length > 0 && (

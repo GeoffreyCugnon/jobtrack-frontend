@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router";
 import { Briefcase, Heart } from "lucide-react";
 import { OfferSearchBar } from "../components/Offers/OfferSearchBar";
 import { OfferCategorySelector } from "../components/Offers/OfferCategorySelector";
@@ -19,10 +20,15 @@ function pluralize(count: number, singular: string, plural: string) {
 }
 
 export function Offers() {
+  // `?q=` permet d'arriver ici depuis la recherche globale du fil d'actus
+  // avec la recherche déjà remplie.
+  const [searchParams] = useSearchParams();
   // null = aucun filtre catégorie actif (toutes les offres affichées).
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"search" | "saved">("search");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(
+    () => searchParams.get("q") ?? "",
+  );
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [alertEnabled, setAlertEnabled] = useState(false);
   const [offers, setOffers] = useState<Offer[]>([]);

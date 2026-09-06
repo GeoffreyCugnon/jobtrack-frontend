@@ -29,4 +29,13 @@ export class UserApi {
     const { data } = await api.get<User[]>("user");
     return Array.isArray(data) ? data : [];
   }
+
+  /**
+   * Met à jour l'avatar de l'utilisateur courant (`PATCH /user/avatar`).
+   * `avatarUrl` : URL https ou data URL d'image. Renvoie l'utilisateur à jour.
+   */
+  static async updateAvatar(avatarUrl: string): Promise<User> {
+    const { data } = await api.patch<User>("user/avatar", { avatarUrl });
+    return data;
+  }
 }

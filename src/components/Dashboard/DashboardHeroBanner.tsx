@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 interface DashboardHeroBannerProps {
   initials: string;
   name: string;
@@ -16,9 +18,13 @@ export function DashboardHeroBanner({
     <div className="rounded-none sm:rounded-box overflow-hidden">
       <div className="h-16 sm:h-24 bg-linear-to-r from-primary to-secondary" />
       <div className="relative bg-base-100 pt-8 px-4 pb-4 -mt-2">
-        <div className="absolute left-4 -top-8 avatar placeholder">
+        <Link
+          to="/profile"
+          aria-label="Voir mon profil"
+          className="absolute left-4 -top-8 avatar placeholder"
+        >
           <div
-            className={`w-16 h-16 rounded-full ring-4 ring-base-100 shadow-md overflow-hidden flex items-center justify-center font-semibold ${
+            className={`w-16 h-16 rounded-full ring-4 ring-base-100 shadow-md overflow-hidden flex items-center justify-center font-semibold transition-transform hover:scale-105 ${
               avatarUrl ? "bg-base-300" : "bg-primary text-primary-content"
             }`}
           >
@@ -32,7 +38,7 @@ export function DashboardHeroBanner({
               initials
             )}
           </div>
-        </div>
+        </Link>
 
         <div>
           <h2 className="text-lg font-bold text-base-content">

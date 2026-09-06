@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { MapPin, Edit2, Camera } from "lucide-react";
+import { Loader2, MapPin, Edit2, Camera } from "lucide-react";
+import { fileToAvatarDataUrl } from "../../utils/image";
 
 interface UserType {
   firstName: string;
@@ -20,7 +21,14 @@ const FALLBACK_AVATAR = "https://api.dicebear.com/9.x/avataaars/svg?seed=jobtrac
 interface ProfileIdentityProps {
   user: UserType;
   onEdit?: () => void;
+  /**
+   * Persiste le nouvel avatar (data URL). Doit rejeter en cas d'échec pour
+   * que la prévisualisation soit annulée.
+   */
+  onAvatarChange?: (dataUrl: string) => Promise<void>;
 }
+
+const MAX_AVATAR_FILE_BYTES = 8 * 1024 * 1024;
 
 // Aperçu instantané côté client (pas de backend d'upload pour l'instant).
 // Révoque l'ancienne blob URL pour éviter les fuites mémoire.
@@ -33,8 +41,13 @@ function previewImage(
   setSrc(URL.createObjectURL(file));
 }
 
-export function ProfileIdentity({ user, onEdit }: ProfileIdentityProps) {
+export function ProfileIdentity({
+  user,
+  onEdit,
+  onAvatarChange,
+}: ProfileIdentityProps) {
   const [avatarSrc, setAvatarSrc] = useState(user.avatarUrl || FALLBACK_AVATAR);
+  const [savingAvatar, setSavingAvatar] = useState(false);
   const [bannerSrc, setBannerSrc] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -45,10 +58,25 @@ export function ProfileIdentity({ user, onEdit }: ProfileIdentityProps) {
     e.target.value = "";
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = e.target.files?.[0];
-    if (file) previewImage(file, avatarSrc, setAvatarSrc);
     e.target.value = "";
+    if (!file || file.size > MAX_AVATAR_FILE_BYTES) return;
+
+    const previous = avatarSrc;
+    setSavingAvatar(true);
+    try {
+      const dataUrl = await fileToAvatarDataUrl(file);
+      setAvatarSrc(dataUrl); // prévisualisation immédiate
+      await onAvatarChange?.(dataUrl);
+    } catch (error) {
+      console.error("Avatar update failed", error);
+      setAvatarSrc(previous); // échec -> on annule la prévisualisation
+    } finally {
+      setSavingAvatar(false);
+    }
   };
 
   return (
@@ -100,10 +128,15 @@ export function ProfileIdentity({ user, onEdit }: ProfileIdentityProps) {
           />
           <button
             onClick={() => avatarInputRef.current?.click()}
+            disabled={savingAvatar}
             aria-label="Changer la photo de profil"
-            className="absolute -right-1 -bottom-1 w-7 h-7 rounded-full border-2 border-base-100 flex items-center justify-center bg-base-200 hover:bg-base-300 text-base-content/80 hover:text-base-content transition-colors cursor-pointer"
+            className="absolute -right-1 -bottom-1 w-7 h-7 rounded-full border-2 border-base-100 flex items-center justify-center bg-base-200 hover:bg-base-300 text-base-content/80 hover:text-base-content transition-colors cursor-pointer disabled:opacity-70"
           >
-            <Camera className="w-4 h-4" />
+            {savingAvatar ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Camera className="w-4 h-4" />
+            )}
           </button>
         </div>
 

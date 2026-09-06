@@ -8,7 +8,9 @@ import { ProfileIdentity } from "../../components/Profile/ProfileIdentity";
 import { ProfileContact } from "../../components/Profile/Contact/ProfileContact";
 import { ProfileSkills } from "../../components/Profile/Skill/ProfileSkills";
 import { useAuthStore } from "../../store/auth.store";
+import { useToastStore } from "../../store/toast.store";
 import { getUserDisplay } from "../../utils/user-display";
+import { UserApi } from "../../api/user.api";
 
 // Champs encore fictifs : le modèle `User` côté Backend ne porte pour l'instant
 // que l'identité (nom, email). Le reste (titre, bio, localisation, réseaux,
@@ -60,6 +62,23 @@ export function Profile() {
     ...MOCK_PROFILE_DETAILS,
   };
 
+  // Persiste le nouvel avatar en base et met à jour le store -> il se propage
+  // partout (SideMenu, bannière du Dashboard, etc.).
+  const saveAvatar = async (dataUrl: string) => {
+    try {
+      const updated = await UserApi.updateAvatar(dataUrl);
+      useAuthStore.getState().setUser(updated);
+      useToastStore
+        .getState()
+        .addToast("Photo de profil mise à jour", "success");
+    } catch (error) {
+      useToastStore
+        .getState()
+        .addToast("Échec de la mise à jour de la photo", "error");
+      throw error;
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col">
       <Header />
@@ -74,6 +93,7 @@ export function Profile() {
           <ProfileIdentity
             user={user}
             onEdit={() => navigate("/profile/edit")}
+            onAvatarChange={saveAvatar}
           />
           <ProfileContact
             user={user}

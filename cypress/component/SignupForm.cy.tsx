@@ -1,8 +1,13 @@
+import type { ReactNode } from "react";
+import { MemoryRouter } from "react-router";
 import { SignupForm } from "../../src/components/Auth/SignupForm";
+
+// `SignupForm` utilise `useNavigate` : il doit être monté dans un routeur.
+const mount = (ui: ReactNode) => cy.mount(<MemoryRouter>{ui}</MemoryRouter>);
 
 describe("SignupForm", () => {
   it("affiche les champs nom, email et mot de passe", () => {
-    cy.mount(<SignupForm />);
+    mount(<SignupForm />);
 
     cy.get('input[type="text"]').should("be.visible");
     cy.get('input[type="email"]').should("be.visible");
@@ -11,7 +16,7 @@ describe("SignupForm", () => {
   });
 
   it("affiche une erreur par champ sur soumission vide", () => {
-    cy.mount(<SignupForm />);
+    mount(<SignupForm />);
 
     cy.contains("button", "Créer mon compte").click();
 
@@ -24,7 +29,7 @@ describe("SignupForm", () => {
   });
 
   it("rejette un nom d'une seule lettre", () => {
-    cy.mount(<SignupForm />);
+    mount(<SignupForm />);
 
     cy.get('input[type="text"]').type("J");
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
@@ -37,7 +42,7 @@ describe("SignupForm", () => {
   });
 
   it("n'affiche aucune erreur quand toutes les valeurs sont valides", () => {
-    cy.mount(<SignupForm />);
+    mount(<SignupForm />);
 
     cy.get('input[type="text"]').type("Jean Dupont");
     cy.get('input[type="email"]').type("jean.dupont@email.fr");

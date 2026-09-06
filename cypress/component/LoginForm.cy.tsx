@@ -1,8 +1,13 @@
+import type { ReactNode } from "react";
+import { MemoryRouter } from "react-router";
 import { LoginForm } from "../../src/components/Auth/LoginForm";
+
+// `LoginForm` utilise `useNavigate` : il doit être monté dans un routeur.
+const mount = (ui: ReactNode) => cy.mount(<MemoryRouter>{ui}</MemoryRouter>);
 
 describe("LoginForm", () => {
   it("affiche les champs email et mot de passe", () => {
-    cy.mount(<LoginForm />);
+    mount(<LoginForm />);
 
     cy.get('input[type="email"]').should("be.visible");
     cy.get('input[type="password"]').should("be.visible");
@@ -10,21 +15,21 @@ describe("LoginForm", () => {
   });
 
   it("n'affiche pas le lien mot de passe oublié si aucun callback n'est fourni", () => {
-    cy.mount(<LoginForm />);
+    mount(<LoginForm />);
 
     cy.contains("Mot de passe oublié ?").should("not.exist");
   });
 
   it("appelle onForgotPassword au clic sur le lien", () => {
     const onForgotPassword = cy.stub().as("onForgotPassword");
-    cy.mount(<LoginForm onForgotPassword={onForgotPassword} />);
+    mount(<LoginForm onForgotPassword={onForgotPassword} />);
 
     cy.contains("Mot de passe oublié ?").click();
     cy.get("@onForgotPassword").should("have.been.calledOnce");
   });
 
   it("affiche une erreur par champ sur soumission vide", () => {
-    cy.mount(<LoginForm />);
+    mount(<LoginForm />);
 
     cy.contains("button", "Se connecter").click();
 
@@ -36,7 +41,7 @@ describe("LoginForm", () => {
   });
 
   it("rejette un mot de passe de moins de 8 caractères", () => {
-    cy.mount(<LoginForm />);
+    mount(<LoginForm />);
 
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
     cy.get('input[type="password"]').type("1234");
@@ -48,7 +53,7 @@ describe("LoginForm", () => {
   });
 
   it("n'affiche aucune erreur quand les identifiants sont valides", () => {
-    cy.mount(<LoginForm />);
+    mount(<LoginForm />);
 
     cy.get('input[type="email"]').type("jean.dupont@email.fr");
     cy.get('input[type="password"]').type("Motdepasse123!");

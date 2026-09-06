@@ -1,9 +1,12 @@
 import { MemoryRouter } from "react-router";
 import { Offers } from "../../src/pages/Offers";
 import { MenuProvider } from "../../src/context/Menu/MenuContext";
-import { mockOffers } from "../../src/data/offerCategories";
+import mockOffers from "../../src/data/mockOffers.json";
 
+// `Offers` charge les offres via `OffersApi.getAll()` (`GET job-offering`) :
+// on intercepte la requête avec le jeu d'offres mock.
 function mountOffers() {
+  cy.intercept("GET", "**/job-offering", { body: mockOffers }).as("offers");
   cy.mount(
     <MemoryRouter initialEntries={["/offers"]}>
       <MenuProvider>
@@ -11,7 +14,10 @@ function mountOffers() {
       </MenuProvider>
     </MemoryRouter>,
   );
+  cy.wait("@offers");
 }
+
+const SEARCH = 'input[placeholder="Rechercher une offre..."]';
 
 describe("Offers", () => {
   it("affiche l'onglet Recherche actif avec toutes les offres par défaut", () => {
@@ -28,7 +34,7 @@ describe("Offers", () => {
   it("filtre les offres via la barre de recherche", () => {
     mountOffers();
 
-    cy.get('input[placeholder="Rechercher une offre..."]').type("PixelWorks");
+    cy.get(SEARCH).type("PixelWorks");
 
     cy.contains("1 offre trouvée").should("be.visible");
     cy.contains("Développeuse Frontend").should("be.visible");
@@ -38,7 +44,7 @@ describe("Offers", () => {
   it("affiche l'état vide pour une catégorie sans offre", () => {
     mountOffers();
 
-    cy.get('[role="tab"][aria-label="Industrie"]').click();
+    cy.get('[role="tab"][aria-label="Industrie"]').click({ force: true });
 
     cy.contains("Aucune offre dans cette catégorie pour l'instant.").should(
       "be.visible",
@@ -48,12 +54,12 @@ describe("Offers", () => {
   it("sauvegarde une offre et la retrouve dans l'onglet Sauvegardées", () => {
     mountOffers();
 
-    cy.get('input[placeholder="Rechercher une offre..."]').type("PixelWorks");
+    cy.get(SEARCH).type("PixelWorks");
     cy.contains("Développeuse Frontend")
       .closest("div.py-3")
       .find('button[aria-label="Sauvegarder l\'offre"]')
       .click();
-    cy.get('input[placeholder="Rechercher une offre..."]').clear();
+    cy.get(SEARCH).clear();
 
     cy.contains("button", "Sauvegardées").click();
 
@@ -64,7 +70,7 @@ describe("Offers", () => {
   it("masque une offre au clic sur la croix", () => {
     mountOffers();
 
-    cy.get('input[placeholder="Rechercher une offre..."]').type("PixelWorks");
+    cy.get(SEARCH).type("PixelWorks");
     cy.contains("Développeuse Frontend")
       .closest("div.py-3")
       .find('button[aria-label="Masquer cette offre"]')

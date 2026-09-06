@@ -5,6 +5,8 @@ interface UserType {
   firstName: string;
   lastName: string;
   initials: string;
+  /** Avatar par défaut généré (Backend). */
+  avatarUrl?: string;
   title: string;
   location: string;
   bio: string;
@@ -12,6 +14,8 @@ interface UserType {
   jobType: string;
   salary: string;
 }
+
+const FALLBACK_AVATAR = "https://api.dicebear.com/9.x/avataaars/svg?seed=jobtrack";
 
 interface ProfileIdentityProps {
   user: UserType;
@@ -30,7 +34,7 @@ function previewImage(
 }
 
 export function ProfileIdentity({ user, onEdit }: ProfileIdentityProps) {
-  const [avatarSrc, setAvatarSrc] = useState("https://picsum.photos/200");
+  const [avatarSrc, setAvatarSrc] = useState(user.avatarUrl || FALLBACK_AVATAR);
   const [bannerSrc, setBannerSrc] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);

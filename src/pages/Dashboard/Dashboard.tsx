@@ -91,7 +91,11 @@ export function Dashboard() {
             revient à partir de sm. */}
         <div className="-mx-4 sm:mx-0 flex-1 flex flex-col">
           <div className="flex flex-col divide-y divide-base-300">
-            <DashboardHeroBanner initials={initials} name={user.name} />
+            <DashboardHeroBanner
+              initials={initials}
+              name={user.name}
+              avatarUrl={display.avatarUrl}
+            />
 
             <SectionCard title="Stats rapides" collapsible={false}>
               <div className="-m-4 grid grid-cols-3">

@@ -48,10 +48,17 @@ const skills = [
 
 export function Profile() {
   const navigate = useNavigate();
-  const { firstName, lastName, initials, email } = getUserDisplay(
+  const { firstName, lastName, initials, email, avatarUrl } = getUserDisplay(
     useAuthStore((state) => state.user),
   );
-  const user = { firstName, lastName, initials, email, ...MOCK_PROFILE_DETAILS };
+  const user = {
+    firstName,
+    lastName,
+    initials,
+    email,
+    avatarUrl,
+    ...MOCK_PROFILE_DETAILS,
+  };
 
   return (
     <div className="flex-1 flex flex-col">

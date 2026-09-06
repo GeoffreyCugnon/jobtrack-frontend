@@ -28,6 +28,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
     name: displayName,
     email: displayEmail,
     initials: displayInitials,
+    avatarUrl: displayAvatarUrl,
   } = getUserDisplay(user);
 
   const MAIN_ROUTES = mainNavItems.map((item) => item.path);
@@ -78,6 +79,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
           name={displayName}
           email={displayEmail}
           initials={displayInitials}
+          avatarUrl={displayAvatarUrl}
           profileHref={isAuthenticated ? "/profile" : undefined}
           onClose={onClose}
         />

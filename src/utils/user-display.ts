@@ -8,6 +8,8 @@ export type UserDisplay = {
   /** Initiales en majuscules, ou "?" en repli. */
   initials: string;
   email: string;
+  /** Avatar généré (Backend) — `undefined` si pas d'utilisateur / pas d'URL. */
+  avatarUrl: string | undefined;
 };
 
 /**
@@ -28,5 +30,6 @@ export function getUserDisplay(user: User | null | undefined): UserDisplay {
     initials:
       `${firstName[0] ?? ""}${lastName[0] ?? ""}`.toUpperCase() || "?",
     email: user?.email ?? "",
+    avatarUrl: user?.avatar_url ?? undefined,
   };
 }

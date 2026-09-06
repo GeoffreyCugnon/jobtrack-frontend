@@ -11,6 +11,7 @@ import { SectionCard } from "../components/Layout/SectionCard";
 import { Tabs } from "../components/Layout/Tabs";
 import { offerCategories } from "../data/offerCategories";
 import { OffersApi } from "../api/offers.api";
+import { useAuthStore } from "../store/auth.store";
 import type { Offer } from "../types/offer.type";
 
 function pluralize(count: number, singular: string, plural: string) {
@@ -22,6 +23,9 @@ export function Offers() {
   // vers `/offers?q=...` : plus de barre de recherche propre à la page.
   const [searchParams] = useSearchParams();
   const searchQuery = (searchParams.get("q") ?? "").trim();
+  // En invité : pas d'onglets "Recherche/Sauvegardées" (rien à sauvegarder)
+  // ni d'alertes de catégorie.
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   // null = aucun filtre catégorie actif (toutes les offres affichées).
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"search" | "saved">("search");
@@ -137,19 +141,21 @@ export function Offers() {
         <div className="flex-1 flex flex-col">
           <div className="-mx-4 sm:mx-0 flex-1 flex flex-col">
             <div className="flex flex-col divide-y divide-base-300">
-              <div className="rounded-none sm:rounded-box overflow-hidden">
-                <div className="bg-base-200 shadow-sm px-4 pt-2 pb-3">
-                  <Tabs<"search" | "saved">
-                    items={[
-                      { key: "search", label: "Recherche" },
-                      { key: "saved", label: "Sauvegardées" },
-                    ]}
-                    value={activeTab}
-                    onChange={setActiveTab}
-                    variant="onMuted"
-                  />
+              {isAuthenticated && (
+                <div className="rounded-none sm:rounded-box overflow-hidden">
+                  <div className="bg-base-200 shadow-sm px-4 pt-2 pb-3">
+                    <Tabs<"search" | "saved">
+                      items={[
+                        { key: "search", label: "Recherche" },
+                        { key: "saved", label: "Sauvegardées" },
+                      ]}
+                      value={activeTab}
+                      onChange={setActiveTab}
+                      variant="onMuted"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
               {activeTab === "search" && (
                 // Un seul bloc englobant bannière + badges + résultats : le
@@ -166,7 +172,7 @@ export function Offers() {
                       resultsLabel={searchResultsLabel}
                       alertEnabled={alertEnabled}
                       onAlertToggle={setAlertEnabled}
-                      showAlertToggle={!!activeCategoryData}
+                      showAlertToggle={isAuthenticated && !!activeCategoryData}
                     />
                   </div>
                   {/* top-30 (120px) = header (64px) + bannière (56px, cf.

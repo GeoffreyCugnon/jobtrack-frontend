@@ -1,12 +1,18 @@
 import { MemoryRouter } from "react-router";
 import { Offers } from "../../src/pages/Offers";
 import { MenuProvider } from "../../src/context/Menu/MenuContext";
+import { useAuthStore } from "../../src/store/auth.store";
 import mockOffers from "../../src/data/mockOffers.json";
 
 // `Offers` charge les offres via `OffersApi.getAll()` (`GET job-offering`) et
 // filtre le texte sur `?q=` (la barre de recherche est désormais celle du
-// header, qui navigue vers `/offers?q=...`).
+// header, qui navigue vers `/offers?q=...`). Ces specs testent la vue
+// connectée (onglets Recherche/Sauvegardées, alertes).
 function mountOffers(entry = "/offers") {
+  useAuthStore.setState({
+    isAuthenticated: true,
+    user: { id: "1", email: "c@t.dev", first_name: "C", last_name: "T" },
+  });
   cy.intercept("GET", "**/job-offering", { body: mockOffers }).as("offers");
   cy.mount(
     <MemoryRouter initialEntries={[entry]}>
@@ -19,6 +25,8 @@ function mountOffers(entry = "/offers") {
 }
 
 describe("Offers", () => {
+  afterEach(() => useAuthStore.getState().clearAuth());
+
   it("affiche l'onglet Recherche actif avec toutes les offres par défaut", () => {
     mountOffers();
 

@@ -3,12 +3,14 @@ import { useNavigate } from "react-router";
 import { ArrowLeft, Contact as ContactIcon } from "lucide-react";
 import { Header } from "../../components/Layout/Header";
 import { INPUT_CLASS } from "../../constants/styles";
-import { currentUser } from "../../data/currentUser";
+import { useAuthStore } from "../../store/auth.store";
+import { getUserDisplay } from "../../utils/user-display";
 
 export function ProfileContactEdit() {
   const navigate = useNavigate();
+  const { email } = getUserDisplay(useAuthStore((state) => state.user));
   const [values, setValues] = useState({
-    email: currentUser.email,
+    email,
     phone: "+33 6 12 34 56 78",
     website: "geoffreycugnon.dev",
     linkedin: "linkedin.com/in/gcugnon",

@@ -7,10 +7,14 @@ import { PageTitle } from "../../components/Layout/PageTitle";
 import { ProfileIdentity } from "../../components/Profile/ProfileIdentity";
 import { ProfileContact } from "../../components/Profile/Contact/ProfileContact";
 import { ProfileSkills } from "../../components/Profile/Skill/ProfileSkills";
-import { currentUser } from "../../data/currentUser";
+import { useAuthStore } from "../../store/auth.store";
+import { getUserDisplay } from "../../utils/user-display";
 
-const user = {
-  ...currentUser,
+// Champs encore fictifs : le modèle `User` côté Backend ne porte pour l'instant
+// que l'identité (nom, email). Le reste (titre, bio, localisation, réseaux,
+// disponibilité...) reste une maquette en attendant d'étoffer `User` ou de
+// dédier un modèle profil.
+const MOCK_PROFILE_DETAILS = {
   title: "Développeur Web Junior",
   location: "Paris, France",
   phone: "+33 6 12 34 56 78",
@@ -44,6 +48,10 @@ const skills = [
 
 export function Profile() {
   const navigate = useNavigate();
+  const { firstName, lastName, initials, email } = getUserDisplay(
+    useAuthStore((state) => state.user),
+  );
+  const user = { firstName, lastName, initials, email, ...MOCK_PROFILE_DETAILS };
 
   return (
     <div className="flex-1 flex flex-col">

@@ -3,13 +3,17 @@ import { useNavigate } from "react-router";
 import { ArrowLeft, UserRound } from "lucide-react";
 import { Header } from "../../components/Layout/Header";
 import { INPUT_CLASS, TEXTAREA_CLASS } from "../../constants/styles";
-import { currentUser } from "../../data/currentUser";
+import { useAuthStore } from "../../store/auth.store";
+import { getUserDisplay } from "../../utils/user-display";
 
 export function ProfileEdit() {
   const navigate = useNavigate();
+  const { firstName, lastName } = getUserDisplay(
+    useAuthStore((state) => state.user),
+  );
   const [values, setValues] = useState({
-    firstName: currentUser.firstName,
-    lastName: currentUser.lastName,
+    firstName,
+    lastName,
     title: "Développeur Web Junior",
     location: "Paris, France",
     bio: "Développeur web passionné en reconversion, spécialisé React et Node.js. À la recherche d'opportunités en startup ou scale-up pour contribuer à des projets ambitieux.",

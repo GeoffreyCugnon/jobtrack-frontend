@@ -1,13 +1,20 @@
 import { MemoryRouter, Route, Routes } from "react-router";
 import { Dashboard } from "../../src/pages/Dashboard/Dashboard";
 import { MenuProvider } from "../../src/context/Menu/MenuContext";
-import { currentUser } from "../../src/data/currentUser";
+import { useAuthStore } from "../../src/store/auth.store";
 import {
   dashboardStats,
   dashboardTodayTasks,
   dashboardUpcomingTasks,
   dashboardRecentEvents,
 } from "../../src/data/dashboard";
+
+const testUser = {
+  id: "1",
+  email: "junior@dev.fr",
+  first_name: "Geoffrey",
+  last_name: "Cugnon",
+};
 
 // Doit rester synchro avec SEEN_EVENTS_KEY dans Dashboard.tsx (non exporté).
 const SEEN_EVENTS_KEY = "dashboard-seen-event-ids";
@@ -28,13 +35,18 @@ function mountDashboard() {
 describe("Dashboard", () => {
   beforeEach(() => {
     localStorage.clear();
+    useAuthStore.setState({ user: testUser, isAuthenticated: true });
+  });
+
+  afterEach(() => {
+    useAuthStore.getState().clearAuth();
   });
 
   it("affiche le nom et les initiales de l'utilisateur", () => {
     mountDashboard();
 
-    cy.contains(`Bonjour ${currentUser.firstName} !`).should("be.visible");
-    cy.contains(currentUser.initials).should("be.visible");
+    cy.contains(`Bonjour ${testUser.first_name} !`).should("be.visible");
+    cy.contains("GC").should("be.visible");
   });
 
   it("affiche les stats rapides avec leurs valeurs", () => {

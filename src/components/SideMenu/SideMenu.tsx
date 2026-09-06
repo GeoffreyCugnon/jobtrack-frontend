@@ -16,6 +16,7 @@ import { getMainNavItems, isNavItemActive } from "../../constants/nav";
 import { useAuthStore } from "../../store/auth.store";
 import { useToastStore } from "../../store/toast.store";
 import { AuthApi } from "../../api/auth.api";
+import { getUserDisplay } from "../../utils/user-display";
 
 interface SideMenuProps {
   open: boolean;
@@ -29,13 +30,11 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
   const user = useAuthStore((state) => state.user);
   const mainNavItems = getMainNavItems(isAuthenticated);
 
-  const displayName = user
-    ? `${user.first_name} ${user.last_name}`.trim()
-    : "Invité";
-  const displayEmail = user?.email ?? "";
-  const displayInitials =
-    `${user?.first_name?.[0] ?? ""}${user?.last_name?.[0] ?? ""}`.toUpperCase() ||
-    "?";
+  const {
+    name: displayName,
+    email: displayEmail,
+    initials: displayInitials,
+  } = getUserDisplay(user);
 
   const MAIN_ROUTES = mainNavItems.map((item) => item.path);
   const isMainRoute = MAIN_ROUTES.some((path) =>
@@ -60,7 +59,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
 
   const handleLogout = async () => {
     try {
-      await new AuthApi().logout();
+      await AuthApi.logout();
     } catch (error) {
       console.error("Logout failed", error);
     } finally {

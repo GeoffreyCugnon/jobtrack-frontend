@@ -13,7 +13,8 @@ import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";
 import { SectionCard } from "../../components/Layout/SectionCard";
-import { currentUser } from "../../data/currentUser";
+import { useAuthStore } from "../../store/auth.store";
+import { getUserDisplay } from "../../utils/user-display";
 import {
   dashboardStats,
   dashboardTodayTasks,
@@ -45,8 +46,10 @@ export function Dashboard() {
     }
   });
 
-  const user = { name: currentUser.firstName };
-  const initials = currentUser.initials;
+  const authUser = useAuthStore((state) => state.user);
+  const display = getUserDisplay(authUser);
+  const user = { name: display.firstName || "Invité" };
+  const initials = display.initials;
 
   const stats = dashboardStats;
   const todayTasks = dashboardTodayTasks;

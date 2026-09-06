@@ -14,7 +14,7 @@ export type LoginValues = z.infer<typeof loginSchema>;
 export type SignupValues = z.infer<typeof signupSchema>;
 
 export const recoveryPasswordSchema = z.object({
-  email: z.string().trim().email("Veuillez saisir une adresse email valide"),
+  email: z.email("Veuillez saisir une adresse email valide"),
 });
 
 export type RecoveryPasswordValues = z.infer<typeof recoveryPasswordSchema>;

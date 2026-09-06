@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Briefcase, Heart, RotateCw } from "lucide-react";
 import { OfferCategorySelector } from "../components/Offers/OfferCategorySelector";
 import { OfferCategoryBanner } from "../components/Offers/OfferCategoryBanner";
@@ -11,8 +12,8 @@ import { SectionCard } from "../components/Layout/SectionCard";
 import { Tabs } from "../components/Layout/Tabs";
 import { offerCategories } from "../data/offerCategories";
 import { OffersApi } from "../api/offers.api";
+import { queryKeys } from "../api/query-keys";
 import { useAuthStore } from "../store/auth.store";
-import type { Offer } from "../types/offer.type";
 
 function pluralize(count: number, singular: string, plural: string) {
   return count > 1 ? plural : singular;
@@ -30,30 +31,19 @@ export function Offers() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"search" | "saved">("search");
   const [savedIds, setSavedIds] = useState<number[]>([]);
+  const [dismissedIds, setDismissedIds] = useState<number[]>([]);
   const [alertEnabled, setAlertEnabled] = useState(false);
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState(false);
   const pageTopRef = useRef<HTMLDivElement>(null);
 
-  const loadOffers = useCallback(async () => {
-    setLoading(true);
-    setLoadError(false);
-    try {
-      const data = await OffersApi.getAll();
-      setOffers(data);
-    } catch (error) {
-      console.error("Failed to load offers", error);
-      setOffers([]);
-      setLoadError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadOffers();
-  }, [loadOffers]);
+  const {
+    data: offers = [],
+    isPending: loading,
+    isError: loadError,
+    refetch: loadOffers,
+  } = useQuery({
+    queryKey: queryKeys.offers.all,
+    queryFn: () => OffersApi.getAll(),
+  });
 
   const activeCategoryData = offerCategories.find(
     (category) => category.key === activeCategory,
@@ -67,8 +57,10 @@ export function Offers() {
     );
   };
 
+  // Masquage local (le cache React Query reste la source) : l'offre rejetée
+  // disparaît de la liste jusqu'au prochain rechargement des données.
   const dismissOffer = (id: number) => {
-    setOffers((prev) => prev.filter((offer) => offer.id !== id));
+    setDismissedIds((prev) => [...prev, id]);
   };
 
   // Sélection ET désélection (retour à "Toutes les offres") remontent en
@@ -82,7 +74,9 @@ export function Offers() {
   // Choisir une catégorie ne filtre pas la liste courante : ça bascule vers
   // une autre colonne de résultats, propre à cette catégorie. Sans catégorie
   // active (aucun badge sélectionné), aucun filtrage n'est appliqué.
-  const normalizedOffers = Array.isArray(offers) ? offers : [];
+  const normalizedOffers = (Array.isArray(offers) ? offers : []).filter(
+    (offer) => !dismissedIds.includes(offer.id),
+  );
 
   const categoryOffers =
     activeCategory === null

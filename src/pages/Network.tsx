@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 
 import { Header } from "../components/Layout/Header";
 import { Tabs } from "../components/Layout/Tabs";
 import { PeopleCard } from "../components/Network/PeopleCard";
 import { UserApi } from "../api/user.api";
+import { queryKeys } from "../api/query-keys";
 import { useAuthStore } from "../store/auth.store";
 import { useToastStore } from "../store/toast.store";
 import {
@@ -137,35 +139,15 @@ export function Network() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const currentUser = useAuthStore((state) => state.user);
 
-  const [people, setPeople] = useState<User[]>([]);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
+  const { data, isPending, isError } = useQuery({
+    queryKey: queryKeys.users.all,
+    queryFn: () => UserApi.getAll(),
+    enabled: isAuthenticated,
+  });
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setStatus("ready");
-      setPeople([]);
-      return;
-    }
-    let cancelled = false;
-    setStatus("loading");
-    UserApi.getAll()
-      .then((users) => {
-        if (cancelled) return;
-        setPeople(
-          users.filter((u) => String(u.id) !== String(currentUser?.id)),
-        );
-        setStatus("ready");
-      })
-      .catch((error) => {
-        console.error("Failed to load network suggestions", error);
-        if (!cancelled) setStatus("error");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [isAuthenticated, currentUser?.id]);
+  const people = (data ?? []).filter(
+    (u) => String(u.id) !== String(currentUser?.id),
+  );
 
   return (
     <div className="flex-1 flex flex-col bg-base-200 pb-6">
@@ -198,11 +180,11 @@ export function Network() {
             <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
               Connectez-vous pour voir des suggestions.
             </p>
-          ) : status === "loading" ? (
+          ) : isPending ? (
             <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
               Chargement…
             </p>
-          ) : status === "error" ? (
+          ) : isError ? (
             <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
               Impossible de charger les suggestions.
             </p>

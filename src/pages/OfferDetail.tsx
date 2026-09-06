@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   BadgeCheck,
@@ -14,8 +14,8 @@ import {
 import { Header } from "../components/Layout/Header";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { OffersApi } from "../api/offers.api";
+import { queryKeys } from "../api/query-keys";
 import { offerCategories } from "../data/offerCategories";
-import type { Offer } from "../types/offer.type";
 
 const WORK_MODE_LABEL: Record<string, string> = {
   onSite: "Sur site",
@@ -26,27 +26,17 @@ const WORK_MODE_LABEL: Record<string, string> = {
 export function OfferDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [offer, setOffer] = useState<Offer | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
 
-  const load = useCallback(async () => {
-    if (!id) return;
-    setStatus("loading");
-    try {
-      const data = await OffersApi.getById(id);
-      setOffer(data);
-      setStatus("ready");
-    } catch (error) {
-      console.error("Failed to load offer", error);
-      setStatus("error");
-    }
-  }, [id]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const {
+    data: offer,
+    isPending,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.offers.detail(id ?? ""),
+    queryFn: () => OffersApi.getById(id!),
+    enabled: !!id,
+  });
 
   const categoryLabel = offer
     ? (offerCategories.find((c) => c.key === offer.category)?.label ??
@@ -65,13 +55,13 @@ export function OfferDetail() {
           Retour aux offres
         </button>
 
-        {status === "loading" && (
+        {isPending && (
           <p className="p-4 text-sm text-base-content/60">
             Chargement de l'offre...
           </p>
         )}
 
-        {status === "error" && (
+        {isError && (
           <div className="flex flex-col items-center gap-3 p-6">
             <EmptyState
               icon={Briefcase}
@@ -79,7 +69,7 @@ export function OfferDetail() {
             />
             <button
               type="button"
-              onClick={() => void load()}
+              onClick={() => void refetch()}
               className="btn btn-sm btn-outline gap-2"
             >
               <RotateCw className="w-4 h-4" />
@@ -88,14 +78,14 @@ export function OfferDetail() {
           </div>
         )}
 
-        {status === "ready" && !offer && (
+        {!isPending && !isError && !offer && (
           <EmptyState
             icon={FileQuestion}
             message="Cette offre n'existe pas ou plus."
           />
         )}
 
-        {status === "ready" && offer && (
+        {!isPending && !isError && offer && (
           <div className="card bg-base-100 border border-base-200 shadow-sm">
             <div className="card-body gap-4 p-6">
               <div>

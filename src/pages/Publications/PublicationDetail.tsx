@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, FileQuestion, RotateCw, Send } from "lucide-react";
 import { Header } from "../../components/Layout/Header";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import PublicationCard from "../../components/Publications/PublicationCard";
 import { PublicationsApi } from "../../api/publications.api";
-import type { Publication } from "../../types/publication.types";
+import { queryKeys } from "../../api/query-keys";
 import {
   publicationComments,
   type PublicationComment,
@@ -14,30 +15,25 @@ import { INPUT_CLASS } from "../../constants/styles";
 
 export function PublicationDetail() {
   const { id } = useParams();
-  const [publication, setPublication] = useState<Publication | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
-  const [comments, setComments] = useState<PublicationComment[]>([]);
   const [draft, setDraft] = useState("");
 
-  const load = useCallback(async () => {
-    if (!id) return;
-    setStatus("loading");
-    try {
-      const data = await PublicationsApi.getById(id);
-      setPublication(data);
-      setComments(data ? (publicationComments[data.id] ?? []) : []);
-      setStatus("ready");
-    } catch (error) {
-      console.error("Failed to load publication", error);
-      setStatus("error");
-    }
-  }, [id]);
+  const {
+    data: publication,
+    isPending,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.publications.detail(id ?? ""),
+    queryFn: () => PublicationsApi.getById(id!),
+    enabled: !!id,
+  });
 
+  // Fil de commentaires local (mock) : le `POST /comment` n'est pas branché,
+  // on repart du jeu de démo à chaque publication chargée.
+  const [comments, setComments] = useState<PublicationComment[]>([]);
   useEffect(() => {
-    void load();
-  }, [load]);
+    setComments(publication ? (publicationComments[publication.id] ?? []) : []);
+  }, [publication]);
 
   const shell = (children: React.ReactNode) => (
     <div className="flex-1 flex flex-col bg-base-200 pb-6">
@@ -55,7 +51,7 @@ export function PublicationDetail() {
     </div>
   );
 
-  if (status === "loading") {
+  if (isPending) {
     return shell(
       <p className="p-6 text-center text-sm text-base-content/60">
         Chargement…
@@ -63,7 +59,7 @@ export function PublicationDetail() {
     );
   }
 
-  if (status === "error") {
+  if (isError) {
     return shell(
       <div className="flex flex-col items-center gap-3 p-6 text-center">
         <p className="text-sm text-base-content/60">
@@ -71,7 +67,7 @@ export function PublicationDetail() {
         </p>
         <button
           type="button"
-          onClick={() => void load()}
+          onClick={() => void refetch()}
           className="btn btn-sm btn-outline gap-2"
         >
           <RotateCw className="h-4 w-4" />

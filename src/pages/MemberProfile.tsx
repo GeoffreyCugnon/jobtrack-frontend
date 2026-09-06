@@ -1,38 +1,29 @@
-import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, FileQuestion, Mail, MessageSquare, RotateCw, UserPlus } from "lucide-react";
 import { Header } from "../components/Layout/Header";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { UserApi } from "../api/user.api";
+import { queryKeys } from "../api/query-keys";
 import { useToastStore } from "../store/toast.store";
 import { memberHeadline, memberName } from "../utils/member";
-import type { User } from "../types/user.type";
 
 const FALLBACK_AVATAR = "https://api.dicebear.com/9.x/avataaars/svg?seed=jobtrack";
 
 export function MemberProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [member, setMember] = useState<User | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
 
-  const load = useCallback(async () => {
-    if (!id) return;
-    setStatus("loading");
-    try {
-      setMember(await UserApi.getById(id));
-      setStatus("ready");
-    } catch (error) {
-      console.error("Failed to load member", error);
-      setStatus("error");
-    }
-  }, [id]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const {
+    data: member,
+    isPending,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.users.detail(id ?? ""),
+    queryFn: () => UserApi.getById(id!),
+    enabled: !!id,
+  });
 
   const notify = () =>
     useToastStore.getState().addToast("Bientôt disponible", "info");
@@ -53,7 +44,7 @@ export function MemberProfile() {
     </div>
   );
 
-  if (status === "loading") {
+  if (isPending) {
     return shell(
       <p className="p-6 text-center text-sm text-base-content/60">
         Chargement…
@@ -61,7 +52,7 @@ export function MemberProfile() {
     );
   }
 
-  if (status === "error") {
+  if (isError) {
     return shell(
       <div className="flex flex-col items-center gap-3 p-6 text-center">
         <p className="text-sm text-base-content/60">
@@ -69,7 +60,7 @@ export function MemberProfile() {
         </p>
         <button
           type="button"
-          onClick={() => void load()}
+          onClick={() => void refetch()}
           className="btn btn-sm btn-outline gap-2"
         >
           <RotateCw className="h-4 w-4" />

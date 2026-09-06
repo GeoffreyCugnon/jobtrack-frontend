@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { RotateCw } from "lucide-react";
 import { Header } from "../../components/Layout/Header";
 import { AuthLogo } from "../../components/Auth/AuthLogo";
 import PublicationCard from "../../components/Publications/PublicationCard";
 import { PublicationsApi } from "../../api/publications.api";
-import type { Publication } from "../../types/publication.types";
+import { queryKeys } from "../../api/query-keys";
 
 interface PublicationsProps {
   /**
@@ -19,25 +19,15 @@ export function Publications({ showLogo = true }: PublicationsProps) {
   const [searchParams] = useSearchParams();
   const query = (searchParams.get("q") ?? "").trim().toLowerCase();
 
-  const [publications, setPublications] = useState<Publication[]>([]);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
-
-  const load = useCallback(async () => {
-    setStatus("loading");
-    try {
-      setPublications(await PublicationsApi.getAll());
-      setStatus("ready");
-    } catch (error) {
-      console.error("Failed to load publications", error);
-      setStatus("error");
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const {
+    data: publications = [],
+    isPending,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.publications.all,
+    queryFn: () => PublicationsApi.getAll(),
+  });
 
   const visible = query
     ? publications.filter(
@@ -58,20 +48,20 @@ export function Publications({ showLogo = true }: PublicationsProps) {
         </div>
       )}
 
-      {status === "loading" && (
+      {isPending && (
         <p className="p-6 text-center text-sm text-base-content/60">
           Chargement du fil…
         </p>
       )}
 
-      {status === "error" && (
+      {isError && (
         <div className="flex flex-col items-center gap-3 p-6 text-center">
           <p className="text-sm text-base-content/60">
             Impossible de charger le fil pour le moment.
           </p>
           <button
             type="button"
-            onClick={() => void load()}
+            onClick={() => void refetch()}
             className="btn btn-sm btn-outline gap-2"
           >
             <RotateCw className="h-4 w-4" />
@@ -80,7 +70,7 @@ export function Publications({ showLogo = true }: PublicationsProps) {
         </div>
       )}
 
-      {status === "ready" && visible.length === 0 && (
+      {!isPending && !isError && visible.length === 0 && (
         <p className="p-8 text-center text-sm text-base-content/60">
           {query
             ? `Aucune publication pour « ${searchParams.get("q")?.trim()} ».`
@@ -88,7 +78,7 @@ export function Publications({ showLogo = true }: PublicationsProps) {
         </p>
       )}
 
-      {status === "ready" && visible.length > 0 && (
+      {!isPending && !isError && visible.length > 0 && (
         <div className="flex flex-col gap-2">
           {visible.map((publication) => (
             <PublicationCard key={publication.id} publication={publication} />

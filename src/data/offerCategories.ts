@@ -20,6 +20,13 @@ export interface OfferCategory {
   label: string;
   description: string;
   icon: LucideIcon;
+  /**
+   * Exception assumée à la règle « tokens DaisyUI uniquement » : une pastille
+   * décorative par catégorie, il faut ~13 teintes distinctes que les 5
+   * couleurs sémantiques du thème (`primary`/`secondary`/`accent`/`info`…) ne
+   * peuvent pas fournir. Ces classes Tailwind brutes rendent pareil en
+   * clair/sombre (nuance 400/500 fixe), donc pas de casse de thème.
+   */
   colorClass: string;
 }
 

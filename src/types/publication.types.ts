@@ -12,4 +12,5 @@ export interface Publication {
   timeAgo: string;
   likesCount: number;
   commentsCount: number;
+  sharesCount: number;
 }

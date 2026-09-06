@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, FileQuestion, RotateCw, Send } from "lucide-react";
 import { Header } from "../../components/Layout/Header";
@@ -15,6 +15,7 @@ import { INPUT_CLASS } from "../../constants/styles";
 
 export function PublicationDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [draft, setDraft] = useState("");
 
   const {
@@ -101,7 +102,11 @@ export function PublicationDetail() {
   return shell(
     <>
       <div className="overflow-hidden rounded-box border border-base-200">
-        <PublicationCard publication={publication} linkToDetail={false} />
+        <PublicationCard
+          publication={publication}
+          linkToDetail={false}
+          onClose={() => navigate("/publications")}
+        />
       </div>
 
       <section className="mt-4 space-y-3">

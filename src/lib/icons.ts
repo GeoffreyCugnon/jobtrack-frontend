@@ -94,4 +94,5 @@ export {
   VideoCamera as Video,
 } from "@phosphor-icons/react";
 
+export { IconContext } from "@phosphor-icons/react";
 export type { Icon as LucideIcon } from "@phosphor-icons/react";

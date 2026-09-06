@@ -195,7 +195,7 @@ export function Network() {
         <NavRow
           label="Invitations"
           count={incoming.length}
-          onClick={() => toast("Bientôt disponible")}
+          onClick={() => navigate("/network/invitations")}
         />
         <NavRow
           label="Gérer mon réseau"
@@ -250,11 +250,14 @@ export function Network() {
             ))}
           </ul>
           {incoming.length > MAX_INVITATIONS && (
-            <p className="mt-3 text-sm text-base-content/60">
-              + {incoming.length - MAX_INVITATIONS} autre
-              {incoming.length - MAX_INVITATIONS > 1 ? "s" : ""} invitation
-              {incoming.length - MAX_INVITATIONS > 1 ? "s" : ""}
-            </p>
+            <button
+              type="button"
+              onClick={() => navigate("/network/invitations")}
+              className="mt-3 flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              Voir les {incoming.length} invitations
+              <ArrowRight size={16} />
+            </button>
           )}
         </section>
       )}

@@ -305,7 +305,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   return (
     <div ref={rootRef} className="relative w-full">
       <form onSubmit={handleSubmit} className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-base-content/40" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-base-content/70" />
         <input
           type="text"
           value={query}
@@ -316,7 +316,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
           aria-label={ariaLabel}
-          className={`input input-sm h-10 w-full rounded-full bg-base-100 border-2 border-base-content/25 focus:border-primary focus:outline-none pl-9 ${
+          className={`input input-sm h-10 w-full rounded-full bg-base-100 border border-base-content/70 focus:border-primary focus:outline-none pl-9 ${
             query ? "pr-9" : ""
           }`}
         />

@@ -23,7 +23,6 @@ export function PeopleCard({
   const name = memberName(user);
   const initials = memberInitials(user);
   const secondary = caption ?? memberHeadline(user, index);
-  const actionLabel = index % 2 === 0 ? "Se connecter" : "Suivre";
 
   return (
     <div className="flex flex-col overflow-hidden rounded-box border border-base-200 bg-base-100">
@@ -72,7 +71,7 @@ export function PeopleCard({
           onClick={onAction}
           className="btn btn-outline btn-primary btn-sm w-full rounded-full"
         >
-          {actionLabel}
+          Se connecter
         </button>
       </div>
     </div>

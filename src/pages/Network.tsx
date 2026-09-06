@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 
 import { Header } from "../components/Layout/Header";
-import { Tabs } from "../components/Layout/Tabs";
 import { PeopleCard } from "../components/Network/PeopleCard";
 import { UserApi } from "../api/user.api";
 import { queryKeys } from "../api/query-keys";
@@ -47,7 +45,6 @@ interface SectionConfig {
   key: string;
   title: string;
   description?: string;
-  premium?: boolean;
   hiring?: boolean;
   caption: (user: User, index: number) => string;
 }
@@ -55,7 +52,6 @@ interface SectionConfig {
 const SECTIONS: SectionConfig[] = [
   {
     key: "hiring",
-    premium: true,
     hiring: true,
     title: "Personnes qui recrutent à votre poste",
     caption: (user, index) => memberHeadline(user, index),
@@ -93,15 +89,7 @@ function PeopleSection({
   return (
     <section className="mt-2 bg-base-100">
       <div className="px-4 pt-4">
-        {config.premium && (
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-warning">
-            <span className="inline-block h-2.5 w-2.5 rounded-sm bg-warning" />
-            Premium
-          </p>
-        )}
-        <h2 className="mt-1 text-lg font-bold text-base-content">
-          {config.title}
-        </h2>
+        <h2 className="text-lg font-bold text-base-content">{config.title}</h2>
         {config.description && (
           <p className="mt-0.5 text-sm text-base-content/60">
             {config.description}
@@ -135,7 +123,6 @@ function PeopleSection({
 }
 
 export function Network() {
-  const [tab, setTab] = useState<"grow" | "reconnect">("grow");
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const currentUser = useAuthStore((state) => state.user);
 
@@ -153,55 +140,35 @@ export function Network() {
     <div className="flex-1 flex flex-col bg-base-200 pb-6">
       <Header />
 
-      <div className="border-b border-base-200 bg-base-100 px-4 pt-3 pb-3">
-        <Tabs
-          items={[
-            { key: "grow", label: "Développer" },
-            { key: "reconnect", label: "Reprendre contact" },
-          ]}
-          value={tab}
-          onChange={setTab}
-          variant="onMuted"
-        />
+      <div className="mt-2 bg-base-100">
+        <NavRow label="Invitations" onClick={notify} />
+        <NavRow label="Gérer mon réseau" onClick={notify} />
       </div>
 
-      {tab === "reconnect" ? (
-        <p className="p-8 text-center text-sm text-base-content/60">
-          Bientôt : reprenez contact avec vos relations inactives.
+      {!isAuthenticated ? (
+        <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
+          Connectez-vous pour voir des suggestions.
+        </p>
+      ) : isPending ? (
+        <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
+          Chargement…
+        </p>
+      ) : isError ? (
+        <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
+          Impossible de charger les suggestions.
+        </p>
+      ) : people.length === 0 ? (
+        <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
+          Aucune suggestion pour l'instant.
         </p>
       ) : (
-        <>
-          <div className="mt-2 bg-base-100">
-            <NavRow label="Invitations" onClick={notify} />
-            <NavRow label="Gérer mon réseau" onClick={notify} />
-          </div>
-
-          {!isAuthenticated ? (
-            <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
-              Connectez-vous pour voir des suggestions.
-            </p>
-          ) : isPending ? (
-            <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
-              Chargement…
-            </p>
-          ) : isError ? (
-            <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
-              Impossible de charger les suggestions.
-            </p>
-          ) : people.length === 0 ? (
-            <p className="mt-2 bg-base-100 px-4 py-8 text-sm text-base-content/60">
-              Aucune suggestion pour l'instant.
-            </p>
-          ) : (
-            SECTIONS.map((config, i) => (
-              <PeopleSection
-                key={config.key}
-                config={config}
-                people={rotate(people, i * PER_SECTION).slice(0, PER_SECTION)}
-              />
-            ))
-          )}
-        </>
+        SECTIONS.map((config, i) => (
+          <PeopleSection
+            key={config.key}
+            config={config}
+            people={rotate(people, i * PER_SECTION).slice(0, PER_SECTION)}
+          />
+        ))
       )}
     </div>
   );

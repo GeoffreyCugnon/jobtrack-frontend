@@ -2,16 +2,21 @@ import type { MouseEvent as ReactMouseEvent } from "react";
 import { MessageCircle } from "lucide-react";
 import { useMessaging } from "../../context/Messaging/useMessaging";
 import { useDraggableFab } from "../../hooks/useDraggableFab";
-import { BOTTOM_NAV_HEIGHT } from "../../constants/layout";
-
-// Espace laissé entre le bouton et le haut de la barre de navigation, en
-// position par défaut (avant tout glissé) — le bouton reste bien au-dessus,
-// sans chevaucher la barre.
-const DEFAULT_GAP_ABOVE_NAV = 12;
+import { useToastStore } from "../../store/toast.store";
+import {
+  STACK_BOTTOM_OFFSET,
+  STACK_ITEM_GAP,
+} from "../../constants/layout";
 
 export function MessagingFab() {
   const { isMessagingOpen, unreadConversationIds, openMessaging, openConversation } =
     useMessaging();
+  // Si un ou plusieurs toasts occupent déjà le coin, on empile le bouton
+  // juste au-dessus d'eux plutôt que par-dessus.
+  const toastStackHeight = useToastStore((state) => state.stackHeight);
+  const defaultBottom =
+    STACK_BOTTOM_OFFSET +
+    (toastStackHeight > 0 ? toastStackHeight + STACK_ITEM_GAP : 0);
   const unreadCount = unreadConversationIds.length;
   const displayCount = unreadCount > 9 ? "9+" : unreadCount;
   const label = `Nouveau message${unreadCount > 1 ? "s" : ""}, ${unreadCount} non lu${unreadCount > 1 ? "s" : ""}`;
@@ -59,10 +64,12 @@ export function MessagingFab() {
           style={{
             ...(mobilePosition
               ? { top: mobilePosition.y, left: mobilePosition.x }
-              : { bottom: BOTTOM_NAV_HEIGHT + DEFAULT_GAP_ABOVE_NAV }),
-            transition: isSnapping
-              ? `left ${snapDurationMs}ms ease-out`
-              : undefined,
+              : { bottom: defaultBottom }),
+            transition: mobilePosition
+              ? isSnapping
+                ? `left ${snapDurationMs}ms ease-out`
+                : undefined
+              : "bottom 200ms ease-out",
           }}
         >
           <button

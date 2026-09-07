@@ -44,4 +44,26 @@ export class UserApi {
     const { data } = await api.patch<User>("user/avatar", { avatarUrl });
     return data;
   }
+
+  /**
+   * Active / désactive les notifications du compte
+   * (`PATCH /user/settings/notifications`). Renvoie l'utilisateur à jour.
+   */
+  static async updateNotifications(enabled: boolean): Promise<User> {
+    const { data } = await api.patch<User>("user/settings/notifications", {
+      notifications_enabled: enabled,
+    });
+    return data;
+  }
+
+  /**
+   * Langue de l'interface (`PATCH /user/settings/language`).
+   * `language` : `fr` | `en` | `es` | `de`. Renvoie l'utilisateur à jour.
+   */
+  static async updateLanguage(language: string): Promise<User> {
+    const { data } = await api.patch<User>("user/settings/language", {
+      language,
+    });
+    return data;
+  }
 }

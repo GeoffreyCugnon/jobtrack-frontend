@@ -20,23 +20,56 @@ import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";
 import { useAuthStore } from "../../store/auth.store";
 import { getUserDisplay } from "../../utils/user-display";
+import type { User } from "../../types/user.type";
 import { INPUT_CLASS } from "../../constants/styles";
 
-interface UserSettings {
-  notifications: boolean;
-  language: string;
-}
+/** Langues acceptées par le Backend (`UpdateLanguageDto`), libellé pour l'UI. */
+const LANGUAGES: { code: string; label: string }[] = [
+  { code: "fr", label: "Français" },
+  { code: "en", label: "English" },
+  { code: "es", label: "Español" },
+  { code: "de", label: "Deutsch" },
+];
 
 export function Settings() {
   const navigate = useNavigate();
 
-  const [settings, setSettings] = useState<UserSettings>({
-    notifications: true,
-    language: "Français",
-  });
   const [twoFA] = useState(false);
 
-  const user = getUserDisplay(useAuthStore((state) => state.user));
+  const rawUser = useAuthStore((state) => state.user);
+  const user = getUserDisplay(rawUser);
+
+  // Préférences pilotées directement par le user du store (persistées côté
+  // Backend via `PATCH /user/settings/*`), pas par un état local volatile.
+  const notifications = rawUser?.notifications_enabled ?? true;
+  const language = rawUser?.language ?? "fr";
+  const [prefPending, setPrefPending] = useState(false);
+
+  /**
+   * Applique une préférence de façon optimiste (maj immédiate du store), puis
+   * confirme via l'API ; en cas d'échec, on restaure l'état précédent.
+   */
+  const savePref = async (
+    patch: Partial<Pick<User, "notifications_enabled" | "language">>,
+    call: () => Promise<User>,
+  ) => {
+    if (!rawUser || prefPending) return;
+    const previous = rawUser;
+    setPrefPending(true);
+    useAuthStore.getState().setUser({ ...rawUser, ...patch });
+    try {
+      const updated = await call();
+      useAuthStore.getState().setUser({ ...previous, ...updated });
+    } catch (error) {
+      console.error("Update preference failed", error);
+      useAuthStore.getState().setUser(previous);
+      useToastStore
+        .getState()
+        .addToast("Impossible d'enregistrer la préférence.", "error");
+    } finally {
+      setPrefPending(false);
+    }
+  };
 
   const aboutModalRef = useRef<HTMLDialogElement>(null);
   const deleteModalRef = useRef<HTMLDialogElement>(null);
@@ -97,13 +130,14 @@ export function Settings() {
                 <input
                   type="checkbox"
                   className="toggle toggle-primary"
-                  checked={settings.notifications}
-                  onChange={(e) =>
-                    setSettings((s) => ({
-                      ...s,
-                      notifications: e.target.checked,
-                    }))
-                  }
+                  checked={notifications}
+                  disabled={!rawUser || prefPending}
+                  onChange={(e) => {
+                    const next = e.target.checked;
+                    void savePref({ notifications_enabled: next }, () =>
+                      UserApi.updateNotifications(next),
+                    );
+                  }}
                 />
               </div>
 
@@ -119,15 +153,20 @@ export function Settings() {
                 </span>
                 <select
                   className="select select-ghost select-md w-auto px-10 text-right font-normal text-base-content/50 focus:outline-none"
-                  value={settings.language}
-                  onChange={(e) =>
-                    setSettings((s) => ({ ...s, language: e.target.value }))
-                  }
+                  value={language}
+                  disabled={!rawUser || prefPending}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    void savePref({ language: next }, () =>
+                      UserApi.updateLanguage(next),
+                    );
+                  }}
                 >
-                  <option>Français</option>
-                  <option>English</option>
-                  <option>Deutsch</option>
-                  <option>Español</option>
+                  {LANGUAGES.map((l) => (
+                    <option key={l.code} value={l.code}>
+                      {l.label}
+                    </option>
+                  ))}
                 </select>
               </div>
             </SettingsSection>

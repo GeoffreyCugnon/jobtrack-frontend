@@ -49,6 +49,8 @@ Un vrai flux d'auth relié au backend a été mis en place :
 - **`SettingsPassword.tsx`** appelle `UserApi.changePassword()` (`PATCH /auth/password`) ; `400` → message « vérifie ton mot de passe actuel », autre erreur → message générique. La modale de succès ne s'affiche plus qu'après réponse OK.
 - **`Settings.tsx`** : `handleDeleteAccount` appelle `UserApi.deleteAccount()` (`DELETE /user/account`), puis `clearAuth()` + toast + `/auth` ; état `isDeleting` pendant l'appel.
 
+**Audit v4 (septembre 2026) — préférences Settings branchées :** le toggle **Notifications** et le select **Langue** de `Settings.tsx` étaient du `useState` local jamais persisté. Ils sont maintenant pilotés par `useAuthStore().user` et sauvegardés via `UserApi.updateNotifications()` (`PATCH /user/settings/notifications`) / `UserApi.updateLanguage()` (`PATCH /user/settings/language`, codes `fr`/`en`/`es`/`de`). Mise à jour optimiste du store + revert & toast d'erreur si l'appel échoue ; contrôles désactivés pour un invité (`rawUser` nul). Le type `User` (`types/user.type.ts`) porte désormais `notifications_enabled?` et `language?` (déjà renvoyés par le Backend dans le user « safe », le type ne les déclarait pas).
+
 **Reste un écart de périmètre à trancher (pas un bug) :** `pages/Profile/Profile.tsx` (+ `ProfileEdit`) portent encore des champs fictifs codés en dur (`MOCK_PROFILE_DETAILS` : titre, bio, localisation, réseaux, disponibilité, type de contrat, salaire) — **aucun n'existe sur le modèle `User` côté Backend**. Seuls nom/email/initiales viennent du vrai utilisateur. À décider consciemment : étoffer `User` (ou un modèle profil dédié) côté Backend, ou assumer que ces sections restent une maquette.
 
 ## Offres — intégration API réelle (nouveau)

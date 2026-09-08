@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -20,6 +21,7 @@ import {
 import { queryKeys } from "../api/query-keys";
 import { useToastStore } from "../store/toast.store";
 import { memberHeadline, memberName } from "../utils/member";
+import { useMessaging } from "../context/Messaging/useMessaging";
 
 const FALLBACK_AVATAR = "https://randomuser.me/api/portraits/lego/5.jpg";
 
@@ -34,6 +36,8 @@ export function MemberProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { startConversation, openConversation } = useMessaging();
+  const [isStartingConversation, setIsStartingConversation] = useState(false);
 
   const {
     data: member,
@@ -78,8 +82,24 @@ export function MemberProfile() {
         .addToast("Une erreur est survenue", "error"),
   });
 
-  const notify = () =>
-    useToastStore.getState().addToast("Bientôt disponible", "info");
+  // Ouvre (ou retrouve) la conversation avec ce membre auprès de
+  // MS-Messagerie, puis referme cette page pour afficher le panneau de
+  // messagerie (monté au niveau de `Root`, pas de cette page).
+  const handleMessage = async () => {
+    if (!member) return;
+    setIsStartingConversation(true);
+    try {
+      const conversationId = await startConversation(String(member.id));
+      navigate("/");
+      openConversation(conversationId);
+    } catch {
+      useToastStore
+        .getState()
+        .addToast("Impossible d'ouvrir la conversation", "error");
+    } finally {
+      setIsStartingConversation(false);
+    }
+  };
 
   const shell = (children: React.ReactNode) => (
     <div className="flex-1 flex flex-col bg-base-200 pb-6">
@@ -175,7 +195,8 @@ export function MemberProfile() {
           </button>
           <button
             type="button"
-            onClick={notify}
+            onClick={() => void handleMessage()}
+            disabled={isStartingConversation}
             className="btn btn-outline btn-sm gap-1.5"
           >
             <MessageSquare className="h-4 w-4" />

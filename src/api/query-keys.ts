@@ -20,4 +20,11 @@ export const queryKeys = {
   connections: {
     all: ["connections"] as const,
   },
+  messaging: {
+    /** Aperçu des conversations de l'utilisateur (liste + badges non lus). */
+    conversations: ["messaging", "conversations"] as const,
+    /** Fil complet d'une conversation (chargé à l'ouverture). */
+    thread: (conversationId: string) =>
+      ["messaging", "thread", conversationId] as const,
+  },
 } as const;

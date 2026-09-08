@@ -1,68 +1,40 @@
 import { useState } from "react";
 import { MessageCircle } from "@/lib/icons";
 import { useMessaging } from "../../context/Messaging/useMessaging";
-import {
-  CONVERSATIONS,
-  type Conversation,
-  type ConversationMessage,
-} from "../../constants/conversations";
 import { MessagingOverlay } from "./MessagingOverlay";
 import { MessagingHeader } from "./MessagingHeader";
 import { ConversationItem } from "./ConversationItem";
 import { ConversationThread } from "./ConversationThread";
 import { EmptyState } from "../Layout/EmptyState";
 
-function nowLabel(): string {
-  return new Date().toLocaleTimeString("fr-FR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
 export function MessagingPanel() {
   const {
     isMessagingOpen,
     activeConversationId,
     unreadConversationIds,
+    conversations,
+    isLoadingConversations,
     openConversation,
     goToConversationList,
     closeMessaging,
     setConversationUnread,
+    sendMessage,
   } = useMessaging();
 
-  // Suppression/archivage : purement local à la liste affichée (pas besoin
-  // de le partager ailleurs dans l'app, contrairement à l'état lu/non-lu qui
-  // alimente aussi le badge du FAB). "Gérer les conversations"/"Messages
-  // archivés" (menu du header) restent des pages à construire séparément —
-  // ici on masque juste l'item de cette liste.
+  // Archivage/suppression : MS-Messagerie ne les supporte pas (cf. « Hors
+  // périmètre » de son README) — purement local à cette liste affichée,
+  // comme avant l'intégration réelle. "Gérer les conversations"/"Messages
+  // archivés" (menu du header) restent des pages à construire séparément.
   const [archivedIds, setArchivedIds] = useState<string[]>([]);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
-  // Messages envoyés pendant la session : la messagerie n'a pas encore de
-  // backend, on les garde en mémoire et on les fusionne au fil mock.
-  const [sentByConv, setSentByConv] = useState<
-    Record<string, ConversationMessage[]>
-  >({});
 
-  const withSent = (conv: Conversation): Conversation => {
-    const sent = sentByConv[conv.id];
-    if (!sent?.length) return conv;
-    const last = sent[sent.length - 1];
-    return {
-      ...conv,
-      messages: [...conv.messages, ...sent],
-      lastMessage: last.text,
-      time: last.time,
-    };
-  };
-
-  const visibleConversations = CONVERSATIONS.filter(
+  const visibleConversations = conversations.filter(
     (conv) => !archivedIds.includes(conv.id) && !deletedIds.includes(conv.id),
-  ).map(withSent);
+  );
 
-  const baseActive = CONVERSATIONS.find(
+  const activeConversation = conversations.find(
     (conv) => conv.id === activeConversationId,
   );
-  const activeConversation = baseActive ? withSent(baseActive) : undefined;
 
   const handleArchive = (id: string) => {
     setArchivedIds((prev) => [...prev, id]);
@@ -76,24 +48,13 @@ export function MessagingPanel() {
 
   const handleSend = (text: string) => {
     if (!activeConversationId) return;
-    setSentByConv((prev) => {
-      const current = prev[activeConversationId] ?? [];
-      const lastId =
-        current.at(-1)?.id ?? baseActive?.messages.at(-1)?.id ?? 0;
-      return {
-        ...prev,
-        [activeConversationId]: [
-          ...current,
-          { id: lastId + 1, from: "me", text, time: nowLabel() },
-        ],
-      };
-    });
-    setConversationUnread(activeConversationId, false);
+    sendMessage(activeConversationId, text);
   };
 
   // TODO: ouvrir le flow de composition d'une nouvelle conversation
   // (sélection d'un contact + premier message) — ticket séparé, le flow
-  // complet (recherche de contact, etc.) n'existe pas encore.
+  // complet (recherche de contact, etc.) n'existe pas encore. En attendant,
+  // une conversation s'ouvre depuis le profil d'un membre (bouton "Message").
   const handleNewConversation = () => {};
 
   return (
@@ -122,7 +83,11 @@ export function MessagingPanel() {
                 résiduel quand la liste est courte reste en bas, jamais
                 étiré entre les conversations. */}
             <div className="flex-1 flex flex-col overflow-y-auto">
-              {visibleConversations.length === 0 ? (
+              {isLoadingConversations ? (
+                <p className="p-4 text-center text-sm text-base-content/50">
+                  Chargement…
+                </p>
+              ) : visibleConversations.length === 0 ? (
                 <div className="p-4">
                   <EmptyState
                     icon={MessageCircle}

@@ -7,11 +7,16 @@ import {
   STACK_BOTTOM_OFFSET,
   STACK_ITEM_GAP,
 } from "../../constants/layout";
-import { CONVERSATIONS, unreadMessageCount } from "../../constants/conversations";
+import { unreadMessageCount } from "../../types/messaging.type";
 
 export function MessagingFab() {
-  const { isMessagingOpen, unreadConversationIds, openMessaging, openConversation } =
-    useMessaging();
+  const {
+    isMessagingOpen,
+    unreadConversationIds,
+    conversations,
+    openMessaging,
+    openConversation,
+  } = useMessaging();
   // Si un ou plusieurs toasts occupent déjà le coin, on empile le bouton
   // juste au-dessus d'eux plutôt que par-dessus.
   const toastStackHeight = useToastStore((state) => state.stackHeight);
@@ -24,7 +29,7 @@ export function MessagingFab() {
 
   // Le fab mobile pointe vers UNE conversation (la plus récente non lue) :
   // son badge compte les nouveaux messages DANS cette conversation.
-  const targetConversation = CONVERSATIONS.find(
+  const targetConversation = conversations.find(
     (c) => c.id === unreadConversationIds[0],
   );
   const fabMessageCount = targetConversation
@@ -92,9 +97,27 @@ export function MessagingFab() {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             aria-label={fabLabel}
-            className="relative w-11 h-11 rounded-full bg-primary text-primary-content flex items-center justify-center shadow-lg hover:bg-primary/90 active:scale-95 active:bg-primary/80 transition touch-none pointer-events-auto"
+            className={`relative w-11 h-11 rounded-full flex items-center justify-center shadow-lg ring-2 ring-primary/40 active:scale-95 transition touch-none pointer-events-auto ${
+              targetConversation?.avatarUrl
+                ? "bg-base-300"
+                : "bg-primary text-primary-content hover:bg-primary/90 active:bg-primary/80"
+            }`}
           >
-            <MessageCircle className="w-5 h-5" />
+            {/* Le fab pointe vers UNE personne : on montre son avatar (photo ou
+                initiale), pas une icône générique. */}
+            {targetConversation?.avatarUrl ? (
+              <img
+                src={targetConversation.avatarUrl}
+                alt=""
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : targetConversation ? (
+              <span className="text-sm font-semibold">
+                {targetConversation.name.charAt(0).toUpperCase()}
+              </span>
+            ) : (
+              <MessageCircle className="w-5 h-5" />
+            )}
             <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
               {fabMessageDisplay}
             </span>

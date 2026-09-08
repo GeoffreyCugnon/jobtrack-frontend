@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Send, X } from "@/lib/icons";
-import type { Conversation } from "../../constants/conversations";
+import type { Conversation } from "../../types/messaging.type";
 import { Avatar } from "../UI/Avatar";
 
 interface ConversationThreadProps {

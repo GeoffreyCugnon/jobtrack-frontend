@@ -12,7 +12,6 @@ import {
   type LucideIcon,
 } from "@/lib/icons";
 import { cvItems, letterItems } from "../../data/documents";
-import { CONVERSATIONS } from "../../constants/conversations";
 import { OffersApi } from "../../api/offers.api";
 import { PublicationsApi } from "../../api/publications.api";
 import { UserApi } from "../../api/user.api";
@@ -256,7 +255,10 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       });
     }
 
-    const convs = CONVERSATIONS.filter(
+    // Aperçu : seul le dernier message de chaque conversation est chargé
+    // (cf. MessagingProvider) — la recherche dans `messages` reste donc
+    // partielle tant que le fil complet n'est pas ouvert.
+    const convs = (messaging?.conversations ?? []).filter(
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.lastMessage.toLowerCase().includes(q) ||

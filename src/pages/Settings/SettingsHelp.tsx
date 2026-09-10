@@ -1,38 +1,41 @@
-import { useNavigate } from "react-router";
-import { ArrowLeft, HelpCircle } from "@/lib/icons";
-import { Header } from "../../components/Layout/Header";
+import { HelpCircle } from "@/lib/icons";
+import { FormPageLayout } from "../../components/Layout/FormPageLayout";
+
+const FAQ: { q: string; a: string }[] = [
+  {
+    q: "Comment suivre mes candidatures ?",
+    a: "Depuis « Offres », ouvrez une offre puis postulez : elle apparaît dans « Candidatures actives » avec son statut. Chaque entretien planifié la fait passer en « Entretien prévu ».",
+  },
+  {
+    q: "Où gérer mes CV et lettres ?",
+    a: "Onglet « Documents ». Vous pouvez créer, renommer et supprimer vos CV et lettres. L'aperçu du fichier arrivera avec l'upload de documents.",
+  },
+  {
+    q: "Comment modifier mon profil public ?",
+    a: "« Mon profil » → « Modifier ». Le titre, la localisation, la bio, les contacts et les compétences sont visibles par les recruteurs.",
+  },
+  {
+    q: "Je ne reçois pas l'email de réinitialisation de mot de passe.",
+    a: "Vérifiez vos indésirables. En environnement de démo, le lien de réinitialisation est écrit dans les logs du serveur.",
+  },
+];
 
 export function SettingsHelp() {
-  const navigate = useNavigate();
-
   return (
-    <>
-      <Header/>
-      <div className="mx-auto max-w-2xl px-4 py-6">
-        <button
-          onClick={() => navigate("/settings")}
-          className="mb-6 flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
-        >
-          <ArrowLeft size={16} />
-          Retour aux paramètres
-        </button>
-
-        <div className="card bg-base-100 border border-base-200 shadow-sm">
-          <div className="card-body p-6">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <HelpCircle size={18} />
-              </div>
-              <h1 className="text-lg font-semibold">Comment pouvons-nous t'aider ?</h1>
-            </div>
-
-            <p className="text-sm text-base-content/70">
-              {/* TODO: FAQ, formulaire de contact, ou lien vers un support externe */}
-              Contenu à venir.
-            </p>
+    <FormPageLayout
+      title="Centre d'aide"
+      icon={HelpCircle}
+      backTo="/settings"
+      backLabel="Retour aux paramètres"
+    >
+      <div className="divide-y divide-base-200">
+        {FAQ.map(({ q, a }) => (
+          <div key={q} className="py-3 first:pt-0 last:pb-0">
+            <p className="text-sm font-semibold text-base-content">{q}</p>
+            <p className="mt-1 text-sm text-base-content/70">{a}</p>
           </div>
-        </div>
+        ))}
       </div>
-    </>
+    </FormPageLayout>
   );
 }

@@ -1,11 +1,11 @@
-import { ArrowLeft, CheckCircle2, Lock } from "@/lib/icons";
+import { CheckCircle2, Lock } from "@/lib/icons";
 import { SettingsModal } from "../../components/Settings/SettingsModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { FieldError } from "../../components/Auth/FieldError";
-import { Header } from "../../components/Layout/Header";
+import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { type ChangePasswordValues, changePasswordSchema } from "../../schemas/settings.schemas";
 import { INPUT_CLASS } from "../../constants/styles";
 import { UserApi } from "../../api/user.api";
@@ -45,26 +45,13 @@ export function SettingsPassword() {
 
   return (
     <>
-      <Header />
-      <div className="mx-auto max-w-2xl px-4 py-6">
-        <button
-          onClick={() => navigate("/settings")}
-          className="mb-6 flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
-        >
-          <ArrowLeft size={16} />
-          Retour aux paramètres
-        </button>
-
-        <div className="card bg-base-100 border border-base-200 shadow-sm">
-          <div className="card-body p-6">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Lock size={18} />
-              </div>
-              <h1 className="text-lg font-semibold">Changer le mot de passe</h1>
-            </div>
-
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <FormPageLayout
+        title="Changer le mot de passe"
+        icon={Lock}
+        backTo="/settings"
+        backLabel="Retour aux paramètres"
+      >
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
               <label className="block">
                 <span className="text-sm text-base-content/70 mb-1 block">
                   Mot de passe actuel
@@ -109,10 +96,8 @@ export function SettingsPassword() {
               <button type="submit" className="btn btn-primary mt-2" disabled={isSubmitting}>
                 {isSubmitting ? "Mise à jour..." : "Mettre à jour le mot de passe"}
               </button>
-            </form>
-          </div>
-        </div>
-      </div>
+        </form>
+      </FormPageLayout>
 
       <SettingsModal modalRef={successModalRef} title="Mot de passe mis à jour">
         <div className="flex flex-col items-center gap-3 py-2 text-center">

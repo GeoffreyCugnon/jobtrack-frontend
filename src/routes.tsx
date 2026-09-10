@@ -16,10 +16,8 @@ import { NetworkRelations } from "./pages/NetworkRelations";
 import { NetworkInvitations } from "./pages/NetworkInvitations";
 import { MemberProfile } from "./pages/MemberProfile";
 import { Documents } from "./pages/Documents/Documents";
-import { CVPreview } from "./pages/Documents/CVPreview";
-import { CVEdit } from "./pages/Documents/CVEdit";
-import { LetterPreview } from "./pages/Documents/LetterPreview";
-import { LetterEdit } from "./pages/Documents/LetterEdit";
+import { DocumentPreview } from "./pages/Documents/DocumentPreview";
+import { DocumentEdit } from "./pages/Documents/DocumentEdit";
 import { Publications } from "./pages/Publications/Publications";
 import { PublicationDetail } from "./pages/Publications/PublicationDetail";
 import { Settings } from "./pages/Settings/Settings";
@@ -64,10 +62,8 @@ export const router = createBrowserRouter([
         path: "documents",
         children: [
           { index: true, Component: Documents },
-          { path: "cv/:id", Component: CVPreview },
-          { path: "cv/:id/edit", Component: CVEdit },
-          { path: "letters/:id", Component: LetterPreview },
-          { path: "letters/:id/edit", Component: LetterEdit },
+          { path: ":type/:id", Component: DocumentPreview },
+          { path: ":type/:id/edit", Component: DocumentEdit },
         ],
       },
       // Onglet "Actus" de l'app : même composant que l'accueil, sans le logo.

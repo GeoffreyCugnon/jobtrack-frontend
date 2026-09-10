@@ -1,6 +1,6 @@
 // src/components/Layout/Header.tsx
 import { Link, useLocation } from "react-router";
-import { MessageCircle, LogIn } from "@/lib/icons";
+import { ChatCircleDots, LogIn } from "@/lib/icons";
 import { PageContainer } from "./PageContainer";
 import { useMenu } from "../../context/Menu/useMenu";
 import { AuthLogo } from "../Auth/AuthLogo";
@@ -108,7 +108,7 @@ export function Header({ search = "app" }: HeaderProps) {
               }
               className="relative shrink-0 p-1 text-base-content/70 transition-colors hover:text-base-content"
             >
-              <MessageCircle className="w-8 h-8" />
+              <ChatCircleDots className="w-8 h-8" weight="fill" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 min-w-4.5 h-4.5 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center ring-2 ring-base-100">
                   {unreadCount > 9 ? "9+" : unreadCount}

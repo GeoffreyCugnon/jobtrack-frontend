@@ -7,6 +7,12 @@ interface SectionCardBaseProps {
   headerAction?: ReactNode;
   defaultOpen?: boolean;
   collapsible?: boolean;
+  /**
+   * Header sans bandeau : fond `base-100` (pas de gris `base-200`), pas d'ombre
+   * ni de séparation sous le titre — le contenu suit directement. Utilisé par le
+   * dashboard, où les sections doivent se fondre les unes dans les autres.
+   */
+  flat?: boolean;
   children: ReactNode;
 }
 
@@ -45,14 +51,21 @@ export function SectionCard({
   onHeaderClick,
   defaultOpen = true,
   collapsible = true,
+  flat = false,
   children,
 }: SectionCardProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const open = collapsible ? isOpen : true;
 
-  const headerClassName = `relative z-10 flex items-center justify-between px-4 py-3 bg-base-200 shadow-sm transition-colors ${
-    collapsible || headerTo ? "cursor-pointer" : ""
-  } ${headerTo ? "hover:bg-base-300/60 active:bg-base-300" : ""}`;
+  const headerClassName = `relative z-10 flex items-center justify-between px-4 py-3 transition-colors ${
+    flat ? "bg-base-100" : "bg-base-200 shadow-sm"
+  } ${collapsible || headerTo ? "cursor-pointer" : ""} ${
+    headerTo
+      ? flat
+        ? "hover:bg-base-200/60 active:bg-base-200"
+        : "hover:bg-base-300/60 active:bg-base-300"
+      : ""
+  }`;
 
   const headerChildren = (
     <>
@@ -113,7 +126,9 @@ export function SectionCard({
       )}
 
       {open && (
-        <div className="bg-base-100 p-4 border-t border-base-200">
+        <div
+          className={`bg-base-100 p-4 ${flat ? "pt-0" : "border-t border-base-200"}`}
+        >
           {children}
         </div>
       )}

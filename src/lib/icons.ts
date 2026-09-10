@@ -15,6 +15,7 @@ export {
   Briefcase,
   Calendar,
   Camera,
+  ChatCircleDots,
   Check,
   Circle,
   Clock,

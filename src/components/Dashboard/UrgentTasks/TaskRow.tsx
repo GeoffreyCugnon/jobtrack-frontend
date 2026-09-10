@@ -34,13 +34,13 @@ export function TaskRow({
       className="flex items-center justify-between gap-2 -mx-2 px-2 py-3 first:pt-0 last:pb-0 rounded-field transition-colors hover:bg-base-200/60 active:bg-base-200"
     >
       <div className="flex items-center gap-3 min-w-0">
-        {dueCategory === "today" ? (
-          <span className="badge badge-error badge-sm font-semibold shrink-0">
+        {dueCategory === "today" && (
+          // Seul le groupe "Aujourd'hui" porte un badge : il ajoute la notion
+          // d'urgence. Le groupe "À venir" n'en a pas — un badge "À venir" y
+          // ferait doublon avec le titre du sous-groupe juste au-dessus.
+          // Rouge sourd de la maquette, pas le rouge vif de daisyUI `badge-error`.
+          <span className="badge badge-sm font-semibold shrink-0 border-[#a33333] bg-[#a33333] text-white">
             Urgent
-          </span>
-        ) : (
-          <span className="badge badge-success badge-sm font-semibold shrink-0">
-            À venir
           </span>
         )}
         <div className="min-w-0">
@@ -52,7 +52,7 @@ export function TaskRow({
           ) : null}
         </div>
       </div>
-      <div className="flex items-center gap-1 shrink-0 text-base-content/70">
+      <div className="flex items-center gap-1 shrink-0 text-primary">
         <Icon className="w-5 h-5" aria-hidden="true" />
         <ChevronRight aria-hidden="true" className="w-3.5 h-3.5 lg:hidden" />
       </div>

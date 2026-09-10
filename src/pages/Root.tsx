@@ -68,10 +68,12 @@ function RootContent() {
                       type="button"
                       onClick={handlePublish}
                       aria-label="Publier"
-                      className="flex flex-col items-center gap-1 px-2 text-base-content/50 hover:text-base-content/80 transition-colors"
+                      className="group flex flex-col items-center gap-1 px-3 py-2 rounded-field transition-colors text-base-content/50 hover:text-base-content/80"
                     >
-                      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-content shadow-md">
-                        <Plus className="h-6 w-6" />
+                      {/* "+" inversé : carré gris, glyphe couleur du fond (blanc
+                          en clair). Reste calé sur les icônes voisines (w-5 h-5). */}
+                      <span className="flex h-5 w-5 items-center justify-center rounded-md bg-base-content/50 text-base-100 transition-colors group-hover:bg-base-content/80">
+                        <Plus className="w-3.5 h-3.5" />
                       </span>
                       <span className="text-xs">Publier</span>
                     </button>
@@ -84,7 +86,10 @@ function RootContent() {
                         : "text-base-content/50 hover:text-base-content/80"
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
+                    {/* w-6 (24px) : les glyphes `fill` ont une marge interne,
+                        à cette taille leur masse visuelle égale le carré 20px
+                        plein de « Publier ». */}
+                    <Icon className="w-6 h-6" weight="fill" />
                     <span className="text-xs">{shortLabel}</span>
                   </Link>
                 </Fragment>

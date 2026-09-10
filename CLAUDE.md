@@ -55,7 +55,9 @@ Un vrai flux d'auth relié au backend a été mis en place :
 
 ## Offres — intégration API réelle (nouveau)
 
-`pages/Offers.tsx` charge les offres via `useQuery` + `OffersApi.getAll()` (`GET job-offering`, tolérant à une réponse `Offer[]` ou `{ offers: [...] }`). Le filtrage par catégorie, la recherche texte et le tri (par `postedHoursAgo` croissant) restent 100% côté client sur le résultat en cache. Le rejet d'une offre passe par un state local `dismissedIds` (le cache React Query reste la source). `data/offerCategories.ts` ne contient plus que les métadonnées de catégories (label/icône/couleur) affichées par `OfferCategorySelector`/`OfferCategoryBanner`.
+`pages/Offers.tsx` charge les offres via `useQuery` + `OffersApi.getAll()` (`GET job-offering`, tolérant à une réponse `Offer[]` ou `{ offers: [...] }`). Le filtrage par catégorie, la recherche texte et le tri (par `postedHoursAgo` croissant) restent 100% côté client sur le résultat en cache. Le rejet d'une offre passe par un state local `dismissedIds` (le cache React Query reste la source).
+
+**Catégories d'offres — poussées en base.** La *donnée* des catégories (label, description, `isWorkMode`) vit maintenant dans la table `Job_category` côté Backend, servie par `GET /job-categories`. Le Front la lit via le hook `hooks/useJobCategories.ts` (React Query, `staleTime` 1 h, clé `queryKeys.jobCategories.all`) — partagé par `OfferFilters`, `Offers` (libellé bannière) et `OfferDetail` (libellé fiche). `data/offerCategories.ts` ne garde plus que ce qui n'est pas stockable en base : `getCategoryStyle(key)` → `{ icon, colorClass }` (composant Phosphor + classe Tailwind brute, exception assumée aux tokens DaisyUI). Fixture Cypress : `cypress/fixtures/job-categories.json` (interceptée dans `Offers.cy.tsx`).
 
 **Audit v3 — code mort supprimé :** le cluster CRUD `components/Network/{Card,CompanyCard,CompanyForm,CompanyList,ContactCard,ContactForm,ContactsList,RelationsSearchInput}` + `schemas/{company,contact}.schemas.ts` + `types/{company,contact}.types.ts` (jamais montés par aucune page) ont été supprimés. `components/Network/` ne contient plus que `PeopleCard.tsx`.
 

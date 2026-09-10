@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
-import { ChevronDown } from "@/lib/icons";
-import { offerCategories } from "../../data/offerCategories";
+import { CaretDown } from "@phosphor-icons/react";
+import { getCategoryStyle } from "../../data/offerCategories";
+import { useJobCategories } from "../../hooks/useJobCategories";
 import {
   CONTRACT_OPTIONS,
   WORK_MODE_OPTIONS,
@@ -64,7 +65,7 @@ function FilterDropdown({ label, options, value, onSelect }: FilterDropdownProps
       >
         {selected && <OptionIcon option={selected} />}
         <span className="max-w-40 truncate">{selected?.label ?? label}</span>
-        <ChevronDown className="w-3.5 h-3.5 shrink-0" />
+        <CaretDown className="w-3.5 h-3.5 shrink-0" />
       </div>
       <ul
         tabIndex={0}
@@ -103,20 +104,27 @@ interface OfferFiltersProps {
 
 /** Trois pastilles-dropdowns cumulables : Catégorie / Mode de travail / Contrat. */
 export function OfferFilters({ value, onChange }: OfferFiltersProps) {
+  // Référentiel `Job_category` (`GET /job-categories`). Tant qu'il n'est pas
+  // chargé, le filtre « Catégorie » n'affiche que « Toutes ».
+  const { categories } = useJobCategories();
+
   return (
     <div className="flex flex-wrap gap-2">
       <FilterDropdown
         label="Catégorie"
         // `isWorkMode` exclu : « À distance » / « Hybride » relèvent du filtre
         // « Mode de travail », pas d'un secteur d'activité.
-        options={offerCategories
+        options={categories
           .filter((c) => !c.isWorkMode)
-          .map((c) => ({
-            value: c.key,
-            label: c.label,
-            icon: c.icon,
-            colorClass: c.colorClass,
-          }))}
+          .map((c) => {
+            const style = getCategoryStyle(c.key);
+            return {
+              value: c.key,
+              label: c.label,
+              icon: style.icon,
+              colorClass: style.colorClass,
+            };
+          })}
         value={value.category}
         onSelect={(v) => onChange({ category: v })}
       />

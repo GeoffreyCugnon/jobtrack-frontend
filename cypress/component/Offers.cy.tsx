@@ -4,6 +4,7 @@ import { MenuProvider } from "../../src/context/Menu/MenuContext";
 import { useAuthStore } from "../../src/store/auth.store";
 import { useSavedOffersStore } from "../../src/store/saved-offers.store";
 import mockOffers from "../fixtures/offers.json";
+import mockCategories from "../fixtures/job-categories.json";
 
 // `Offers` charge les offres via `OffersApi.getAll()` (`GET job-offering`) et
 // filtre le texte sur `?q=` (la barre de recherche est celle du header, qui
@@ -16,6 +17,9 @@ function mountOffers(entry = "/offers") {
   });
   useSavedOffersStore.setState({ savedIds: [] });
   cy.intercept("GET", "**/job-offering", { body: mockOffers }).as("offers");
+  cy.intercept("GET", "**/job-categories", { body: mockCategories }).as(
+    "categories",
+  );
   cy.mount(
     <MemoryRouter initialEntries={[entry]}>
       <MenuProvider>

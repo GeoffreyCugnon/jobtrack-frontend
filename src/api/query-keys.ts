@@ -8,6 +8,9 @@ export const queryKeys = {
     all: ["offers"] as const,
     detail: (id: string | number) => ["offers", "detail", String(id)] as const,
   },
+  jobCategories: {
+    all: ["job-categories"] as const,
+  },
   publications: {
     all: ["publications"] as const,
     detail: (id: string | number) =>

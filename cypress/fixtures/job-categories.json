@@ -1,0 +1,15 @@
+[
+  { "key": "distance", "label": "À distance", "description": "Travaillez entièrement à distance, sans contrainte de site.", "isWorkMode": true, "sortOrder": 1 },
+  { "key": "hybride", "label": "Hybride", "description": "Un équilibre entre présentiel et télétravail, où que vous soyez.", "isWorkMode": true, "sortOrder": 2 },
+  { "key": "informatique", "label": "Informatique", "description": "Développement, support et infrastructure pour les équipes tech.", "isWorkMode": false, "sortOrder": 3 },
+  { "key": "enseignement", "label": "Enseignement", "description": "Former et transmettre, du primaire à l'enseignement supérieur.", "isWorkMode": false, "sortOrder": 4 },
+  { "key": "hotellerie", "label": "Hôtellerie", "description": "Accueil, restauration et service dans l'hôtellerie-restauration.", "isWorkMode": false, "sortOrder": 5 },
+  { "key": "administration", "label": "Administration publique", "description": "Des postes au service de l'intérêt général.", "isWorkMode": false, "sortOrder": 6 },
+  { "key": "temps-partiel", "label": "Temps partiel", "description": "Des missions flexibles, adaptées à votre emploi du temps.", "isWorkMode": false, "sortOrder": 7 },
+  { "key": "commerce", "label": "Commerce", "description": "Vente, conseil et relation client en magasin ou à distance.", "isWorkMode": false, "sortOrder": 8 },
+  { "key": "transport", "label": "Transport & Logistique", "description": "Acheminer, organiser et optimiser les flux de marchandises.", "isWorkMode": false, "sortOrder": 9 },
+  { "key": "sante", "label": "Santé", "description": "Prendre soin des patients, en établissement ou à domicile.", "isWorkMode": false, "sortOrder": 10 },
+  { "key": "industrie", "label": "Industrie", "description": "Fabrication, maintenance et production sur site industriel.", "isWorkMode": false, "sortOrder": 11 },
+  { "key": "marketing", "label": "Marketing & Communication", "description": "Faire connaître une marque et parler à ses clients.", "isWorkMode": false, "sortOrder": 12 },
+  { "key": "finance", "label": "Finance", "description": "Gérer, analyser et sécuriser les flux financiers.", "isWorkMode": false, "sortOrder": 13 }
+]

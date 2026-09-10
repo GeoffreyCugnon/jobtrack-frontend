@@ -1,21 +1,11 @@
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  BadgeCheck,
-  Briefcase,
-  Building2,
-  Clock,
-  FileQuestion,
-  MapPin,
-  RotateCw,
-  Users,
-} from "@/lib/icons";
+import { ArrowClockwise, ArrowLeft, Briefcase, Buildings, Clock, FileDashed, MapPin, SealCheck, Users } from "@phosphor-icons/react";
 import { Header } from "../components/Layout/Header";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { OffersApi } from "../api/offers.api";
 import { queryKeys } from "../api/query-keys";
-import { offerCategories } from "../data/offerCategories";
+import { useJobCategories } from "../hooks/useJobCategories";
 
 const WORK_MODE_LABEL: Record<string, string> = {
   onSite: "Sur site",
@@ -38,8 +28,9 @@ export function OfferDetail() {
     enabled: !!id,
   });
 
+  const { categories: jobCategories } = useJobCategories();
   const categoryLabel = offer
-    ? (offerCategories.find((c) => c.key === offer.category)?.label ??
+    ? (jobCategories.find((c) => c.key === offer.category)?.label ??
       offer.category)
     : "";
 
@@ -72,7 +63,7 @@ export function OfferDetail() {
               onClick={() => void refetch()}
               className="btn btn-sm btn-outline gap-2"
             >
-              <RotateCw className="w-4 h-4" />
+              <ArrowClockwise className="w-4 h-4" />
               Réessayer
             </button>
           </div>
@@ -80,7 +71,7 @@ export function OfferDetail() {
 
         {!isPending && !isError && !offer && (
           <EmptyState
-            icon={FileQuestion}
+            icon={FileDashed}
             message="Cette offre n'existe pas ou plus."
           />
         )}
@@ -92,7 +83,7 @@ export function OfferDetail() {
                 <h1 className="flex items-center gap-2 text-xl font-bold text-primary">
                   {offer.role}
                   {offer.verified && (
-                    <BadgeCheck
+                    <SealCheck
                       aria-label="Offre vérifiée"
                       className="w-5 h-5 shrink-0"
                     />
@@ -100,7 +91,7 @@ export function OfferDetail() {
                 </h1>
                 <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-base-content/70">
                   <span className="flex items-center gap-1.5">
-                    <Building2 className="w-4 h-4" />
+                    <Buildings className="w-4 h-4" />
                     {offer.company}
                   </span>
                   <span className="flex items-center gap-1.5">

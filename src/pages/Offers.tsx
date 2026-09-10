@@ -1,7 +1,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Bookmark, Briefcase, ChevronRight, RotateCw } from "@/lib/icons";
+import { ArrowClockwise, BookmarkSimple, Briefcase, CaretRight } from "@phosphor-icons/react";
 import { OfferFilters } from "../components/Offers/OfferFilters";
 import {
   EMPTY_OFFER_FILTERS,
@@ -11,7 +11,7 @@ import { OfferList } from "../components/Offers/OfferList";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { Header } from "../components/Layout/Header";
 import { PageContainer } from "../components/Layout/PageContainer";
-import { offerCategories } from "../data/offerCategories";
+import { useJobCategories } from "../hooks/useJobCategories";
 import { OffersApi } from "../api/offers.api";
 import { queryKeys } from "../api/query-keys";
 import { useAuthStore } from "../store/auth.store";
@@ -30,6 +30,8 @@ export function Offers() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const savedIds = useSavedOffersStore((state) => state.savedIds);
   const toggleSave = useSavedOffersStore((state) => state.toggle);
+  // Référentiel des catégories (`GET /job-categories`) : libellé de la bannière.
+  const { categories: jobCategories } = useJobCategories();
 
   // Filtres cumulables (Catégorie / Mode de travail / Contrat).
   const [filters, setFilters] = useState<OfferFiltersValue>(EMPTY_OFFER_FILTERS);
@@ -89,7 +91,7 @@ export function Offers() {
     (a, b) => a.postedHoursAgo - b.postedHoursAgo,
   );
 
-  const activeCategoryData = offerCategories.find(
+  const activeCategoryData = jobCategories.find(
     (category) => category.key === filters.category,
   );
   const bannerLabel = activeCategoryData
@@ -120,7 +122,7 @@ export function Offers() {
         onClick={() => void loadOffers()}
         className="btn btn-sm btn-outline gap-2"
       >
-        <RotateCw className="w-4 h-4" />
+        <ArrowClockwise className="w-4 h-4" />
         Réessayer
       </button>
     </div>
@@ -137,14 +139,14 @@ export function Offers() {
               to="/offers/saved"
               className="flex items-center gap-3 border-b border-base-200 px-4 py-3.5 text-sm font-semibold text-base-content transition-colors hover:bg-base-200"
             >
-              <Bookmark className="h-5 w-5 text-primary" />
+              <BookmarkSimple className="h-5 w-5 text-primary" />
               <span className="flex-1">Offres sauvegardées</span>
               {savedIds.length > 0 && (
                 <span className="badge badge-primary badge-sm font-semibold">
                   {savedIds.length}
                 </span>
               )}
-              <ChevronRight className="h-4 w-4 text-base-content/50" />
+              <CaretRight className="h-4 w-4 text-base-content/50" />
             </Link>
           )}
 

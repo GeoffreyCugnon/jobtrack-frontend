@@ -7,6 +7,7 @@ import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 import { AuthApi } from "../../api/auth.api";
 import { useAuthStore } from "../../store/auth.store";
 import { useToastStore } from "../../store/toast.store";
+import { logError } from "../../utils/log";
 
 export function SignupForm() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export function SignupForm() {
       useToastStore.getState().addToast("Compte créé et connecté", "success");
       navigate("/dashboard");
     } catch (error) {
-      console.error("Signup failed", error);
+      logError("auth/signup", error);
       useToastStore
         .getState()
         .addToast("Impossible de créer le compte", "error");

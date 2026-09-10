@@ -11,6 +11,7 @@ import { useToastStore } from "../../store/toast.store";
 import { AuthApi } from "../../api/auth.api";
 import { getUserDisplay } from "../../utils/user-display";
 import { POST_LOGOUT_KEY } from "../../constants/auth";
+import { logError } from "../../utils/log";
 
 interface SideMenuProps {
   open: boolean;
@@ -48,7 +49,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
     try {
       await AuthApi.logout();
     } catch (error) {
-      console.error("Logout failed", error);
+      logError("auth/logout", error);
     } finally {
       useAuthStore.getState().clearAuth();
       useToastStore.getState().addToast("Déconnexion réussie", "success");

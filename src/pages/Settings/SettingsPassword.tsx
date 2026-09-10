@@ -10,6 +10,7 @@ import { type ChangePasswordValues, changePasswordSchema } from "../../schemas/s
 import { INPUT_CLASS } from "../../constants/styles";
 import { UserApi } from "../../api/user.api";
 import axios from "axios";
+import { logError } from "../../utils/log";
 
 export function SettingsPassword() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export function SettingsPassword() {
           "Une erreur est survenue. Vérifie ton mot de passe actuel.",
         );
       } else {
-        console.error("Change password failed", error);
+        logError("settings/change-password", error);
         setServerError("Une erreur est survenue. Réessaie plus tard.");
       }
     }

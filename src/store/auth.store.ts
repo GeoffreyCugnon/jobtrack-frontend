@@ -8,7 +8,6 @@ type AuthState = {
   isAuthenticated: boolean;
   setUser: (user: User | null) => void;
   setAccessToken: (token: string | null) => void;
-  setAuthenticated: (value: boolean) => void;
   clearAuth: () => void;
 };
 
@@ -22,7 +21,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (token) markSessionHint();
     else clearSessionHint();
   },
-  setAuthenticated: (value) => set({ isAuthenticated: value }),
   clearAuth: () => {
     set({ user: null, accessToken: null, isAuthenticated: false });
     clearSessionHint();

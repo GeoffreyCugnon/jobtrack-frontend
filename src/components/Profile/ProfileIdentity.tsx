@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Loader2, MapPin, Edit2, Camera } from "@/lib/icons";
 import { fileToAvatarDataUrl, fileToBannerDataUrl } from "../../utils/image";
+import { logError } from "../../utils/log";
 
 interface UserType {
   firstName: string;
@@ -67,7 +68,7 @@ export function ProfileIdentity({
       setBannerSrc(dataUrl); // prévisualisation immédiate
       await onBannerChange?.(dataUrl);
     } catch (error) {
-      console.error("Banner update failed", error);
+      logError("profil/banner", error);
       setBannerSrc(previous); // échec -> on annule la prévisualisation
     } finally {
       setSavingBanner(false);
@@ -88,7 +89,7 @@ export function ProfileIdentity({
       setAvatarSrc(dataUrl); // prévisualisation immédiate
       await onAvatarChange?.(dataUrl);
     } catch (error) {
-      console.error("Avatar update failed", error);
+      logError("profil/avatar", error);
       setAvatarSrc(previous); // échec -> on annule la prévisualisation
     } finally {
       setSavingAvatar(false);

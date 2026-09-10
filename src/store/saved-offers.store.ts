@@ -8,10 +8,9 @@ import { create } from "zustand";
 type SavedOffersState = {
   savedIds: number[];
   toggle: (id: number) => void;
-  isSaved: (id: number) => boolean;
 };
 
-export const useSavedOffersStore = create<SavedOffersState>((set, get) => ({
+export const useSavedOffersStore = create<SavedOffersState>((set) => ({
   savedIds: [],
   toggle: (id) =>
     set((state) => ({
@@ -19,5 +18,4 @@ export const useSavedOffersStore = create<SavedOffersState>((set, get) => ({
         ? state.savedIds.filter((savedId) => savedId !== id)
         : [...state.savedIds, id],
     })),
-  isSaved: (id) => get().savedIds.includes(id),
 }));

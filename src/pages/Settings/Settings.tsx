@@ -21,6 +21,7 @@ import { useAuthStore } from "../../store/auth.store";
 import { getUserDisplay } from "../../utils/user-display";
 import type { User } from "../../types/user.type";
 import { INPUT_CLASS } from "../../constants/styles";
+import { logError } from "../../utils/log";
 
 /** Langues acceptées par le Backend (`UpdateLanguageDto`), libellé pour l'UI. */
 const LANGUAGES: { code: string; label: string }[] = [
@@ -59,7 +60,7 @@ export function Settings() {
       const updated = await call();
       useAuthStore.getState().setUser({ ...previous, ...updated });
     } catch (error) {
-      console.error("Update preference failed", error);
+      logError("settings/preference", error);
       useAuthStore.getState().setUser(previous);
       useToastStore
         .getState()
@@ -83,7 +84,7 @@ export function Settings() {
       useToastStore.getState().addToast("Compte supprimé", "success");
       navigate("/auth");
     } catch (error) {
-      console.error("Delete account failed", error);
+      logError("settings/delete-account", error);
       useToastStore
         .getState()
         .addToast("La suppression du compte a échoué.", "error");

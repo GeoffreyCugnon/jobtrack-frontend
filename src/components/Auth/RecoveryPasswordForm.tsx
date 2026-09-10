@@ -9,6 +9,7 @@ import { FieldError } from "./FieldError";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 import { AuthApi } from "../../api/auth.api";
 import { useToastStore } from "../../store/toast.store";
+import { logError } from "../../utils/log";
 
 interface RecoveryPasswordFormProps {
   onBack: () => void;
@@ -41,7 +42,7 @@ export function RecoveryPasswordForm({ onBack }: RecoveryPasswordFormProps) {
         );
       onBack();
     } catch (error) {
-      console.error("Forgot password failed", error);
+      logError("auth/forgot-password", error);
       useToastStore
         .getState()
         .addToast(

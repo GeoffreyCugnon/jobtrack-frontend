@@ -7,6 +7,7 @@ import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 import { AuthApi } from "../../api/auth.api";
 import { useAuthStore } from "../../store/auth.store";
 import { useToastStore } from "../../store/toast.store";
+import { logError } from "../../utils/log";
 
 interface LoginFormProps {
   onForgotPassword?: () => void;
@@ -28,7 +29,7 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
       useToastStore.getState().addToast("Connexion réussie", "success");
       navigate("/dashboard");
     } catch (error) {
-      console.error("Login failed", error);
+      logError("auth/login", error);
       useToastStore
         .getState()
         .addToast("Email ou mot de passe invalide", "error");

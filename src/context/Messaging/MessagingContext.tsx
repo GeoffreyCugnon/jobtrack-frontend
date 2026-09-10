@@ -19,6 +19,8 @@ import {
   joinConversationRoom,
   leaveConversationRoom,
   sendMessageViaSocket,
+  emitTyping,
+  queryPresence,
   clearMessagingToken,
 } from "../../services/messaging-client";
 import { formatConversationTime } from "../../utils/messaging";
@@ -37,6 +39,10 @@ interface MessagingProviderProps {
 // s'afficher et refermer la messagerie aussitôt ouverte. On ignore les
 // demandes de fermeture survenant dans cette fenêtre après l'ouverture.
 const GHOST_CLICK_GUARD_MS = 500;
+
+// Filet de sécurité si un `typing:stop` se perd (réseau, onglet fermé) :
+// l'indicateur « écrit… » disparaît seul passé ce délai sans nouvel événement.
+const TYPING_EXPIRY_MS = 6000;
 
 function mapMessage(dto: MessagingMessageDto, myId: string): ConversationMessage {
   return {
@@ -60,6 +66,18 @@ export function MessagingProvider({ children }: MessagingProviderProps) {
   // par message, jamais annulée) : surcharge locale, purement cosmétique.
   const [forcedUnreadIds, setForcedUnreadIds] = useState<string[]>([]);
   const openedAtRef = useRef(0);
+
+  // Présence temps réel : ids des interlocuteurs actuellement connectés
+  // (événements `presence` / `presence:snapshot` de MS-Messagerie).
+  const [onlineUserIds, setOnlineUserIds] = useState<string[]>([]);
+  // Ids des conversations où l'autre participant écrit, chacune avec un
+  // minuteur d'expiration rafraîchi à chaque événement `typing`.
+  const [typingConversationIds, setTypingConversationIds] = useState<string[]>(
+    [],
+  );
+  const typingTimersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>(
+    {},
+  );
 
   // --- Connexion WebSocket, tant que l'utilisateur est authentifié ---------
   useEffect(() => {
@@ -112,11 +130,70 @@ export function MessagingProvider({ children }: MessagingProviderProps) {
           }
         },
       );
+
+      // --- Présence -------------------------------------------------------
+      // Snapshot complet (connexion / reconnexion) : remplace la liste.
+      socket.on("presence:snapshot", (payload: { online?: string[] }) => {
+        setOnlineUserIds(payload?.online ?? []);
+      });
+      // Changement unitaire d'un interlocuteur.
+      socket.on(
+        "presence",
+        (payload: { userId?: string; online?: boolean }) => {
+          if (!payload?.userId) return;
+          const { userId, online } = payload;
+          setOnlineUserIds((prev) => {
+            const has = prev.includes(userId);
+            if (online) return has ? prev : [...prev, userId];
+            return has ? prev.filter((id) => id !== userId) : prev;
+          });
+        },
+      );
+      // Le serveur pousse déjà un snapshot à la connexion ; on le rejoue au
+      // cas où ce listener n'était pas encore attaché à ce moment-là.
+      queryPresence();
+
+      // --- « En train d'écrire » ----------------------------------------
+      // En one-to-one, tout `typing` reçu vient forcément de l'autre
+      // participant (MS-Messagerie ne relaie pas à l'émetteur).
+      socket.on(
+        "typing",
+        (payload: {
+          conversationId?: string;
+          userId?: string;
+          typing?: boolean;
+        }) => {
+          const id = payload?.conversationId;
+          if (!id) return;
+          const timers = typingTimersRef.current;
+          if (timers[id]) {
+            clearTimeout(timers[id]);
+            delete timers[id];
+          }
+          if (payload.typing) {
+            setTypingConversationIds((prev) =>
+              prev.includes(id) ? prev : [...prev, id],
+            );
+            timers[id] = setTimeout(() => {
+              delete timers[id];
+              setTypingConversationIds((prev) =>
+                prev.filter((cid) => cid !== id),
+              );
+            }, TYPING_EXPIRY_MS);
+          } else {
+            setTypingConversationIds((prev) => prev.filter((cid) => cid !== id));
+          }
+        },
+      );
     });
 
     return () => {
       cancelled = true;
       disconnectMessagingSocket();
+      Object.values(typingTimersRef.current).forEach(clearTimeout);
+      typingTimersRef.current = {};
+      setOnlineUserIds([]);
+      setTypingConversationIds([]);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
@@ -178,7 +255,10 @@ export function MessagingProvider({ children }: MessagingProviderProps) {
   });
 
   const conversations: Conversation[] = useMemo(() => {
-    const base = conversationsQuery.data ?? [];
+    const base = (conversationsQuery.data ?? []).map((conv) => ({
+      ...conv,
+      online: onlineUserIds.includes(conv.participantId),
+    }));
     if (!activeConversationId || !threadQuery.data) return base;
     return base.map((conv) =>
       conv.id === activeConversationId
@@ -188,7 +268,13 @@ export function MessagingProvider({ children }: MessagingProviderProps) {
           }
         : conv,
     );
-  }, [conversationsQuery.data, activeConversationId, threadQuery.data, currentUserId]);
+  }, [
+    conversationsQuery.data,
+    activeConversationId,
+    threadQuery.data,
+    currentUserId,
+    onlineUserIds,
+  ]);
 
   const unreadConversationIds = useMemo(() => {
     const serverUnread = (conversationsQuery.data ?? [])
@@ -312,6 +398,10 @@ export function MessagingProvider({ children }: MessagingProviderProps) {
     [queryClient],
   );
 
+  const setTyping = useCallback((conversationId: string, typing: boolean) => {
+    emitTyping(conversationId, typing);
+  }, []);
+
   // Sans ce useMemo, chaque render de MessagingProvider (donc de tout /app,
   // vu sa position dans l'arbre) recréerait cet objet et re-render tous les
   // consommateurs de useMessaging(), même ceux dont l'état suivi n'a pas changé.
@@ -330,6 +420,8 @@ export function MessagingProvider({ children }: MessagingProviderProps) {
       setConversationUnread,
       sendMessage,
       startConversation,
+      typingConversationIds,
+      setTyping,
     }),
     [
       isMessagingOpen,
@@ -345,6 +437,8 @@ export function MessagingProvider({ children }: MessagingProviderProps) {
       setConversationUnread,
       sendMessage,
       startConversation,
+      typingConversationIds,
+      setTyping,
     ],
   );
 

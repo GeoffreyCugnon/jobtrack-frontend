@@ -37,6 +37,7 @@ export interface ConversationMessage {
   id: string;
   from: "me" | "them";
   text: string;
+  /** Heure formatée (`formatConversationTime`) affichée dans l'en-tête d'auteur. */
   time: string;
 }
 
@@ -59,6 +60,12 @@ export interface Conversation {
   // Logo d'entreprise ou photo réelle, quand disponible ; sinon fallback
   // dégradé + initiale (cf. composant Avatar).
   avatarUrl?: string;
+  /**
+   * L'autre participant est connecté (présence temps réel de MS-Messagerie,
+   * événements WebSocket `presence` / `presence:snapshot`). `undefined` tant
+   * qu'aucun snapshot n'a été reçu.
+   */
+  online?: boolean;
   messages: ConversationMessage[];
 }
 

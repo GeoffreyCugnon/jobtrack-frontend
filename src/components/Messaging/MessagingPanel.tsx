@@ -102,6 +102,7 @@ export function MessagingPanel() {
                     lastMessage={conv.lastMessage}
                     time={conv.time}
                     avatarUrl={conv.avatarUrl}
+                    online={conv.online}
                     unread={unreadConversationIds.includes(conv.id)}
                     onClick={() => openConversation(conv.id)}
                     onToggleUnread={() =>

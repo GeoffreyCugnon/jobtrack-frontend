@@ -7,6 +7,8 @@ interface ConversationItemProps {
   lastMessage: string;
   time: string;
   avatarUrl?: string;
+  /** Présence de l'autre participant (pastille sur l'avatar). */
+  online?: boolean;
   unread?: boolean;
   onClick?: () => void;
   onToggleUnread: () => void;
@@ -19,6 +21,7 @@ export function ConversationItem({
   lastMessage,
   time,
   avatarUrl,
+  online,
   unread,
   onClick,
   onToggleUnread,
@@ -42,7 +45,11 @@ export function ConversationItem({
       }}
       className="w-full flex items-center gap-3 px-5 py-3 hover:bg-base-200 transition-colors text-left cursor-pointer"
     >
-      <Avatar label={name.charAt(0).toUpperCase()} avatarUrl={avatarUrl} />
+      <Avatar
+        label={name.charAt(0).toUpperCase()}
+        avatarUrl={avatarUrl}
+        online={online}
+      />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <span

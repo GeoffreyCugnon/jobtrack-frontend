@@ -80,11 +80,18 @@ function createMessagingHttpClient(): AxiosInstance {
 const messagingHttp = createMessagingHttpClient();
 
 export class MessagingRestApi {
-  /** `GET /conversations` — conversations de l'utilisateur, triées par `lastMessageAt`. */
+  /**
+   * `GET /conversations` — conversations de l'utilisateur, triées par
+   * `lastMessageAt`. MS-Messagerie répond avec une page curseur
+   * `{ items, nextCursor }` (comme `GET /conversations/:id/messages`) ; la liste
+   * n'est pas paginée côté UI, on ne renvoie donc que `items`.
+   */
   static async getConversations(): Promise<MessagingConversationDto[]> {
-    const { data } =
-      await messagingHttp.get<MessagingConversationDto[]>("conversations");
-    return data;
+    const { data } = await messagingHttp.get<{
+      items: MessagingConversationDto[];
+      nextCursor: string | null;
+    }>("conversations");
+    return data.items;
   }
 
   /** `POST /conversations` — ouvre (ou retrouve) la conversation avec `participantId`. */
@@ -193,4 +200,22 @@ export function leaveConversationRoom(conversationId: string): void {
 /** Équivalent WebSocket de `MessagingRestApi.sendMessage` (chemin nominal). */
 export function sendMessageViaSocket(conversationId: string, content: string): void {
   socket?.emit("message:send", { conversationId, content });
+}
+
+/**
+ * Indicateur « en train d'écrire » (éphémère : MS-Messagerie ne persiste rien,
+ * relaie juste l'événement `typing` aux autres sockets de la room). L'appelant
+ * doit débouncer (cf. `ConversationThread`).
+ */
+export function emitTyping(conversationId: string, typing: boolean): void {
+  socket?.emit(typing ? "typing:start" : "typing:stop", { conversationId });
+}
+
+/**
+ * Redemande un `presence:snapshot` des interlocuteurs en ligne. MS-Messagerie
+ * en pousse déjà un automatiquement à la connexion ; on le rejoue après coup
+ * pour couvrir la fenêtre où le listener n'était pas encore attaché.
+ */
+export function queryPresence(): void {
+  socket?.emit("presence:query");
 }

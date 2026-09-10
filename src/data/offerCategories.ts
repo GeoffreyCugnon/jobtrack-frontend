@@ -28,6 +28,14 @@ export interface OfferCategory {
    * clair/sombre (nuance 400/500 fixe), donc pas de casse de thème.
    */
   colorClass: string;
+  /**
+   * `true` pour les entrées qui décrivent en réalité un *mode de travail*
+   * (télétravail / hybride) et non un secteur : le Backend peut encore les
+   * renvoyer dans `offer.category`, donc on les garde ici pour résoudre un
+   * libellé, mais le filtre « Catégorie » les masque (doublon du filtre
+   * « Mode de travail »).
+   */
+  isWorkMode?: boolean;
 }
 
 export const offerCategories: OfferCategory[] = [
@@ -37,6 +45,7 @@ export const offerCategories: OfferCategory[] = [
     description: "Travaillez entièrement à distance, sans contrainte de site.",
     icon: Laptop,
     colorClass: "bg-sky-500",
+    isWorkMode: true,
   },
   {
     key: "hybride",
@@ -45,6 +54,7 @@ export const offerCategories: OfferCategory[] = [
       "Un équilibre entre présentiel et télétravail, où que vous soyez.",
     icon: Home,
     colorClass: "bg-rose-400",
+    isWorkMode: true,
   },
   {
     key: "informatique",

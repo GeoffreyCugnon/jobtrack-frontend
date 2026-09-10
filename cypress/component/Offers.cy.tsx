@@ -3,7 +3,7 @@ import { Offers } from "../../src/pages/Offers";
 import { MenuProvider } from "../../src/context/Menu/MenuContext";
 import { useAuthStore } from "../../src/store/auth.store";
 import { useSavedOffersStore } from "../../src/store/saved-offers.store";
-import mockOffers from "../../src/data/mockOffers.json";
+import mockOffers from "../fixtures/offers.json";
 
 // `Offers` charge les offres via `OffersApi.getAll()` (`GET job-offering`) et
 // filtre le texte sur `?q=` (la barre de recherche est celle du header, qui
@@ -47,7 +47,9 @@ describe("Offers", () => {
   it("affiche l'état vide pour une catégorie sans offre", () => {
     mountOffers();
 
-    cy.get('[role="tab"][aria-label="Industrie"]').click({ force: true });
+    // Ouvre le dropdown "Catégorie" et choisit "Industrie" (absente du mock).
+    cy.get('[aria-label="Filtrer par catégorie"]').click();
+    cy.contains(".dropdown-content button", "Industrie").click({ force: true });
 
     cy.contains("Aucune offre dans cette catégorie pour l'instant.").should(
       "be.visible",

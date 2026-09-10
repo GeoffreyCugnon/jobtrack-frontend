@@ -1,9 +1,12 @@
-import { useRef, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Bookmark, Briefcase, ChevronRight, RotateCw } from "@/lib/icons";
-import { OfferCategorySelector } from "../components/Offers/OfferCategorySelector";
-import { OfferCategoryBanner } from "../components/Offers/OfferCategoryBanner";
+import { OfferFilters } from "../components/Offers/OfferFilters";
+import {
+  EMPTY_OFFER_FILTERS,
+  type OfferFiltersValue,
+} from "../components/Offers/offer-filters.types";
 import { OfferList } from "../components/Offers/OfferList";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { Header } from "../components/Layout/Header";
@@ -23,15 +26,25 @@ export function Offers() {
   // vers `/offers?q=...` : plus de barre de recherche propre à la page.
   const [searchParams] = useSearchParams();
   const searchQuery = (searchParams.get("q") ?? "").trim();
-  // En invité : pas de sauvegarde d'offres ni d'alertes de catégorie.
+  // En invité : pas de sauvegarde d'offres.
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const savedIds = useSavedOffersStore((state) => state.savedIds);
   const toggleSave = useSavedOffersStore((state) => state.toggle);
-  // null = aucun filtre catégorie actif (toutes les offres affichées).
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  // Filtres cumulables (Catégorie / Mode de travail / Contrat).
+  const [filters, setFilters] = useState<OfferFiltersValue>(EMPTY_OFFER_FILTERS);
+  const patchFilters = (patch: Partial<OfferFiltersValue>) =>
+    setFilters((prev) => ({ ...prev, ...patch }));
+
   const [dismissedIds, setDismissedIds] = useState<number[]>([]);
+
+  // Alerte de catégorie : état purement local (pas d'endpoint dédié), comme
+  // dans l'ancienne bannière. N'a de sens que sur une catégorie précise, donc
+  // on la remet à zéro dès qu'on repasse sur « Toutes les offres ».
   const [alertEnabled, setAlertEnabled] = useState(false);
-  const pageTopRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!filters.category) setAlertEnabled(false);
+  }, [filters.category]);
 
   const {
     data: offers = [],
@@ -43,37 +56,25 @@ export function Offers() {
     queryFn: () => OffersApi.getAll(),
   });
 
-  const activeCategoryData = offerCategories.find(
-    (category) => category.key === activeCategory,
-  );
-
   // Masquage local (le cache React Query reste la source) : l'offre rejetée
   // disparaît de la liste jusqu'au prochain rechargement des données.
-  const dismissOffer = (id: number) => {
-    setDismissedIds((prev) => [...prev, id]);
-  };
+  const dismissOffer = (id: number) => setDismissedIds((prev) => [...prev, id]);
 
-  // Sélection ET désélection (retour à "Toutes les offres") remontent en
-  // haut : la bannière redevient visible et les nouveaux résultats
-  // s'affichent depuis le début de la liste.
-  const handleCategoryChange = (key: string | null) => {
-    setActiveCategory(key);
-    pageTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const filteredOffers = (Array.isArray(offers) ? offers : [])
+    .filter((offer) => !dismissedIds.includes(offer.id))
+    .filter((offer) => !filters.category || offer.category === filters.category)
+    .filter(
+      (offer) =>
+        !filters.workMode || (offer.workMode ?? "onSite") === filters.workMode,
+    )
+    .filter(
+      (offer) =>
+        !filters.contract ||
+        (offer.contractType ?? "").toLowerCase() ===
+          filters.contract.toLowerCase(),
+    );
 
-  // Choisir une catégorie ne filtre pas la liste courante : ça bascule vers
-  // une autre colonne de résultats, propre à cette catégorie. Sans catégorie
-  // active (aucun badge sélectionné), aucun filtrage n'est appliqué.
-  const normalizedOffers = (Array.isArray(offers) ? offers : []).filter(
-    (offer) => !dismissedIds.includes(offer.id),
-  );
-
-  const categoryOffers =
-    activeCategory === null
-      ? normalizedOffers
-      : normalizedOffers.filter((offer) => offer.category === activeCategory);
-
-  const searchedOffers = categoryOffers.filter((offer) => {
+  const searchedOffers = filteredOffers.filter((offer) => {
     const query = searchQuery.toLowerCase();
     if (!query) return true;
     return (
@@ -83,18 +84,28 @@ export function Offers() {
     );
   });
 
-  // Plus récent d'abord : postedHoursAgo croissant (petit nombre = publié il
-  // y a peu de temps).
+  // Plus récent d'abord : `postedHoursAgo` croissant.
   const visibleOffers = [...searchedOffers].sort(
     (a, b) => a.postedHoursAgo - b.postedHoursAgo,
   );
 
-  const searchResultsLabel = loadError
-    ? "Chargement impossible"
-    : `${searchedOffers.length} ${pluralize(searchedOffers.length, "offre trouvée", "offres trouvées")}`;
+  const activeCategoryData = offerCategories.find(
+    (category) => category.key === filters.category,
+  );
   const bannerLabel = activeCategoryData
     ? activeCategoryData.label
     : "Toutes les offres";
+  // Toggle d'alerte : seulement connecté ET sur une catégorie précise (une
+  // alerte n'a rien à surveiller sur « Toutes les offres »).
+  const showAlertToggle = isAuthenticated && !!activeCategoryData;
+  const alertActive = showAlertToggle && alertEnabled;
+  const resultsLabel = loadError
+    ? "Chargement impossible"
+    : `${searchedOffers.length} ${pluralize(
+        searchedOffers.length,
+        "offre trouvée",
+        "offres trouvées",
+      )}`;
 
   // Échec de chargement (API/DB injoignable) : distinct de « 0 offre trouvée »,
   // avec un bouton pour relancer l'appel.
@@ -116,84 +127,107 @@ export function Offers() {
   );
 
   return (
-    <div className="flex-1 flex flex-col" ref={pageTopRef}>
+    <div className="flex-1 flex flex-col bg-base-100">
       <Header />
-      <PageContainer className="pt-3 flex-1 flex flex-col">
-        <div className="flex-1 flex flex-col">
-          <div className="-mx-4 sm:mx-0 flex-1 flex flex-col">
-            <div className="bg-base-100">
-              {isAuthenticated && (
-                <Link
-                  to="/offers/saved"
-                  className="flex items-center gap-3 border-b border-base-200 px-4 py-3.5 text-sm font-semibold text-base-content transition-colors hover:bg-base-200"
-                >
-                  <Bookmark className="h-5 w-5 text-primary" />
-                  <span className="flex-1">Offres sauvegardées</span>
-                  {savedIds.length > 0 && (
-                    <span className="badge badge-info badge-sm font-semibold">
-                      {savedIds.length}
-                    </span>
-                  )}
-                  <ChevronRight className="h-4 w-4 text-base-content/50" />
-                </Link>
+
+      <PageContainer className="flex-1 flex flex-col">
+        <div className="-mx-4 sm:mx-0 flex flex-col">
+          {isAuthenticated && (
+            <Link
+              to="/offers/saved"
+              className="flex items-center gap-3 border-b border-base-200 px-4 py-3.5 text-sm font-semibold text-base-content transition-colors hover:bg-base-200"
+            >
+              <Bookmark className="h-5 w-5 text-primary" />
+              <span className="flex-1">Offres sauvegardées</span>
+              {savedIds.length > 0 && (
+                <span className="badge badge-primary badge-sm font-semibold">
+                  {savedIds.length}
+                </span>
               )}
+              <ChevronRight className="h-4 w-4 text-base-content/50" />
+            </Link>
+          )}
 
-              {/* Un seul bloc englobant bannière + badges + résultats : le
-                  `position: sticky` reste "collé" tant qu'on scrolle dans les
-                  limites de son parent direct. En englobant aussi les résultats
-                  (bien plus grands que le viewport), bannière et badges restent
-                  collés sur toute la hauteur de la liste. */}
-              {/* top-16 = hauteur du Header (h-16, sticky top-0 z-30) :
-                  la bannière se colle juste en dessous, jamais dessus. */}
-              <div className="sticky top-16 z-20">
-                <OfferCategoryBanner
-                  label={bannerLabel}
-                  resultsLabel={searchResultsLabel}
-                  alertEnabled={alertEnabled}
-                  onAlertToggle={setAlertEnabled}
-                  showAlertToggle={isAuthenticated && !!activeCategoryData}
+          <div className="border-b border-base-200 px-4 py-3">
+            <OfferFilters value={filters} onChange={patchFilters} />
+          </div>
+
+          <div>
+            {loading ? (
+              <div className="p-4 text-sm text-base-content/60">
+                Chargement des offres...
+              </div>
+            ) : loadError ? (
+              offersErrorState
+            ) : visibleOffers.length === 0 ? (
+              <div className="p-4">
+                <EmptyState
+                  icon={Briefcase}
+                  message="Aucune offre dans cette catégorie pour l'instant."
                 />
               </div>
-              {/* top-30 (120px) = header (64px) + bannière (56px, cf.
-                  OFFER_CATEGORY_BANNER_HEIGHT) : les badges se collent
-                  juste sous la bannière. */}
-              <div className="sticky top-30 z-20 bg-base-100">
-                <OfferCategorySelector
-                  active={activeCategory}
-                  onChange={handleCategoryChange}
-                />
-              </div>
-
-              <div className="border-t border-base-300">
-                {loading ? (
-                  <div className="p-4 text-sm text-base-content/60">
-                    Chargement des offres...
-                  </div>
-                ) : loadError ? (
-                  offersErrorState
-                ) : visibleOffers.length === 0 ? (
-                  <div className="p-4">
-                    <EmptyState
-                      icon={Briefcase}
-                      message="Aucune offre dans cette catégorie pour l'instant."
-                    />
-                  </div>
-                ) : (
-                  <OfferList
-                    offers={visibleOffers}
-                    savedIds={savedIds}
-                    showActions={isAuthenticated}
-                    onToggleSave={toggleSave}
-                    onDismiss={dismissOffer}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="flex-1 bg-base-100" />
+            ) : (
+              <OfferList
+                offers={visibleOffers}
+                savedIds={savedIds}
+                showActions={isAuthenticated}
+                onToggleSave={toggleSave}
+                onDismiss={dismissOffer}
+              />
+            )}
           </div>
         </div>
       </PageContainer>
+
+      {/* Bandeau récap collé en bas de la liste. `bottom-0` suffit : le
+          conteneur de scroll (Root) porte déjà `pb-16` pour dégager la nav
+          mobile — remettre un `bottom-16` ici doublait la marge et laissait
+          un trou de la hauteur de la nav au-dessus d'elle. */}
+      <div
+        className={`sticky bottom-0 z-20 shadow-[0_-2px_10px_rgba(15,23,42,0.15)] transition-colors ${
+          alertActive
+            ? "bg-success text-success-content"
+            : "bg-primary text-primary-content"
+        }`}
+      >
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-2.5">
+          <div className="min-w-0">
+            <p className="truncate font-bold leading-tight">{bannerLabel}</p>
+            <p
+              className={`text-sm font-bold leading-tight ${
+                alertActive
+                  ? "text-success-content/80"
+                  : "text-primary-content/80"
+              }`}
+            >
+              {resultsLabel}
+            </p>
+          </div>
+
+          {showAlertToggle && (
+            <label className="flex shrink-0 items-center gap-2 text-sm font-medium">
+              <span className="whitespace-nowrap leading-none">
+                {alertEnabled ? "Alerte activée" : "Définir une alerte"}
+              </span>
+              <input
+                type="checkbox"
+                checked={alertEnabled}
+                onChange={(e) => setAlertEnabled(e.target.checked)}
+                className="toggle toggle-sm"
+                // Piste peu visible sur le fond bleu tant que décoché : on force
+                // le blanc. Une fois coché, daisyUI passe sur un fond clair déjà
+                // lisible.
+                style={
+                  !alertEnabled
+                    ? ({ "--input-color": "#fff" } as CSSProperties)
+                    : undefined
+                }
+                aria-label="Définir une alerte pour cette catégorie"
+              />
+            </label>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

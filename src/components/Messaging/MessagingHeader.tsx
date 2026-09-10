@@ -1,13 +1,5 @@
 import { useNavigate } from "react-router";
-import {
-  X,
-  PenSquare,
-  MoreVertical,
-  ListChecks,
-  SlidersHorizontal,
-  Archive,
-  CalendarClock,
-} from "@/lib/icons";
+import { Archive, CalendarDots, DotsThreeVertical, ListChecks, NotePencil, SlidersHorizontal, X } from "@phosphor-icons/react";
 import { DropdownMenu } from "../UI/DropdownMenu";
 
 interface MessagingHeaderProps {
@@ -40,11 +32,11 @@ export function MessagingHeader({
           aria-label="Nouvelle conversation"
           className="btn btn-ghost btn-circle btn-sm text-base-content/60 hover:bg-base-200 transition-colors"
         >
-          <PenSquare className="w-5 h-5" />
+          <NotePencil className="w-5 h-5" />
         </button>
 
         <DropdownMenu
-          triggerIcon={MoreVertical}
+          triggerIcon={DotsThreeVertical}
           triggerLabel="Plus d'options"
           items={[
             {
@@ -64,7 +56,7 @@ export function MessagingHeader({
             },
             {
               label: "Message d'absence",
-              icon: CalendarClock,
+              icon: CalendarDots,
               onClick: () => goTo("/messaging/away-message"),
             },
           ]}

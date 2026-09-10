@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, FileQuestion, RotateCw, Send } from "@/lib/icons";
+import { ArrowClockwise, ArrowLeft, FileDashed, PaperPlaneTilt } from "@phosphor-icons/react";
 import { Header } from "../../components/Layout/Header";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import PublicationCard from "../../components/Publications/PublicationCard";
@@ -86,7 +86,7 @@ export function PublicationDetail() {
           onClick={() => void refetch()}
           className="btn btn-sm btn-outline gap-2"
         >
-          <RotateCw className="h-4 w-4" />
+          <ArrowClockwise className="h-4 w-4" />
           Réessayer
         </button>
       </div>,
@@ -96,7 +96,7 @@ export function PublicationDetail() {
   if (!publication) {
     return shell(
       <EmptyState
-        icon={FileQuestion}
+        icon={FileDashed}
         message="Cette publication n'existe pas ou plus."
       />,
     );
@@ -139,7 +139,7 @@ export function PublicationDetail() {
               disabled={!draft.trim() || addComment.isPending}
               className="btn btn-primary btn-square"
             >
-              <Send className="w-4 h-4" />
+              <PaperPlaneTilt className="w-4 h-4" />
             </button>
           </form>
         ) : (

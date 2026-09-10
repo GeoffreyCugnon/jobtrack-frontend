@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Sparkles, X } from "@/lib/icons";
+import { Sparkle, X } from "@phosphor-icons/react";
+
 import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 import { UserApi } from "../../api/user.api";
@@ -52,7 +53,7 @@ export function ProfileSkillsEdit() {
   return (
     <FormPageLayout
       title="Modifier mes compétences"
-      icon={Sparkles}
+      icon={Sparkle}
       backTo="/profile"
       backLabel="Retour au profil"
     >

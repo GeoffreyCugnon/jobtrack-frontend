@@ -1,14 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import {
-  Heart,
-  MessageCircle,
-  MoreHorizontal,
-  Repeat2,
-  Send,
-  ThumbsUp,
-  X,
-} from "@/lib/icons";
+import { ChatCircle, DotsThree, Heart, PaperPlaneTilt, Repeat, ThumbsUp, X } from "@phosphor-icons/react";
 
 import { Avatar } from "../UI/Avatar";
 import { useToastStore } from "../../store/toast.store";
@@ -106,7 +98,7 @@ export default function PublicationCard({
               onClick={notify}
               className="btn btn-ghost btn-circle btn-sm"
             >
-              <MoreHorizontal className="h-5 w-5" />
+              <DotsThree className="h-5 w-5" />
             </button>
             <button
               type="button"
@@ -181,18 +173,18 @@ export default function PublicationCard({
 
           {linkToDetail ? (
             <Link to={to} className={actionBtn}>
-              <MessageCircle className="h-5 w-5" weight="bold" />
+              <ChatCircle className="h-5 w-5" weight="bold" />
               {publication.commentsCount}
             </Link>
           ) : (
             <span className={actionBtn}>
-              <MessageCircle className="h-5 w-5" weight="bold" />
+              <ChatCircle className="h-5 w-5" weight="bold" />
               {publication.commentsCount}
             </span>
           )}
 
           <button type="button" onClick={notify} className={actionBtn}>
-            <Repeat2 className="h-5 w-5" weight="bold" />
+            <Repeat className="h-5 w-5" weight="bold" />
             {publication.sharesCount}
           </button>
 
@@ -202,7 +194,7 @@ export default function PublicationCard({
             aria-label="Partager"
             className={actionBtn}
           >
-            <Send className="h-5 w-5" weight="bold" />
+            <PaperPlaneTilt className="h-5 w-5" weight="bold" />
           </button>
         </div>
 

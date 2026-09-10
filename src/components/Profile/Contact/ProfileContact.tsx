@@ -1,4 +1,4 @@
-import { Mail, Phone, Globe } from "@/lib/icons";
+import { Envelope, Globe, Phone } from "@phosphor-icons/react";
 import { ContactRow } from "./ContactRow";
 import { SectionCard } from "../../Layout/SectionCard";
 
@@ -49,7 +49,7 @@ const githubIcon = (
 
 export function ProfileContact({ user, onAdd }: ProfileContactProps) {
   const contacts = [
-    { icon: <Mail className={iconSizeStyle} />, label: user.email },
+    { icon: <Envelope className={iconSizeStyle} />, label: user.email },
     { icon: <Phone className={iconSizeStyle} />, label: user.phone },
     { icon: <Globe className={iconSizeStyle} />, label: user.website },
     { icon: linkedinIcon, label: user.linkedin },

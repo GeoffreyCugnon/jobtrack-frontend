@@ -2,14 +2,8 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { UserApi } from "../../api/user.api";
 import { useToastStore } from "../../store/toast.store";
-import {
-  Bell,
-  Globe,
-  Lock,
-  HelpCircle,
-  Info,
-  Settings as SettingsIcon,
-} from "@/lib/icons";
+import { Bell, Gear, Globe, Info, Lock, Question } from "@phosphor-icons/react";
+
 import SettingsProfileCard from "../../components/Settings/SettingsProfileCard";
 import { SettingsSection } from "../../components/Settings/SettingsSection";
 import SettingsItem from "../../components/Settings/SettingsItem";
@@ -101,7 +95,7 @@ export function Settings() {
         <PageTitle
           title="Paramètres"
           description="Gérez votre compte et vos préférences"
-          icon={SettingsIcon}
+          icon={Gear}
         />
 
         <div className="-mx-4 sm:mx-0">
@@ -180,7 +174,7 @@ export function Settings() {
 
             <SettingsSection title="Support">
               <SettingsItem
-                icon={<HelpCircle size={18} />}
+                icon={<Question size={18} />}
                 label="Centre d'aide"
                 onClick={() => navigate("/settings/help")}
               />

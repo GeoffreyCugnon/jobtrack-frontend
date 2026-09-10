@@ -1,10 +1,10 @@
 import { MenuLink } from "./MenuLink";
-import type { LucideIcon } from "@/lib/icons";
+import { type Icon as IconType } from "@phosphor-icons/react";
 
 interface LinkItem {
   to: string;
   label: string;
-  icon?: LucideIcon;
+  icon?: IconType;
 }
 
 interface MenuSectionProps {

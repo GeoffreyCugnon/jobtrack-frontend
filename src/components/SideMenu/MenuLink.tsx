@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import type { LucideIcon } from "@/lib/icons";
+import { type Icon as IconType } from "@phosphor-icons/react";
 import { isNavItemActive } from "../../constants/nav";
 
 interface MenuLinkProps {
@@ -7,7 +7,7 @@ interface MenuLinkProps {
   label: string;
   onClick: () => void;
   variant?: "default" | "danger";
-  icon?: LucideIcon;
+  icon?: IconType;
 }
 
 export function MenuLink({

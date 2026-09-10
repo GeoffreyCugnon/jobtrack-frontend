@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { User } from "@/lib/icons";
+import { User } from "@phosphor-icons/react";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";

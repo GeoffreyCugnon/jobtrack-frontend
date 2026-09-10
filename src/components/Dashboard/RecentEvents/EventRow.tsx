@@ -1,8 +1,8 @@
-import type { LucideIcon } from "@/lib/icons";
+import { type Icon as IconType } from "@phosphor-icons/react";
 
 interface EventRowProps {
   text: string;
-  icon: LucideIcon;
+  icon: IconType;
   time?: string;
 }
 

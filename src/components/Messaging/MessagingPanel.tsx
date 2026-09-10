@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle } from "@/lib/icons";
+import { ChatCircle } from "@phosphor-icons/react";
 import { useMessaging } from "../../context/Messaging/useMessaging";
 import { MessagingOverlay } from "./MessagingOverlay";
 import { MessagingHeader } from "./MessagingHeader";
@@ -90,7 +90,7 @@ export function MessagingPanel() {
               ) : visibleConversations.length === 0 ? (
                 <div className="p-4">
                   <EmptyState
-                    icon={MessageCircle}
+                    icon={ChatCircle}
                     message="Aucune conversation pour l'instant."
                   />
                 </div>

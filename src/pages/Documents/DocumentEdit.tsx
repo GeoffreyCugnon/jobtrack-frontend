@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil } from "@/lib/icons";
+import { Pencil } from "@phosphor-icons/react";
 import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { DocumentsApi } from "../../api/documents.api";
 import { queryKeys } from "../../api/query-keys";

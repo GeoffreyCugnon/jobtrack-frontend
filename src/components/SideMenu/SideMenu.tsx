@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router";
-import { Settings, LogOut, ArrowLeft } from "@/lib/icons";
+import { ArrowLeft, Gear, SignOut } from "@phosphor-icons/react";
+
 import { MenuOverlay } from "./MenuOverlay";
 import { MenuHeader } from "./MenuHeader";
 import { MenuSection } from "./MenuSection";
@@ -107,7 +108,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
                 to="/settings"
                 label="Paramètres"
                 onClick={onClose}
-                icon={Settings}
+                icon={Gear}
               />
               <li>
                 <button
@@ -115,7 +116,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
                   onClick={handleLogout}
                   className="text-error hover:bg-error/10 w-full text-left"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <SignOut className="w-4 h-4" />
                   Déconnexion
                 </button>
               </li>

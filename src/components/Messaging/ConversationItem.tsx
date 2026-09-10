@@ -1,4 +1,4 @@
-import { MoreVertical, Circle, CheckCircle2, Archive, Trash2 } from "@/lib/icons";
+import { Archive, CheckCircle, Circle, DotsThreeVertical, Trash } from "@phosphor-icons/react";
 import { Avatar } from "../UI/Avatar";
 import { DropdownMenu } from "../UI/DropdownMenu";
 
@@ -69,18 +69,18 @@ export function ConversationItem({
       <div className="flex items-center gap-1 shrink-0">
         {unread && <span className="w-2 h-2 rounded-full bg-primary" />}
         <DropdownMenu
-          triggerIcon={MoreVertical}
+          triggerIcon={DotsThreeVertical}
           triggerLabel={`Actions pour la conversation avec ${name}`}
           items={[
             {
               label: unread ? "Marquer comme lu" : "Marquer comme non lu",
-              icon: unread ? CheckCircle2 : Circle,
+              icon: unread ? CheckCircle : Circle,
               onClick: onToggleUnread,
             },
             { label: "Archiver", icon: Archive, onClick: onArchive },
             {
               label: "Supprimer la conversation",
-              icon: Trash2,
+              icon: Trash,
               onClick: onDelete,
               variant: "danger",
             },

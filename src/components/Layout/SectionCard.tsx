@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { ChevronDown, Plus } from "@/lib/icons";
+import { CaretDown, Plus } from "@phosphor-icons/react";
 import { Link } from "react-router";
 
 interface SectionCardBaseProps {
@@ -88,7 +88,7 @@ export function SectionCard({
       <div className="flex items-center gap-2 text-base-content/70">
         {headerAction}
         {collapsible && (
-          <ChevronDown
+          <CaretDown
             aria-hidden="true"
             className={`w-5 h-5 text-base-content/50 transition-transform ${open ? "rotate-180" : ""}`}
           />

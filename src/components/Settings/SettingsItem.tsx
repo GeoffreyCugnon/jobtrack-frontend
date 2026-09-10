@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronRight } from "@/lib/icons";
+import { CaretRight } from "@phosphor-icons/react";
 
 interface SettingsItemProps {
   icon: React.ReactNode;
@@ -20,7 +20,7 @@ export default function SettingsItem({ icon, label, value, onClick }: SettingsIt
       </span>
       <span className="flex items-center gap-2 text-base-content/50">
         {value && <span className="text-sm">{value}</span>}
-        <ChevronRight size={18} className="lg:hidden" aria-hidden="true" />
+        <CaretRight size={18} className="lg:hidden" aria-hidden="true" />
       </span>
     </button>
   );

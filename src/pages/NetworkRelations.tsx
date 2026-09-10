@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, RotateCw, Users } from "@/lib/icons";
+import { ArrowClockwise, ArrowLeft, Users } from "@phosphor-icons/react";
 
 import { Avatar } from "../components/UI/Avatar";
 import { EmptyState } from "../components/Layout/EmptyState";
@@ -67,7 +67,7 @@ export function NetworkRelations() {
             onClick={() => void refetch()}
             className="btn btn-sm btn-outline gap-2"
           >
-            <RotateCw className="h-4 w-4" />
+            <ArrowClockwise className="h-4 w-4" />
             Réessayer
           </button>
         </div>

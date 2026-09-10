@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { Outlet, Link, useLocation } from "react-router";
-import { Plus } from "@/lib/icons";
+import { Plus } from "@phosphor-icons/react";
+
 import { SideMenu } from "../components/SideMenu/SideMenu";
 import { MessagingFab } from "../components/Messaging/MessagingFab";
 import { MessagingPanel } from "../components/Messaging/MessagingPanel";

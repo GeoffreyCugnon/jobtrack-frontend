@@ -1,5 +1,5 @@
 import type { MouseEvent as ReactMouseEvent } from "react";
-import { MessageCircle } from "@/lib/icons";
+import { ChatCircle } from "@phosphor-icons/react";
 import { useMessaging } from "../../context/Messaging/useMessaging";
 import { useDraggableFab } from "../../hooks/useDraggableFab";
 import { useToastStore } from "../../store/toast.store";
@@ -116,7 +116,7 @@ export function MessagingFab() {
                 {targetConversation.name.charAt(0).toUpperCase()}
               </span>
             ) : (
-              <MessageCircle className="w-5 h-5" />
+              <ChatCircle className="w-5 h-5" />
             )}
             <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
               {fabMessageDisplay}
@@ -139,7 +139,7 @@ export function MessagingFab() {
           className="relative flex items-center gap-2 h-11 pl-2.5 pr-4 rounded-t-field bg-base-100 border border-b-0 border-base-content/10 shadow-lg hover:bg-base-200 transition-colors pointer-events-auto"
         >
           <span className="relative flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-content shrink-0">
-            <MessageCircle className="w-4 h-4" />
+            <ChatCircle className="w-4 h-4" />
             {unreadConvCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-error text-error-content text-[10px] font-medium flex items-center justify-center">
                 {unreadConvDisplay}

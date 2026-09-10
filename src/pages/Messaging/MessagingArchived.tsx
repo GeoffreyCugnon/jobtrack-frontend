@@ -3,7 +3,7 @@
 // relation, toutes les conversations viennent de recruteurs déjà identifiés.
 // La page qui a du sens dans ce contexte est plutôt la liste des
 // conversations archivées (cf. action "Archiver" sur chaque conversation).
-import { Archive } from "@/lib/icons";
+import { Archive } from "@phosphor-icons/react";
 import { ComingSoonPage } from "../../components/Layout/ComingSoonPage";
 
 export function MessagingArchived() {

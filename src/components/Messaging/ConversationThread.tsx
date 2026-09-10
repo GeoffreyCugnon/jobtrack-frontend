@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Send, X } from "@/lib/icons";
+import { ArrowLeft, PaperPlaneTilt, X } from "@phosphor-icons/react";
 import type { Conversation } from "../../types/messaging.type";
 import { Avatar } from "../UI/Avatar";
 import { useMessaging } from "../../context/Messaging/useMessaging";
@@ -205,7 +205,7 @@ export function ConversationThread({
           aria-label="Envoyer le message"
           className="btn btn-primary btn-sm btn-circle shrink-0"
         >
-          <Send className="w-4 h-4" />
+          <PaperPlaneTilt className="w-4 h-4" />
         </button>
       </form>
     </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Bookmark, RotateCw } from "@/lib/icons";
+import { ArrowClockwise, ArrowLeft, BookmarkSimple } from "@phosphor-icons/react";
 
 import { EmptyState } from "../components/Layout/EmptyState";
 import { OfferList } from "../components/Offers/OfferList";
@@ -70,14 +70,14 @@ export function SavedOffers() {
             onClick={() => void refetch()}
             className="btn btn-sm btn-outline gap-2"
           >
-            <RotateCw className="h-4 w-4" />
+            <ArrowClockwise className="h-4 w-4" />
             Réessayer
           </button>
         </div>
       ) : savedOffers.length === 0 ? (
         <div className="bg-base-100 p-10">
           <EmptyState
-            icon={Bookmark}
+            icon={BookmarkSimple}
             message="Aucune offre sauvegardée. Touchez le cœur d'une offre pour l'ajouter ici."
           />
         </div>

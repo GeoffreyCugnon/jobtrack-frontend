@@ -1,6 +1,6 @@
 // src/pages/Dashboard/Entretiens.tsx
 import { useQuery } from "@tanstack/react-query";
-import { Calendar } from "@/lib/icons";
+import { Calendar } from "@phosphor-icons/react";
 import { ClickableRow } from "../../components/Layout/ClickableRow";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";

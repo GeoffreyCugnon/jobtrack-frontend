@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { FileText, LayoutDashboard, Target } from "@/lib/icons";
+import { FileText, SquaresFour, Target } from "@phosphor-icons/react";
 import { AuthLogo } from "../components/Auth/AuthLogo";
 import { AuthTabs } from "../components/Auth/AuthTabs";
 import { LoginForm } from "../components/Auth/LoginForm";
@@ -17,7 +17,7 @@ const HERO_FEATURES = [
   { icon: Target, label: "Centralisez vos candidatures et vos offres suivies" },
   { icon: FileText, label: "Générez CV et lettres de motivation en un clic" },
   {
-    icon: LayoutDashboard,
+    icon: SquaresFour,
     label: "Suivez vos relances depuis un tableau de bord clair",
   },
 ];

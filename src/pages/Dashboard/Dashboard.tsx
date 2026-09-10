@@ -3,14 +3,7 @@
 // overlap, et sections en cartes (SectionCard `flat`).
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Briefcase,
-  Calendar,
-  CheckCircle2,
-  Sparkles,
-  TrendingUp,
-  type LucideIcon,
-} from "@/lib/icons";
+import { Briefcase, Calendar, CheckCircle, Sparkle, TrendUp, type Icon as IconType } from "@phosphor-icons/react";
 import { StatCard } from "../../components/Dashboard/StatsCards/StatCard";
 import { TodoGroup } from "../../components/Dashboard/UrgentTasks/TodoGroup";
 import { EventRow } from "../../components/Dashboard/RecentEvents/EventRow";
@@ -35,13 +28,13 @@ const MAX_VISIBLE_TASKS = 5;
 const STAT_TILES: {
   key: keyof DashboardCounts;
   label: string;
-  icon: LucideIcon;
+  icon: IconType;
   to: string;
 }[] = [
   {
     key: "activeApplications",
     label: "Candidatures actives",
-    icon: TrendingUp,
+    icon: TrendUp,
     to: "/candidatures",
   },
   {
@@ -167,7 +160,7 @@ export function Dashboard() {
             <SectionCard title="Prochaines actions" collapsible={false} flat>
               {upcomingTasks.length === 0 ? (
                 <EmptyState
-                  icon={CheckCircle2}
+                  icon={CheckCircle}
                   message="Aucun entretien à venir, vous êtes à jour !"
                 />
               ) : (
@@ -178,7 +171,7 @@ export function Dashboard() {
             <SectionCard title="Activité récente" collapsible={false} flat>
               {recentEvents.length === 0 ? (
                 <EmptyState
-                  icon={Sparkles}
+                  icon={Sparkle}
                   message="Rien pour l'instant — vos candidatures apparaîtront ici."
                 />
               ) : (

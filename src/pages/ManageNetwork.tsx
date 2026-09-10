@@ -1,15 +1,6 @@
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  Building2,
-  CalendarDays,
-  Newspaper,
-  UserRound,
-  Users,
-  UsersRound,
-  type LucideIcon,
-} from "@/lib/icons";
+import { ArrowLeft, Buildings, CalendarDots, Newspaper, User, Users, UsersThree, type Icon as IconType } from "@phosphor-icons/react";
 
 import { ConnectionApi } from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";
@@ -24,7 +15,7 @@ function ManageRow({
   count,
   onClick,
 }: {
-  icon: LucideIcon;
+  icon: IconType;
   label: string;
   count?: number;
   onClick: () => void;
@@ -73,10 +64,10 @@ export function ManageNetwork() {
           count={connections?.connections.length}
           onClick={() => navigate("/network/relations")}
         />
-        <ManageRow icon={UserRound} label="Suivi et abonnés" onClick={notify} />
-        <ManageRow icon={UsersRound} label="Groupes" onClick={notify} />
-        <ManageRow icon={CalendarDays} label="Événements" onClick={notify} />
-        <ManageRow icon={Building2} label="Pages" onClick={notify} />
+        <ManageRow icon={User} label="Suivi et abonnés" onClick={notify} />
+        <ManageRow icon={UsersThree} label="Groupes" onClick={notify} />
+        <ManageRow icon={CalendarDots} label="Événements" onClick={notify} />
+        <ManageRow icon={Buildings} label="Pages" onClick={notify} />
         <ManageRow icon={Newspaper} label="Newsletters" onClick={notify} />
       </div>
     </div>

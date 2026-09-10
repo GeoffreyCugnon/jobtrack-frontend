@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ChevronRight } from "@/lib/icons";
+import { CaretRight } from "@phosphor-icons/react";
 import { Link } from "react-router";
 
 interface ClickableRowProps {
@@ -17,7 +17,7 @@ export function ClickableRow({ to, children }: ClickableRowProps) {
       className="flex items-center justify-between gap-2 -mx-2 px-2 py-3 first:pt-0 last:pb-0 rounded-field transition-colors hover:bg-base-200/60 active:bg-base-200"
     >
       <div className="min-w-0 flex-1">{children}</div>
-      <ChevronRight
+      <CaretRight
         aria-hidden="true"
         className="w-4 h-4 text-base-content/70 lg:hidden shrink-0"
       />

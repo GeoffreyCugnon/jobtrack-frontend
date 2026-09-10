@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, type LucideIcon } from "@/lib/icons";
+import { ArrowLeft, type Icon as IconType } from "@phosphor-icons/react";
 import { Header } from "./Header";
 
 interface FormPageLayoutProps {
   title: string;
-  icon: LucideIcon;
+  icon: IconType;
   /** Destination du bouton retour (défaut : `navigate(-1)`). */
   backTo?: string;
   backLabel?: string;

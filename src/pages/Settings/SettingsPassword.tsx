@@ -1,4 +1,5 @@
-import { CheckCircle2, Lock } from "@/lib/icons";
+import { CheckCircle, Lock } from "@phosphor-icons/react";
+
 import { SettingsModal } from "../../components/Settings/SettingsModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useRef } from "react";
@@ -101,7 +102,7 @@ export function SettingsPassword() {
 
       <SettingsModal modalRef={successModalRef} title="Mot de passe mis à jour">
         <div className="flex flex-col items-center gap-3 py-2 text-center">
-          <CheckCircle2 className="text-success" size={40} />
+          <CheckCircle className="text-success" size={40} />
           <p className="text-sm text-base-content/70">
             Ton mot de passe a bien été modifié.
           </p>

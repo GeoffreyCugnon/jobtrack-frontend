@@ -1,5 +1,5 @@
 interface ContactRowProps {
-  icon: React.ReactNode; // ou LucideIcon si toutes sont Lucide
+  icon: React.ReactNode;
   label: string;
 }
 export function ContactRow({ icon, label }: ContactRowProps) {

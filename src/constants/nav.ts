@@ -1,12 +1,12 @@
 // src/constants/nav.ts
-import { Home, Briefcase, Users, FileText, Newspaper } from "@/lib/icons";
+import { Briefcase, FileText, House, Newspaper, Users } from "@phosphor-icons/react";
 
 // Barre de navigation d'un visiteur non connecté : identique sur l'accueil
 // (`/`) et sur les pages accessibles en invité (`/offers`), pour ne pas
 // donner l'impression que le contexte change.
 
 export const MAIN_NAV_ITEMS = [
-  { path: "/", icon: Home, label: "Accueil", shortLabel: "Accueil" },
+  { path: "/", icon: House, label: "Accueil", shortLabel: "Accueil" },
   {
     path: "/offers",
     icon: Briefcase,
@@ -29,7 +29,7 @@ export const MAIN_NAV_ITEMS = [
 ];
 
 export const GUEST_NAV_ITEMS = [
-  { path: "/", icon: Home, label: "Accueil", shortLabel: "Accueil" },
+  { path: "/", icon: House, label: "Accueil", shortLabel: "Accueil" },
   {
     path: "/offers",
     icon: Briefcase,

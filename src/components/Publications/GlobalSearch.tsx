@@ -1,17 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Search,
-  X,
-  Newspaper,
-  Briefcase,
-  FileText,
-  MessageCircle,
-  Users,
-  Building2,
-  type LucideIcon,
-} from "@/lib/icons";
+import { Briefcase, Buildings, ChatCircle, FileText, MagnifyingGlass, Newspaper, Users, X, type Icon as IconType } from "@phosphor-icons/react";
 import { DocumentsApi } from "../../api/documents.api";
 import { OffersApi } from "../../api/offers.api";
 import { PublicationsApi } from "../../api/publications.api";
@@ -40,7 +30,7 @@ interface ResultItem {
 
 interface ResultGroup {
   label: string;
-  icon: LucideIcon;
+  icon: IconType;
   /** Cible de l'en-tête de groupe cliquable (page "voir tout" correspondante). */
   href: string;
   items: ResultItem[];
@@ -193,7 +183,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
     if (matchedCompanies.length) {
       groups.push({
         label: "Entreprises",
-        icon: Building2,
+        icon: Buildings,
         href: "/network",
         items: matchedCompanies.map((c) => ({
           key: `cmp-${c.id}`,
@@ -231,7 +221,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
     if (convs.length) {
       groups.push({
         label: "Conversations",
-        icon: MessageCircle,
+        icon: ChatCircle,
         href: "/messaging/manage",
         items: convs.map((c) => ({
           key: `cnv-${c.id}`,
@@ -276,7 +266,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
             par le fond de l'input, contrairement à un icône en position
             absolue). */}
         <label className="input input-sm h-10 w-full items-center gap-2 rounded-full border border-base-content/70 bg-base-100 focus-within:border-primary focus-within:outline-none">
-          <Search className="w-4 h-4 shrink-0 text-base-content/70" />
+          <MagnifyingGlass className="w-4 h-4 shrink-0 text-base-content/70" />
           <input
             type="text"
             value={query}

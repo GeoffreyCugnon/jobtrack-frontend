@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Check, Heart, X } from "@/lib/icons";
+import { Check, Heart, X } from "@phosphor-icons/react";
 
 type WorkMode = "onSite" | "Remote" | "Hybrid";
 

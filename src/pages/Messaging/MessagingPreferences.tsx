@@ -1,4 +1,4 @@
-import { SlidersHorizontal } from "@/lib/icons";
+import { SlidersHorizontal } from "@phosphor-icons/react";
 import { ComingSoonPage } from "../../components/Layout/ComingSoonPage";
 
 export function MessagingPreferences() {

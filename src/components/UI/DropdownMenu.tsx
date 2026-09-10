@@ -1,16 +1,16 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { LucideIcon } from "@/lib/icons";
+import { type Icon as IconType } from "@phosphor-icons/react";
 
 export interface DropdownMenuItem {
   label: string;
-  icon?: LucideIcon;
+  icon?: IconType;
   onClick: () => void;
   variant?: "default" | "danger";
 }
 
 interface DropdownMenuProps {
-  triggerIcon: LucideIcon;
+  triggerIcon: IconType;
   triggerLabel: string;
   items: DropdownMenuItem[];
   align?: "start" | "end";

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { Loader2, MapPin, Edit2, Camera } from "@/lib/icons";
+import { Camera, CircleNotch, MapPin, PencilSimple } from "@phosphor-icons/react";
+
 import { fileToAvatarDataUrl, fileToBannerDataUrl } from "../../utils/image";
 import { logError } from "../../utils/log";
 
@@ -120,7 +121,7 @@ export function ProfileIdentity({
           className="absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center bg-base-200 hover:bg-base-300 text-base-content/80 hover:text-base-content transition-colors cursor-pointer disabled:opacity-70"
         >
           {savingBanner ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <CircleNotch className="w-4 h-4 animate-spin" />
           ) : (
             <Camera className="w-5 h-5" />
           )}
@@ -153,7 +154,7 @@ export function ProfileIdentity({
             className="absolute -right-1 -bottom-1 w-7 h-7 rounded-full border-2 border-base-100 flex items-center justify-center bg-base-200 hover:bg-base-300 text-base-content/80 hover:text-base-content transition-colors cursor-pointer disabled:opacity-70"
           >
             {savingAvatar ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <CircleNotch className="w-4 h-4 animate-spin" />
             ) : (
               <Camera className="w-4 h-4" />
             )}
@@ -170,7 +171,7 @@ export function ProfileIdentity({
               onClick={onEdit}
               className="btn btn-sm shrink-0 gap-1.5 mt-1.5 bg-base-200 hover:bg-base-300 text-base-content/80 hover:text-base-content border-none transition-colors"
             >
-              <Edit2 className="w-3.5 h-3.5" />
+              <PencilSimple className="w-3.5 h-3.5" />
               Modifier
             </button>
           </div>

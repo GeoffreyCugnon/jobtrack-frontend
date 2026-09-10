@@ -1,6 +1,6 @@
 // src/components/Layout/Header.tsx
 import { Link, useLocation } from "react-router";
-import { ChatCircleDots, LogIn } from "@/lib/icons";
+import { ChatCircleDots, SignIn } from "@phosphor-icons/react";
 import { PageContainer } from "./PageContainer";
 import { useMenu } from "../../context/Menu/useMenu";
 import { AuthLogo } from "../Auth/AuthLogo";
@@ -94,7 +94,7 @@ export function Header({ search = "app" }: HeaderProps) {
               className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-content shadow-sm transition-opacity hover:opacity-90"
               aria-label="Se connecter"
             >
-              <LogIn className="h-3.5 w-3.5" />
+              <SignIn className="h-3.5 w-3.5" />
               Connexion
             </Link>
           ) : (

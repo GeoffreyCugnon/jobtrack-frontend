@@ -1,6 +1,6 @@
 // src/pages/Dashboard/Candidatures.tsx
 import { useQuery } from "@tanstack/react-query";
-import { TrendingUp } from "@/lib/icons";
+import { TrendUp } from "@phosphor-icons/react";
 import { ClickableRow } from "../../components/Layout/ClickableRow";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
@@ -28,7 +28,7 @@ export function Candidatures() {
         <PageTitle
           title="Candidatures actives"
           description="Vos candidatures en cours de traitement"
-          icon={TrendingUp}
+          icon={TrendUp}
         />
 
         <div className="-mx-4 sm:mx-0">
@@ -37,12 +37,12 @@ export function Candidatures() {
               <p className="p-4 text-sm text-base-content/60">Chargement…</p>
             ) : isError ? (
               <EmptyState
-                icon={TrendingUp}
+                icon={TrendUp}
                 message="Impossible de charger vos candidatures pour le moment."
               />
             ) : candidatures.length === 0 ? (
               <EmptyState
-                icon={TrendingUp}
+                icon={TrendUp}
                 message="Aucune candidature en cours, lancez-vous !"
               />
             ) : (

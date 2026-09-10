@@ -1,4 +1,4 @@
-import { ChevronRight, X } from "@/lib/icons";
+import { CaretRight, X } from "@phosphor-icons/react";
 import { Link } from "react-router";
 import { Avatar } from "../UI/Avatar";
 
@@ -44,7 +44,7 @@ export function MenuHeader({
           className="-m-1 flex min-w-0 flex-1 items-center gap-4 rounded-field p-1 transition-colors hover:bg-base-200"
         >
           {identity}
-          <ChevronRight className="w-4 h-4 shrink-0 text-base-content/40" />
+          <CaretRight className="w-4 h-4 shrink-0 text-base-content/40" />
         </Link>
       ) : (
         <div className="flex min-w-0 flex-1 items-center gap-4">{identity}</div>

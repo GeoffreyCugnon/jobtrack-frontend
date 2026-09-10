@@ -1,4 +1,4 @@
-import { HelpCircle } from "@/lib/icons";
+import { Question } from "@phosphor-icons/react";
 import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 
 const FAQ: { q: string; a: string }[] = [
@@ -24,7 +24,7 @@ export function SettingsHelp() {
   return (
     <FormPageLayout
       title="Centre d'aide"
-      icon={HelpCircle}
+      icon={Question}
       backTo="/settings"
       backLabel="Retour aux paramètres"
     >

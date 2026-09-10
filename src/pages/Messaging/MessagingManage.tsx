@@ -1,4 +1,4 @@
-import { ListChecks } from "@/lib/icons";
+import { ListChecks } from "@phosphor-icons/react";
 import { ComingSoonPage } from "../../components/Layout/ComingSoonPage";
 
 export function MessagingManage() {

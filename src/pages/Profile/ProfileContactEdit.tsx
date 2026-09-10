@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
-import { Contact as ContactIcon } from "@/lib/icons";
+import { AddressBook } from "@phosphor-icons/react";
+
 import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { FieldError } from "../../components/Auth/FieldError";
 import { INPUT_CLASS } from "../../constants/styles";
@@ -48,7 +49,7 @@ export function ProfileContactEdit() {
   return (
     <FormPageLayout
       title="Modifier mes contacts"
-      icon={ContactIcon}
+      icon={AddressBook}
       backTo="/profile"
       backLabel="Retour au profil"
     >

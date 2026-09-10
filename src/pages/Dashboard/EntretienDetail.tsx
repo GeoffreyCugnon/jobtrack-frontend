@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
-import { Calendar, MapPin, Video, FileQuestion, CheckCircle2 } from "@/lib/icons";
+import { Calendar, CheckCircle, FileDashed, MapPin, VideoCamera } from "@phosphor-icons/react";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
@@ -44,7 +44,7 @@ export function EntretienDetail() {
         <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
           <PageTitle title="Entretien introuvable" icon={Calendar} />
           <EmptyState
-            icon={FileQuestion}
+            icon={FileDashed}
             message="Cet entretien n'existe pas ou plus."
           />
         </PageContainer>
@@ -75,7 +75,7 @@ export function EntretienDetail() {
               {entretien.mode === "visio" ? (
                 <div className="flex items-center justify-between gap-2">
                   <span className="flex items-center gap-2 text-sm text-base-content/60">
-                    <Video className="w-4 h-4" aria-hidden="true" />
+                    <VideoCamera className="w-4 h-4" aria-hidden="true" />
                     {entretien.interviewType === "TELEPHONE"
                       ? "Entretien téléphonique"
                       : "Visioconférence"}
@@ -115,7 +115,7 @@ export function EntretienDetail() {
           onClick={() => setConfirmed((v) => !v)}
           className={`btn w-full gap-2 ${confirmed ? "btn-success" : "btn-primary"}`}
         >
-          <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+          <CheckCircle className="w-4 h-4" aria-hidden="true" />
           {confirmed ? "Présence confirmée" : "Confirmer ma présence"}
         </button>
       </PageContainer>

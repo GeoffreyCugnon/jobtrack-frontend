@@ -1,9 +1,9 @@
-import type { LucideIcon } from "@/lib/icons";
+import { type Icon as IconType } from "@phosphor-icons/react";
 
 interface PageTitleProps {
   title: string;
   description?: string;
-  icon?: LucideIcon;
+  icon?: IconType;
 }
 
 export function PageTitle({ title, description, icon: Icon }: PageTitleProps) {

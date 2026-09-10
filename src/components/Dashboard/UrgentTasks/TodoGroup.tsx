@@ -1,10 +1,10 @@
-import type { LucideIcon } from "@/lib/icons";
+import { type Icon as IconType } from "@phosphor-icons/react";
 import { TaskRow } from "./TaskRow";
 
 export interface TodoItem {
   id: number;
   text: string;
-  icon: LucideIcon;
+  icon: IconType;
   time?: string;
   to: string;
 }

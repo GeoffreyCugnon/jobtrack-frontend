@@ -1,9 +1,9 @@
-import { ChevronRight, type LucideIcon } from "@/lib/icons";
+import { CaretRight, type Icon as IconType } from "@phosphor-icons/react";
 import { Link } from "react-router";
 
 interface TaskRowProps {
   text: string;
-  icon: LucideIcon;
+  icon: IconType;
   time?: string;
   /** Cible du clic (liste concernée). */
   to: string;
@@ -25,7 +25,7 @@ export function TaskRow({ text, icon: Icon, time, to }: TaskRowProps) {
       </div>
       <div className="flex items-center gap-1 shrink-0 text-primary">
         <Icon className="w-5 h-5" aria-hidden="true" />
-        <ChevronRight aria-hidden="true" className="w-3.5 h-3.5 lg:hidden" />
+        <CaretRight aria-hidden="true" className="w-3.5 h-3.5 lg:hidden" />
       </div>
     </Link>
   );

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { FileText, Pencil, Copy, Trash2 } from "@/lib/icons";
+import { Copy, FileText, Pencil, Trash } from "@phosphor-icons/react";
 import type { DocumentItem } from "../../types/document.type";
 
 interface DocumentCardProps {
@@ -70,7 +70,7 @@ export function DocumentCard({ item, basePath, onCopyLink, onDelete }: DocumentC
           onClick={stop(() => onDelete(item))}
           className="btn btn-ghost btn-circle w-11 h-11 min-h-0 text-base-content/50 hover:bg-base-200 hover:text-error"
         >
-          <Trash2 className="w-5 h-5" />
+          <Trash className="w-5 h-5" />
         </button>
       </div>
     </div>

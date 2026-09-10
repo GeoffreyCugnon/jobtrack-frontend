@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FileText } from "@/lib/icons";
+import { FileText } from "@phosphor-icons/react";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";

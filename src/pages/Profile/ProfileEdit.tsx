@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
-import { UserRound } from "@/lib/icons";
+import { User } from "@phosphor-icons/react";
 import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { FieldError } from "../../components/Auth/FieldError";
 import { INPUT_CLASS, TEXTAREA_CLASS } from "../../constants/styles";
@@ -53,7 +53,7 @@ export function ProfileEdit() {
   };
 
   return (
-    <FormPageLayout title="Modifier mon profil" icon={UserRound} backTo="/profile" backLabel="Retour au profil">
+    <FormPageLayout title="Modifier mon profil" icon={User} backTo="/profile" backLabel="Retour au profil">
       <form
         className="flex flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}

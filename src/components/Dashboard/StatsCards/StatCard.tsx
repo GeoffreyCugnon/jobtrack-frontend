@@ -1,10 +1,10 @@
-import { ChevronRight, type LucideIcon } from "@/lib/icons";
+import { CaretRight, type Icon as IconType } from "@phosphor-icons/react";
 import { Link } from "react-router";
 
 interface StatCardProps {
   label: string;
   count: number;
-  icon: LucideIcon;
+  icon: IconType;
   to: string;
 }
 
@@ -38,7 +38,7 @@ export function StatCard({ label, count, icon: Icon, to }: StatCardProps) {
           )}
         </div>
       </div>
-      <ChevronRight
+      <CaretRight
         aria-hidden="true"
         className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-content/50"
       />

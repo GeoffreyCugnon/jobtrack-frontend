@@ -1,15 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  Check,
-  FileQuestion,
-  Mail,
-  MessageSquare,
-  RotateCw,
-  UserPlus,
-} from "@/lib/icons";
+import { ArrowClockwise, ArrowLeft, ChatText, Check, Envelope, FileDashed, UserPlus } from "@phosphor-icons/react";
 import { Header } from "../components/Layout/Header";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { UserApi } from "../api/user.api";
@@ -136,7 +128,7 @@ export function MemberProfile() {
           onClick={() => void refetch()}
           className="btn btn-sm btn-outline gap-2"
         >
-          <RotateCw className="h-4 w-4" />
+          <ArrowClockwise className="h-4 w-4" />
           Réessayer
         </button>
       </div>,
@@ -145,7 +137,7 @@ export function MemberProfile() {
 
   if (!member) {
     return shell(
-      <EmptyState icon={FileQuestion} message="Ce profil n'existe pas ou plus." />,
+      <EmptyState icon={FileDashed} message="Ce profil n'existe pas ou plus." />,
     );
   }
 
@@ -167,7 +159,7 @@ export function MemberProfile() {
         </h1>
         <p className="text-sm text-base-content/70">{memberHeadline(member)}</p>
         <p className="mt-1 flex items-center gap-1.5 text-sm text-base-content/60">
-          <Mail className="h-4 w-4" />
+          <Envelope className="h-4 w-4" />
           {member.email}
         </p>
 
@@ -199,7 +191,7 @@ export function MemberProfile() {
             disabled={isStartingConversation}
             className="btn btn-outline btn-sm gap-1.5"
           >
-            <MessageSquare className="h-4 w-4" />
+            <ChatText className="h-4 w-4" />
             Message
           </button>
         </div>

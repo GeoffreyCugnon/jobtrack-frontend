@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { FileText, Pencil } from "@/lib/icons";
+import { FileText, Pencil } from "@phosphor-icons/react";
 import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { DocumentsApi } from "../../api/documents.api";
 import { queryKeys } from "../../api/query-keys";

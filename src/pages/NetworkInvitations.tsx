@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Check, RotateCw, Settings, UserPlus, X } from "@/lib/icons";
+import { ArrowClockwise, ArrowLeft, Check, Gear, UserPlus, X } from "@phosphor-icons/react";
 
 import { Avatar } from "../components/UI/Avatar";
 import { EmptyState } from "../components/Layout/EmptyState";
@@ -109,7 +109,7 @@ export function NetworkInvitations() {
           }
           className="ml-auto p-3 text-base-content/60 hover:text-base-content"
         >
-          <Settings size={20} />
+          <Gear size={20} />
         </button>
       </div>
 
@@ -127,7 +127,7 @@ export function NetworkInvitations() {
             onClick={() => void refetch()}
             className="btn btn-sm btn-outline gap-2"
           >
-            <RotateCw className="h-4 w-4" />
+            <ArrowClockwise className="h-4 w-4" />
             Réessayer
           </button>
         </div>

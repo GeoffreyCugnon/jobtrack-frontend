@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Check, X } from "@/lib/icons";
+import { ArrowRight, Check, X } from "@phosphor-icons/react";
 
 import { Header } from "../components/Layout/Header";
 import { Avatar } from "../components/UI/Avatar";

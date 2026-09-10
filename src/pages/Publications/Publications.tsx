@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { RotateCw } from "@/lib/icons";
+import { ArrowClockwise } from "@phosphor-icons/react";
 import { Header } from "../../components/Layout/Header";
 import { AuthLogo } from "../../components/Auth/AuthLogo";
 import PublicationCard from "../../components/Publications/PublicationCard";
@@ -74,7 +74,7 @@ export function Publications({ showLogo = true }: PublicationsProps) {
             onClick={() => void refetch()}
             className="btn btn-sm btn-outline gap-2"
           >
-            <RotateCw className="h-4 w-4" />
+            <ArrowClockwise className="h-4 w-4" />
             Réessayer
           </button>
         </div>

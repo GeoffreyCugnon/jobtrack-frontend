@@ -1,7 +1,7 @@
 // src/pages/Dashboard/CandidatureDetail.tsx
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
-import { TrendingUp, FileQuestion } from "@/lib/icons";
+import { FileDashed, TrendUp } from "@phosphor-icons/react";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
@@ -27,7 +27,7 @@ export function CandidatureDetail() {
     <div className="flex-1 flex flex-col">
       <Header />
       <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
-        <PageTitle title={title} icon={TrendingUp} />
+        <PageTitle title={title} icon={TrendUp} />
         {children}
       </PageContainer>
     </div>
@@ -42,7 +42,7 @@ export function CandidatureDetail() {
   if (isError || !candidature) {
     return shell(
       <EmptyState
-        icon={FileQuestion}
+        icon={FileDashed}
         message="Cette candidature n'existe pas ou plus."
       />,
       "Candidature introuvable",
@@ -56,7 +56,7 @@ export function CandidatureDetail() {
         <PageTitle
           title={`${candidature.company} — ${candidature.role}`}
           description="Détail de la candidature"
-          icon={TrendingUp}
+          icon={TrendUp}
         />
 
         <div className="-mx-4 sm:mx-0">

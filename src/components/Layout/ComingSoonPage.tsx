@@ -1,4 +1,4 @@
-import { Construction, type LucideIcon } from "@/lib/icons";
+import { Barricade, type Icon as IconType } from "@phosphor-icons/react";
 import { Header } from "./Header";
 import { PageContainer } from "./PageContainer";
 import { PageTitle } from "./PageTitle";
@@ -7,7 +7,7 @@ import { EmptyState } from "./EmptyState";
 interface ComingSoonPageProps {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: IconType;
 }
 
 // Même structure que Network/Publications/Statistics pour les sections pas encore
@@ -18,7 +18,7 @@ export function ComingSoonPage({ title, description, icon }: ComingSoonPageProps
       <Header />
       <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
         <PageTitle title={title} description={description} icon={icon} />
-        <EmptyState icon={Construction} message="Cette section arrive bientôt !" />
+        <EmptyState icon={Barricade} message="Cette section arrive bientôt !" />
       </PageContainer>
     </div>
   );

@@ -56,6 +56,37 @@ export class UserApi {
   }
 
   /**
+   * Met à jour les champs de profil éditables (`PATCH /user/profile`).
+   * Chaîne vide = champ effacé (le Backend la range en `null`).
+   */
+  static async updateProfile(patch: {
+    first_name?: string;
+    last_name?: string;
+    headline?: string;
+    bio?: string;
+    location?: string;
+    phone?: string;
+    website?: string;
+    linkedin?: string;
+    github?: string;
+  }): Promise<User> {
+    const { data } = await api.patch<User>("user/profile", patch);
+    return data;
+  }
+
+  /** Compétences de l'utilisateur courant (`GET /skill`). */
+  static async getSkills(): Promise<string[]> {
+    const { data } = await api.get<string[]>("skill");
+    return Array.isArray(data) ? data : [];
+  }
+
+  /** Remplace toute la liste de compétences (`PUT /skill`). */
+  static async updateSkills(skills: string[]): Promise<string[]> {
+    const { data } = await api.put<string[]>("skill", { skills });
+    return Array.isArray(data) ? data : [];
+  }
+
+  /**
    * Active / désactive les notifications du compte
    * (`PATCH /user/settings/notifications`). Renvoie l'utilisateur à jour.
    */

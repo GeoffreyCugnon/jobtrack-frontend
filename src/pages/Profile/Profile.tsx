@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { User } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
@@ -11,56 +12,16 @@ import { useAuthStore } from "../../store/auth.store";
 import { useToastStore } from "../../store/toast.store";
 import { getUserDisplay } from "../../utils/user-display";
 import { UserApi } from "../../api/user.api";
-
-// Champs encore fictifs : le modèle `User` côté Backend ne porte pour l'instant
-// que l'identité (nom, email). Le reste (titre, bio, localisation, réseaux,
-// disponibilité...) reste une maquette en attendant d'étoffer `User` ou de
-// dédier un modèle profil.
-const MOCK_PROFILE_DETAILS = {
-  title: "Développeur Web Junior",
-  location: "Paris, France",
-  phone: "+33 6 12 34 56 78",
-  website: "geoffreycugnon.dev",
-  linkedin: "linkedin.com/in/gcugnon",
-  github: "github.com/github",
-  bio: "Développeur web passionné en reconversion, spécialisé React et Node.js. À la recherche d'opportunités en startup ou scale-up pour contribuer à des projets ambitieux.",
-  availability: "Disponible immédiatement",
-  jobType: "CDI · Freelance",
-  salary: "35-45k€",
-};
-
-const skills = [
-  {
-    category: "Front-end",
-    items: ["React", "TypeScript", "Tailwind CSS", "Next.js", "Vite"],
-  },
-  {
-    category: "Back-end",
-    items: ["Node.js", "Express", "REST API", "PostgreSQL"],
-  },
-  {
-    category: "Outils",
-    items: ["Git", "GitHub", "Figma", "VS Code", "Docker (bases)"],
-  },
-  {
-    category: "Soft skills",
-    items: ["Autonomie", "Curiosité", "Esprit d'équipe", "Adaptabilité"],
-  },
-];
+import { queryKeys } from "../../api/query-keys";
 
 export function Profile() {
   const navigate = useNavigate();
-  const { firstName, lastName, initials, email, avatarUrl, bannerUrl } =
-    getUserDisplay(useAuthStore((state) => state.user));
-  const user = {
-    firstName,
-    lastName,
-    initials,
-    email,
-    avatarUrl,
-    bannerUrl,
-    ...MOCK_PROFILE_DETAILS,
-  };
+  const display = getUserDisplay(useAuthStore((state) => state.user));
+
+  const { data: skills = [] } = useQuery({
+    queryKey: queryKeys.skills.mine,
+    queryFn: () => UserApi.getSkills(),
+  });
 
   // Persiste le nouvel avatar en base et met à jour le store -> il se propage
   // partout (SideMenu, bannière du Dashboard, etc.).
@@ -79,8 +40,6 @@ export function Profile() {
     }
   };
 
-  // Persiste la bannière en base (même mécanique que l'avatar) -> elle se
-  // propage au Dashboard via le store.
   const saveBanner = async (dataUrl: string) => {
     try {
       const updated = await UserApi.updateBanner(dataUrl);
@@ -106,13 +65,13 @@ export function Profile() {
 
         <div className="-mx-4 sm:mx-0 mt-3">
           <ProfileIdentity
-            user={user}
+            user={display}
             onEdit={() => navigate("/profile/edit")}
             onAvatarChange={saveAvatar}
             onBannerChange={saveBanner}
           />
           <ProfileContact
-            user={user}
+            user={display}
             onAdd={() => navigate("/profile/contact/edit")}
           />
           <ProfileSkills

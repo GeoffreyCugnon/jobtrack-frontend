@@ -11,12 +11,10 @@ interface UserType {
   avatarUrl?: string;
   /** Bannière de profil choisie (Backend) — absente = dégradé par défaut. */
   bannerUrl?: string;
-  title: string;
+  /** Champs de profil (`""` si non renseignés). */
+  headline: string;
   location: string;
   bio: string;
-  availability: string;
-  jobType: string;
-  salary: string;
 }
 
 const FALLBACK_AVATAR = "https://randomuser.me/api/portraits/lego/5.jpg";
@@ -176,32 +174,25 @@ export function ProfileIdentity({
               Modifier
             </button>
           </div>
-          <p className="text-sm text-base-content/70 font-medium">
-            {user.title}
-          </p>
-          <div className="flex items-center gap-1 text-base-content/50 text-sm">
-            <MapPin className="w-3.5 h-3.5" />
-            <span>{user.location}</span>
-          </div>
+          {user.headline ? (
+            <p className="text-sm text-base-content/70 font-medium">
+              {user.headline}
+            </p>
+          ) : null}
+          {user.location ? (
+            <div className="flex items-center gap-1 text-base-content/50 text-sm">
+              <MapPin className="w-3.5 h-3.5" />
+              <span>{user.location}</span>
+            </div>
+          ) : null}
         </div>
 
         {/* Biographie */}
-        <p className="mt-2 text-sm text-base-content/80 leading-relaxed">
-          {user.bio}
-        </p>
-
-        {/* Badges DaisyUI */}
-        <div className="flex flex-wrap gap-2 mt-4">
-          <div className="badge badge-success badge-soft font-medium">
-            {user.availability}
-          </div>
-          <div className="badge badge-primary badge-soft font-medium">
-            {user.jobType}
-          </div>
-          <div className="badge badge-soft font-medium">
-            {user.salary}
-          </div>
-        </div>
+        {user.bio ? (
+          <p className="mt-2 text-sm text-base-content/80 leading-relaxed">
+            {user.bio}
+          </p>
+        ) : null}
       </div>
     </>
   );

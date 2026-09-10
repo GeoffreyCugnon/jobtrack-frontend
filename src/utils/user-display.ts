@@ -12,6 +12,14 @@ export type UserDisplay = {
   avatarUrl: string | undefined;
   /** Bannière de profil choisie — `undefined` si aucune (dégradé par défaut). */
   bannerUrl: string | undefined;
+  /** Champs de profil (`""` si non renseigné). */
+  headline: string;
+  bio: string;
+  location: string;
+  phone: string;
+  website: string;
+  linkedin: string;
+  github: string;
 };
 
 /**
@@ -34,5 +42,12 @@ export function getUserDisplay(user: User | null | undefined): UserDisplay {
     email: user?.email ?? "",
     avatarUrl: user?.avatar_url ?? undefined,
     bannerUrl: user?.banner_url ?? undefined,
+    headline: user?.headline ?? "",
+    bio: user?.bio ?? "",
+    location: user?.location ?? "",
+    phone: user?.phone ?? "",
+    website: user?.website ?? "",
+    linkedin: user?.linkedin ?? "",
+    github: user?.github ?? "",
   };
 }

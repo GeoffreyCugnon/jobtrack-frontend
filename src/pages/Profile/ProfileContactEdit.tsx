@@ -1,123 +1,113 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
-import { ArrowLeft, Contact as ContactIcon } from "@/lib/icons";
-import { Header } from "../../components/Layout/Header";
+import { Contact as ContactIcon } from "@/lib/icons";
+import { FormPageLayout } from "../../components/Layout/FormPageLayout";
+import { FieldError } from "../../components/Auth/FieldError";
 import { INPUT_CLASS } from "../../constants/styles";
+import { contactSchema, type ContactValues } from "../../schemas/profile.schemas";
+import { UserApi } from "../../api/user.api";
 import { useAuthStore } from "../../store/auth.store";
+import { useToastStore } from "../../store/toast.store";
 import { getUserDisplay } from "../../utils/user-display";
+import { logError } from "../../utils/log";
 
 export function ProfileContactEdit() {
   const navigate = useNavigate();
-  const { email } = getUserDisplay(useAuthStore((state) => state.user));
-  const [values, setValues] = useState({
-    email,
-    phone: "+33 6 12 34 56 78",
-    website: "geoffreycugnon.dev",
-    linkedin: "linkedin.com/in/gcugnon",
-    github: "github.com/github",
+  const rawUser = useAuthStore((state) => state.user);
+  const display = getUserDisplay(rawUser);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ContactValues>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      phone: display.phone,
+      website: display.website,
+      linkedin: display.linkedin,
+      github: display.github,
+    },
   });
 
-  const handleChange =
-    (field: keyof typeof values) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValues((v) => ({ ...v, [field]: e.target.value }));
-    };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: brancher sur PATCH /user/contact
-    navigate("/profile");
+  const onSubmit = async (values: ContactValues) => {
+    try {
+      const updated = await UserApi.updateProfile(values);
+      useAuthStore.getState().setUser(updated);
+      useToastStore.getState().addToast("Contacts mis à jour", "success");
+      navigate("/profile");
+    } catch (error) {
+      logError("profil/contact", error);
+      useToastStore
+        .getState()
+        .addToast("La mise à jour des contacts a échoué", "error");
+    }
   };
 
   return (
-    <>
-      <Header />
-      <div className="mx-auto max-w-2xl px-4 py-6">
+    <FormPageLayout
+      title="Modifier mes contacts"
+      icon={ContactIcon}
+      backTo="/profile"
+      backLabel="Retour au profil"
+    >
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
+        <label className="block">
+          <span className="text-sm text-base-content/70 mb-1 block">Email</span>
+          <input
+            type="email"
+            className={`${INPUT_CLASS} opacity-60`}
+            value={display.email}
+            readOnly
+          />
+          <span className="text-xs text-base-content/50 mt-1 block">
+            L'adresse email est liée à la connexion et ne se modifie pas ici.
+          </span>
+        </label>
+
+        <label className="block">
+          <span className="text-sm text-base-content/70 mb-1 block">
+            Téléphone
+          </span>
+          <input type="tel" className={INPUT_CLASS} {...register("phone")} />
+          <FieldError error={errors.phone} />
+        </label>
+
+        <label className="block">
+          <span className="text-sm text-base-content/70 mb-1 block">
+            Site web
+          </span>
+          <input type="text" className={INPUT_CLASS} {...register("website")} />
+          <FieldError error={errors.website} />
+        </label>
+
+        <label className="block">
+          <span className="text-sm text-base-content/70 mb-1 block">
+            LinkedIn
+          </span>
+          <input type="text" className={INPUT_CLASS} {...register("linkedin")} />
+          <FieldError error={errors.linkedin} />
+        </label>
+
+        <label className="block">
+          <span className="text-sm text-base-content/70 mb-1 block">GitHub</span>
+          <input type="text" className={INPUT_CLASS} {...register("github")} />
+          <FieldError error={errors.github} />
+        </label>
+
         <button
-          onClick={() => navigate("/profile")}
-          className="mb-6 flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
+          type="submit"
+          disabled={isSubmitting}
+          className="btn btn-primary mt-2"
         >
-          <ArrowLeft size={16} />
-          Retour au profil
+          Enregistrer
         </button>
-
-        <div className="card bg-base-100 border border-base-200 shadow-sm">
-          <div className="card-body p-6">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <ContactIcon size={18} />
-              </div>
-              <h1 className="text-lg font-semibold">Modifier mes contacts</h1>
-            </div>
-
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <label className="block">
-                <span className="text-sm text-base-content/70 mb-1 block">
-                  Email
-                </span>
-                <input
-                  type="email"
-                  className={INPUT_CLASS}
-                  value={values.email}
-                  onChange={handleChange("email")}
-                />
-              </label>
-
-              <label className="block">
-                <span className="text-sm text-base-content/70 mb-1 block">
-                  Téléphone
-                </span>
-                <input
-                  type="tel"
-                  className={INPUT_CLASS}
-                  value={values.phone}
-                  onChange={handleChange("phone")}
-                />
-              </label>
-
-              <label className="block">
-                <span className="text-sm text-base-content/70 mb-1 block">
-                  Site web
-                </span>
-                <input
-                  type="text"
-                  className={INPUT_CLASS}
-                  value={values.website}
-                  onChange={handleChange("website")}
-                />
-              </label>
-
-              <label className="block">
-                <span className="text-sm text-base-content/70 mb-1 block">
-                  LinkedIn
-                </span>
-                <input
-                  type="text"
-                  className={INPUT_CLASS}
-                  value={values.linkedin}
-                  onChange={handleChange("linkedin")}
-                />
-              </label>
-
-              <label className="block">
-                <span className="text-sm text-base-content/70 mb-1 block">
-                  GitHub
-                </span>
-                <input
-                  type="text"
-                  className={INPUT_CLASS}
-                  value={values.github}
-                  onChange={handleChange("github")}
-                />
-              </label>
-
-              <button type="submit" className="btn btn-primary mt-2">
-                Enregistrer
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </>
+      </form>
+    </FormPageLayout>
   );
 }

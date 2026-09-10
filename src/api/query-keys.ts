@@ -17,6 +17,9 @@ export const queryKeys = {
     all: ["users"] as const,
     detail: (id: string | number) => ["users", "detail", String(id)] as const,
   },
+  skills: {
+    mine: ["skills", "mine"] as const,
+  },
   connections: {
     all: ["connections"] as const,
   },

@@ -1,13 +1,7 @@
-import { SkillCategory } from "./SkillCategory";
 import { SectionCard } from "../../Layout/SectionCard";
 
-interface SkillGroup {
-  category: string;
-  items: string[];
-}
-
 interface ProfileSkillsProps {
-  skills: SkillGroup[];
+  skills: string[];
   onAdd?: () => void;
 }
 
@@ -16,17 +10,24 @@ export function ProfileSkills({ skills, onAdd }: ProfileSkillsProps) {
     <SectionCard
       title="Compétences"
       onAdd={onAdd}
-      addLabel="Ajouter une compétence"
+      addLabel="Modifier les compétences"
     >
-      <div className="space-y-3">
-        {skills.map((group) => (
-          <SkillCategory
-            key={group.category}
-            category={group.category}
-            items={group.items}
-          />
-        ))}
-      </div>
+      {skills.length === 0 ? (
+        <p className="text-sm text-base-content/50">
+          Aucune compétence renseignée.
+        </p>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {skills.map((skill) => (
+            <span
+              key={skill}
+              className="badge badge-md bg-primary/10 text-primary border-none font-medium py-1.5 px-3"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      )}
     </SectionCard>
   );
 }

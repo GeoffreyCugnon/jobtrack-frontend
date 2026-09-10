@@ -49,19 +49,15 @@ const githubIcon = (
 
 export function ProfileContact({ user, onAdd }: ProfileContactProps) {
   const contacts = [
-    { icon: <Mail className={iconSizeStyle} />, label: user?.email },
-    { icon: <Phone className={iconSizeStyle} />, label: user?.phone },
-    { icon: <Globe className={iconSizeStyle} />, label: user?.website },
-    { icon: linkedinIcon, label: "linkedin.com/in/..." },
-    { icon: githubIcon, label: "github.com/..." },
-  ];
+    { icon: <Mail className={iconSizeStyle} />, label: user.email },
+    { icon: <Phone className={iconSizeStyle} />, label: user.phone },
+    { icon: <Globe className={iconSizeStyle} />, label: user.website },
+    { icon: linkedinIcon, label: user.linkedin },
+    { icon: githubIcon, label: user.github },
+  ].filter((contact) => contact.label);
 
   return (
-    <SectionCard
-      title="Contact"
-      onAdd={onAdd}
-      addLabel="Ajouter un contact"
-    >
+    <SectionCard title="Contact" onAdd={onAdd} addLabel="Modifier les contacts">
       <div className="space-y-2">
         {contacts.map((contact, i) => (
           <ContactRow key={i} icon={contact.icon} label={contact.label} />

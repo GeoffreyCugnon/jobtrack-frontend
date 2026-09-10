@@ -46,6 +46,16 @@ export class UserApi {
   }
 
   /**
+   * Met à jour la bannière de profil de l'utilisateur courant
+   * (`PATCH /user/banner`). `bannerUrl` : URL https ou data URL d'image
+   * (redimensionnée côté client). Renvoie l'utilisateur à jour.
+   */
+  static async updateBanner(bannerUrl: string): Promise<User> {
+    const { data } = await api.patch<User>("user/banner", { bannerUrl });
+    return data;
+  }
+
+  /**
    * Active / désactive les notifications du compte
    * (`PATCH /user/settings/notifications`). Renvoie l'utilisateur à jour.
    */

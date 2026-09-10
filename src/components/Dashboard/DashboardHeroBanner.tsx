@@ -1,10 +1,15 @@
 import { Link } from "react-router";
+import { DEFAULT_MOTIVATION } from "../../data/motivation";
 
 interface DashboardHeroBannerProps {
   initials: string;
   name: string;
   /** Avatar de l'utilisateur ; repli sur les initiales si absent. */
   avatarUrl?: string;
+  /** Bannière choisie depuis le profil ; repli sur le dégradé si absente. */
+  bannerUrl?: string;
+  /** Ligne « motivation » (contextuelle ou citation) ; défaut si absente. */
+  motivation?: string;
 }
 
 // Même structure que ProfileIdentity (bannière dégradée + avatar en overlap),
@@ -13,10 +18,20 @@ export function DashboardHeroBanner({
   initials,
   name,
   avatarUrl,
+  bannerUrl,
+  motivation = DEFAULT_MOTIVATION,
 }: DashboardHeroBannerProps) {
   return (
     <div className="rounded-none sm:rounded-box overflow-hidden">
-      <div className="h-16 sm:h-24 bg-linear-to-r from-primary to-secondary" />
+      <div className="h-32 bg-linear-to-r from-primary to-secondary">
+        {bannerUrl && (
+          <img
+            src={bannerUrl}
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        )}
+      </div>
       <div className="relative bg-base-100 pt-8 px-4 pb-4 -mt-2">
         <Link
           to="/profile"
@@ -44,10 +59,7 @@ export function DashboardHeroBanner({
           <h2 className="text-lg font-bold text-base-content">
             Bonjour {name} !
           </h2>
-          <p className="text-sm text-base-content/60">
-            Continuez sur cette lancée, chaque candidature vous rapproche du
-            bon poste.
-          </p>
+          <p className="text-sm text-base-content/60">{motivation}</p>
         </div>
       </div>
     </div>

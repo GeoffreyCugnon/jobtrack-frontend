@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Loader2, MapPin, Edit2, Camera } from "@/lib/icons";
-import { fileToAvatarDataUrl } from "../../utils/image";
+import { fileToAvatarDataUrl, fileToBannerDataUrl } from "../../utils/image";
 
 interface UserType {
   firstName: string;
@@ -8,6 +8,8 @@ interface UserType {
   initials: string;
   /** Avatar par défaut généré (Backend). */
   avatarUrl?: string;
+  /** Bannière de profil choisie (Backend) — absente = dégradé par défaut. */
+  bannerUrl?: string;
   title: string;
   location: string;
   bio: string;
@@ -26,36 +28,50 @@ interface ProfileIdentityProps {
    * que la prévisualisation soit annulée.
    */
   onAvatarChange?: (dataUrl: string) => Promise<void>;
+  /**
+   * Persiste la nouvelle bannière (data URL). Doit rejeter en cas d'échec pour
+   * que la prévisualisation soit annulée.
+   */
+  onBannerChange?: (dataUrl: string) => Promise<void>;
 }
 
 const MAX_AVATAR_FILE_BYTES = 8 * 1024 * 1024;
-
-// Aperçu instantané côté client (pas de backend d'upload pour l'instant).
-// Révoque l'ancienne blob URL pour éviter les fuites mémoire.
-function previewImage(
-  file: File,
-  current: string,
-  setSrc: (url: string) => void
-) {
-  if (current.startsWith("blob:")) URL.revokeObjectURL(current);
-  setSrc(URL.createObjectURL(file));
-}
+const MAX_BANNER_FILE_BYTES = 8 * 1024 * 1024;
 
 export function ProfileIdentity({
   user,
   onEdit,
   onAvatarChange,
+  onBannerChange,
 }: ProfileIdentityProps) {
   const [avatarSrc, setAvatarSrc] = useState(user.avatarUrl || FALLBACK_AVATAR);
   const [savingAvatar, setSavingAvatar] = useState(false);
-  const [bannerSrc, setBannerSrc] = useState<string | null>(null);
+  const [bannerSrc, setBannerSrc] = useState<string | null>(
+    user.bannerUrl ?? null
+  );
+  const [savingBanner, setSavingBanner] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
 
-  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBannerChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
-    if (file) previewImage(file, bannerSrc ?? "", setBannerSrc);
     e.target.value = "";
+    if (!file || file.size > MAX_BANNER_FILE_BYTES) return;
+
+    const previous = bannerSrc;
+    setSavingBanner(true);
+    try {
+      const dataUrl = await fileToBannerDataUrl(file);
+      setBannerSrc(dataUrl); // prévisualisation immédiate
+      await onBannerChange?.(dataUrl);
+    } catch (error) {
+      console.error("Banner update failed", error);
+      setBannerSrc(previous); // échec -> on annule la prévisualisation
+    } finally {
+      setSavingBanner(false);
+    }
   };
 
   const handleAvatarChange = async (
@@ -100,10 +116,15 @@ export function ProfileIdentity({
         />
         <button
           onClick={() => bannerInputRef.current?.click()}
+          disabled={savingBanner}
           aria-label="Changer la photo de bannière"
-          className="absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center bg-base-200 hover:bg-base-300 text-base-content/80 hover:text-base-content transition-colors cursor-pointer"
+          className="absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center bg-base-200 hover:bg-base-300 text-base-content/80 hover:text-base-content transition-colors cursor-pointer disabled:opacity-70"
         >
-          <Camera className="w-5 h-5" />
+          {savingBanner ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Camera className="w-5 h-5" />
+          )}
         </button>
       </div>
 

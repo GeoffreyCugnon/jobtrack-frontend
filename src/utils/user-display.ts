@@ -10,6 +10,8 @@ export type UserDisplay = {
   email: string;
   /** Avatar généré (Backend) — `undefined` si pas d'utilisateur / pas d'URL. */
   avatarUrl: string | undefined;
+  /** Bannière de profil choisie — `undefined` si aucune (dégradé par défaut). */
+  bannerUrl: string | undefined;
 };
 
 /**
@@ -31,5 +33,6 @@ export function getUserDisplay(user: User | null | undefined): UserDisplay {
       `${firstName[0] ?? ""}${lastName[0] ?? ""}`.toUpperCase() || "?",
     email: user?.email ?? "",
     avatarUrl: user?.avatar_url ?? undefined,
+    bannerUrl: user?.banner_url ?? undefined,
   };
 }

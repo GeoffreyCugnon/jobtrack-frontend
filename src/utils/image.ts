@@ -26,3 +26,35 @@ export async function fileToAvatarDataUrl(
     bitmap.close();
   }
 }
+
+/**
+ * Prépare une image choisie par l'utilisateur pour servir de bannière de
+ * profil : recadrage « cover » centré vers un rapport large + redimensionnement,
+ * renvoyée en data URL JPEG (stockée telle quelle en base, cf. `User.banner_url`,
+ * colonne LONGTEXT).
+ */
+export async function fileToBannerDataUrl(
+  file: File,
+  width = 1200,
+  height = 420,
+  quality = 0.72,
+): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas non disponible");
+
+    // « cover » : on remplit tout le cadre en gardant le centre de l'image.
+    const scale = Math.max(width / bitmap.width, height / bitmap.height);
+    const dw = bitmap.width * scale;
+    const dh = bitmap.height * scale;
+    ctx.drawImage(bitmap, (width - dw) / 2, (height - dh) / 2, dw, dh);
+
+    return canvas.toDataURL("image/jpeg", quality);
+  } finally {
+    bitmap.close();
+  }
+}

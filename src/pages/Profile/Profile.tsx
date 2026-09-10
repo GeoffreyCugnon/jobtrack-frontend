@@ -50,15 +50,15 @@ const skills = [
 
 export function Profile() {
   const navigate = useNavigate();
-  const { firstName, lastName, initials, email, avatarUrl } = getUserDisplay(
-    useAuthStore((state) => state.user),
-  );
+  const { firstName, lastName, initials, email, avatarUrl, bannerUrl } =
+    getUserDisplay(useAuthStore((state) => state.user));
   const user = {
     firstName,
     lastName,
     initials,
     email,
     avatarUrl,
+    bannerUrl,
     ...MOCK_PROFILE_DETAILS,
   };
 
@@ -79,6 +79,21 @@ export function Profile() {
     }
   };
 
+  // Persiste la bannière en base (même mécanique que l'avatar) -> elle se
+  // propage au Dashboard via le store.
+  const saveBanner = async (dataUrl: string) => {
+    try {
+      const updated = await UserApi.updateBanner(dataUrl);
+      useAuthStore.getState().setUser(updated);
+      useToastStore.getState().addToast("Bannière mise à jour", "success");
+    } catch (error) {
+      useToastStore
+        .getState()
+        .addToast("Échec de la mise à jour de la bannière", "error");
+      throw error;
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col">
       <Header />
@@ -94,6 +109,7 @@ export function Profile() {
             user={user}
             onEdit={() => navigate("/profile/edit")}
             onAvatarChange={saveAvatar}
+            onBannerChange={saveBanner}
           />
           <ProfileContact
             user={user}

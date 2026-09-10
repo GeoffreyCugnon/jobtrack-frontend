@@ -1,15 +1,12 @@
 import type { LucideIcon } from "@/lib/icons";
-import { TaskRow, type TaskDueCategory } from "./TaskRow";
+import { TaskRow } from "./TaskRow";
 
-interface TodoItem {
+export interface TodoItem {
   id: number;
-  type: string;
-  company?: string;
-  role?: string;
-  text?: string;
+  text: string;
   icon: LucideIcon;
   time?: string;
-  dueCategory: TaskDueCategory;
+  to: string;
 }
 
 interface TodoGroupProps {
@@ -17,9 +14,8 @@ interface TodoGroupProps {
   items: TodoItem[];
 }
 
-// Sous-section de la todo — même pattern que SideMenu/MenuSection : un
-// regroupement nommé (ici "Aujourd'hui" / "À venir") qui rend une liste de
-// lignes du même type.
+// Sous-section de la todo : un regroupement nommé (ici "À venir") qui rend une
+// liste de lignes du même type.
 export function TodoGroup({ label, items }: TodoGroupProps) {
   if (items.length === 0) return null;
 

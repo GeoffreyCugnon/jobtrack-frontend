@@ -3,8 +3,6 @@ import { AuthPage } from "./pages/AuthPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { Root } from "./pages/Root";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
-import { Relances } from "./pages/Dashboard/Relances";
-import { Historique } from "./pages/Dashboard/Historique";
 import { Candidatures } from "./pages/Dashboard/Candidatures";
 import { CandidatureDetail } from "./pages/Dashboard/CandidatureDetail";
 import { Entretiens } from "./pages/Dashboard/Entretiens";
@@ -24,14 +22,12 @@ import { LetterPreview } from "./pages/Documents/LetterPreview";
 import { LetterEdit } from "./pages/Documents/LetterEdit";
 import { Publications } from "./pages/Publications/Publications";
 import { PublicationDetail } from "./pages/Publications/PublicationDetail";
-import { Statistics } from "./pages/Statistics";
 import { Settings } from "./pages/Settings/Settings";
 import { Profile } from "./pages/Profile/Profile";
 import { ProfileEdit } from "./pages/Profile/ProfileEdit";
 import { ProfileContactEdit } from "./pages/Profile/ProfileContactEdit";
 import { ProfileSkillsEdit } from "./pages/Profile/ProfileSkillsEdit";
 import { SettingsPassword } from "./pages/Settings/SettingsPassword";
-import { SettingsTwoFA } from "./pages/Settings/SettingsTwoFA";
 import { SettingsHelp } from "./pages/Settings/SettingsHelp";
 import { MessagingManage } from "./pages/Messaging/MessagingManage";
 import { MessagingPreferences } from "./pages/Messaging/MessagingPreferences";
@@ -52,8 +48,6 @@ export const router = createBrowserRouter([
       // affiche `Publications` à la place (vue d'accueil publique).
       { index: true, Component: Dashboard },
       { path: "dashboard", Component: Dashboard },
-      { path: "relances", Component: Relances },
-      { path: "historique", Component: Historique },
       { path: "candidatures", Component: Candidatures },
       { path: "candidatures/:id", Component: CandidatureDetail },
       { path: "entretiens", Component: Entretiens },
@@ -79,7 +73,6 @@ export const router = createBrowserRouter([
       // Onglet "Actus" de l'app : même composant que l'accueil, sans le logo.
       { path: "publications", element: <Publications showLogo={false} /> },
       { path: "publications/:id", Component: PublicationDetail },
-      { path: "statistics", Component: Statistics },
       {
         path: "messaging",
         children: [
@@ -103,7 +96,6 @@ export const router = createBrowserRouter([
         children: [
           { index: true, Component: Settings },
           { path: "password", Component: SettingsPassword },
-          { path: "2fa", Component: SettingsTwoFA },
           { path: "help", Component: SettingsHelp },
         ],
       },

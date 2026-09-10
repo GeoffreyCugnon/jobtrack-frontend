@@ -10,16 +10,13 @@ const testUser = {
   last_name: "Cugnon",
 };
 
-// Doit rester synchro avec SEEN_EVENTS_KEY dans Dashboard.tsx (non exporté).
-const SEEN_EVENTS_KEY = "dashboard-seen-event-ids";
-
 const stats = {
   activeApplications: 4,
   upcomingInterviews: 2,
   availableOffers: 30,
 };
 
-// « Derniers événements » est dérivé des candidatures (une ligne par candidature).
+// « Activité récente » est dérivée des candidatures (une ligne par candidature).
 const applications = [
   {
     id: 11,
@@ -73,7 +70,6 @@ function mountDashboard() {
       <MenuProvider>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/historique" element={<div>Historique complet</div>} />
         </Routes>
       </MenuProvider>
     </MemoryRouter>,
@@ -120,41 +116,14 @@ describe("Dashboard", () => {
     cy.contains(`Entretien — ${interviews[0].company}`).should("be.visible");
   });
 
-  it("affiche les derniers événements dérivés des candidatures", () => {
+  it("affiche l'activité récente dérivée des candidatures", () => {
     mountDashboard();
 
+    cy.contains("Activité récente").should("be.visible");
     applications.forEach((application) => {
       cy.contains(
         `Candidature — ${application.role} chez ${application.company}`,
       ).should("be.visible");
     });
-  });
-
-  it("affiche l'état vide quand tous les événements ont déjà été vus", () => {
-    localStorage.setItem(
-      SEEN_EVENTS_KEY,
-      JSON.stringify(applications.map((application) => application.id)),
-    );
-
-    mountDashboard();
-
-    cy.contains("Rien de nouveau pour l'instant, revenez plus tard !").should(
-      "be.visible",
-    );
-  });
-
-  it("marque les événements comme vus et navigue vers l'historique au clic sur Voir tout", () => {
-    mountDashboard();
-
-    cy.contains("Voir tout").click();
-
-    cy.contains("Historique complet").should("be.visible");
-    cy.window()
-      .its("localStorage")
-      .invoke("getItem", SEEN_EVENTS_KEY)
-      .should(
-        "eq",
-        JSON.stringify(applications.map((application) => application.id)),
-      );
   });
 });

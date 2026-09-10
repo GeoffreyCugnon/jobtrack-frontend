@@ -6,7 +6,6 @@ import {
   Bell,
   Globe,
   Lock,
-  ShieldCheck,
   HelpCircle,
   Info,
   Settings as SettingsIcon,
@@ -34,7 +33,6 @@ const LANGUAGES: { code: string; label: string }[] = [
 export function Settings() {
   const navigate = useNavigate();
 
-  const [twoFA] = useState(false);
 
   const rawUser = useAuthStore((state) => state.user);
   const user = getUserDisplay(rawUser);
@@ -176,12 +174,6 @@ export function Settings() {
                 icon={<Lock size={18} />}
                 label="Mot de passe"
                 onClick={() => navigate("/settings/password")}
-              />
-              <SettingsItem
-                icon={<ShieldCheck size={18} />}
-                label="Authentification 2FA"
-                value={twoFA ? "Activée" : "Désactivée"}
-                onClick={() => navigate("/settings/2fa")}
               />
             </SettingsSection>
 

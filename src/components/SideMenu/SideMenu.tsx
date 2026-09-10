@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
-import { BarChart3, Settings, LogOut, ArrowLeft } from "@/lib/icons";
+import { Settings, LogOut, ArrowLeft } from "@/lib/icons";
 import { MenuOverlay } from "./MenuOverlay";
 import { MenuHeader } from "./MenuHeader";
 import { MenuSection } from "./MenuSection";
@@ -43,10 +43,6 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
     label,
     icon,
   }));
-
-  const secondaryLinks = isAuthenticated
-    ? [{ to: "/statistics", label: "Statistiques", icon: BarChart3 }]
-    : [];
 
   const handleLogout = async () => {
     try {
@@ -103,14 +99,6 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
             </ul>
           )}
           <MenuSection links={mainLinks} onLinkClick={onClose} />
-          {secondaryLinks.length > 0 && (
-            <MenuSection
-              links={secondaryLinks}
-              onLinkClick={onClose}
-              title="Suivi"
-            />
-          )}
-
           {isAuthenticated && (
             <ul className="menu menu-vertical w-full py-4">
               <ThemeToggle />

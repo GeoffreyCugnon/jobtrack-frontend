@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   Search,
   X,
@@ -15,12 +16,9 @@ import { DocumentsApi } from "../../api/documents.api";
 import { OffersApi } from "../../api/offers.api";
 import { PublicationsApi } from "../../api/publications.api";
 import { UserApi } from "../../api/user.api";
-import type { DocumentItem } from "../../types/document.type";
+import { queryKeys } from "../../api/query-keys";
 import { useAuthStore } from "../../store/auth.store";
 import { useMessagingOptional } from "../../context/Messaging/useMessaging";
-import type { Offer } from "../../types/offer.type";
-import type { Publication } from "../../types/publication.types";
-import type { User } from "../../types/user.type";
 
 const MAX_PER_GROUP = 4;
 
@@ -67,77 +65,32 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
 
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [publications, setPublications] = useState<Publication[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Offres + actus : chargées une seule fois, à la première ouverture
-  // (routes publiques).
-  useEffect(() => {
-    if (!open || offers.length > 0) return;
-    let cancelled = false;
-    OffersApi.getAll()
-      .then((data) => {
-        if (!cancelled) setOffers(data);
-      })
-      .catch((error) =>
-        console.error("Recherche : chargement des offres échoué", error),
-      );
-    return () => {
-      cancelled = true;
-    };
-  }, [open, offers.length]);
-
-  useEffect(() => {
-    if (!open || publications.length > 0) return;
-    let cancelled = false;
-    PublicationsApi.getAll()
-      .then((data) => {
-        if (!cancelled) setPublications(data);
-      })
-      .catch((error) =>
-        console.error("Recherche : chargement des actus échoué", error),
-      );
-    return () => {
-      cancelled = true;
-    };
-  }, [open, publications.length]);
-
-  // Utilisateurs : scope "app" et session authentifiée uniquement
-  // (`GET /user` est protégé par AuthGuard).
-  useEffect(() => {
-    if (effectiveScope !== "app" || !open || users.length > 0) return;
-    let cancelled = false;
-    UserApi.getAll()
-      .then((data) => {
-        if (!cancelled) setUsers(data);
-      })
-      .catch((error) =>
-        console.error("Recherche : chargement des utilisateurs échoué", error),
-      );
-    return () => {
-      cancelled = true;
-    };
-  }, [effectiveScope, open, users.length]);
-
-  // Documents : scope "app" et session authentifiée uniquement
-  // (`GET /document` est protégé par AuthGuard).
-  useEffect(() => {
-    if (effectiveScope !== "app" || !open || documents.length > 0) return;
-    let cancelled = false;
-    DocumentsApi.list()
-      .then((data) => {
-        if (!cancelled) setDocuments(data);
-      })
-      .catch((error) =>
-        console.error("Recherche : chargement des documents échoué", error),
-      );
-    return () => {
-      cancelled = true;
-    };
-  }, [effectiveScope, open, documents.length]);
+  // Chargées à la première ouverture, via React Query : le cache est partagé
+  // avec les pages Offres / Actus / Réseau / Documents (pas de double fetch).
+  const appScope = effectiveScope === "app";
+  const { data: offers = [] } = useQuery({
+    queryKey: queryKeys.offers.all,
+    queryFn: () => OffersApi.getAll(),
+    enabled: open,
+  });
+  const { data: publications = [] } = useQuery({
+    queryKey: queryKeys.publications.all,
+    queryFn: () => PublicationsApi.getAll(),
+    enabled: open,
+  });
+  // `GET /user` et `GET /document` sont protégés par AuthGuard : scope "app".
+  const { data: users = [] } = useQuery({
+    queryKey: queryKeys.users.all,
+    queryFn: () => UserApi.getAll(),
+    enabled: open && appScope,
+  });
+  const { data: documents = [] } = useQuery({
+    queryKey: queryKeys.documents.all,
+    queryFn: () => DocumentsApi.list(),
+    enabled: open && appScope,
+  });
 
   // Fermeture au clic extérieur / touche Échap.
   useEffect(() => {

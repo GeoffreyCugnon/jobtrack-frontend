@@ -1,15 +1,27 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { FileText } from "@/lib/icons";
 import { EmptyState } from "../../components/Layout/EmptyState";
 import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
 import { Tabs } from "../../components/Layout/Tabs";
 import { DocumentList } from "../../components/Documents/DocumentList";
-import { cvItems, letterItems } from "../../data/documents";
+import { DocumentsApi } from "../../api/documents.api";
+import { queryKeys } from "../../api/query-keys";
 
 export function Documents() {
   const [activeTab, setActiveTab] = useState<"cv" | "letters">("cv");
-  const items = activeTab === "cv" ? cvItems : letterItems;
+
+  const {
+    data: documents = [],
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: queryKeys.documents.all,
+    queryFn: () => DocumentsApi.list(),
+  });
+
+  const items = documents.filter((doc) => doc.basePath === activeTab);
 
   return (
     <div className="flex-1 flex flex-col">
@@ -31,7 +43,14 @@ export function Documents() {
                 />
               </div>
               <div className="bg-base-100 border-t border-base-200 p-4">
-                {items.length === 0 ? (
+                {isPending ? (
+                  <p className="text-sm text-base-content/60">Chargement…</p>
+                ) : isError ? (
+                  <EmptyState
+                    icon={FileText}
+                    message="Impossible de charger vos documents pour le moment."
+                  />
+                ) : items.length === 0 ? (
                   <EmptyState
                     icon={FileText}
                     message={
@@ -40,22 +59,15 @@ export function Documents() {
                         : "Aucune lettre pour l'instant, créez la première !"
                     }
                   />
-                ) : activeTab === "cv" ? (
-                  <div className="-m-4">
-                    <DocumentList items={cvItems} basePath="cv" />
-                  </div>
                 ) : (
                   <div className="-m-4">
-                    <DocumentList items={letterItems} basePath="letters" />
+                    <DocumentList items={items} basePath={activeTab} />
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Même filler que sur Offers/Dashboard, mobile uniquement : au
-                delà de sm, la carte garde ses coins arrondis (rounded-box)
-                et un filler plein-largeur juste en dessous casserait cet
-                arrondi avec un bord droit collé dessus. */}
+            {/* Même filler que sur Offers/Dashboard, mobile uniquement. */}
             <div className="flex-1 bg-base-100 sm:hidden" />
           </div>
         </div>

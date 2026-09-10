@@ -1,4 +1,5 @@
 // src/pages/Dashboard/CandidatureDetail.tsx
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import { TrendingUp, FileQuestion } from "@/lib/icons";
 import { EmptyState } from "../../components/Layout/EmptyState";
@@ -6,30 +7,45 @@ import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";
 import { SectionCard } from "../../components/Layout/SectionCard";
-import { candidatureItems } from "../../data/candidatures";
-
-// "Entretien prévu" est une évolution positive ; "En attente" reste neutre.
-const STATUS_BADGE_CLASS: Record<string, string> = {
-  "Entretien prévu": "badge-success",
-  "En attente": "badge-soft",
-};
+import { ApplicationsApi } from "../../api/applications.api";
+import { queryKeys } from "../../api/query-keys";
+import { CANDIDATURE_STATUS_BADGE_CLASS } from "./candidature-status";
 
 export function CandidatureDetail() {
   const { id } = useParams();
-  const candidature = candidatureItems.find((item) => String(item.id) === id);
+  const {
+    data: candidature,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: queryKeys.applications.detail(id ?? ""),
+    queryFn: () => ApplicationsApi.getById(id!),
+    enabled: !!id,
+  });
 
-  if (!candidature) {
-    return (
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
-          <PageTitle title="Candidature introuvable" icon={TrendingUp} />
-          <EmptyState
-            icon={FileQuestion}
-            message="Cette candidature n'existe pas ou plus."
-          />
-        </PageContainer>
-      </div>
+  const shell = (children: React.ReactNode, title = "Candidature") => (
+    <div className="flex-1 flex flex-col">
+      <Header />
+      <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
+        <PageTitle title={title} icon={TrendingUp} />
+        {children}
+      </PageContainer>
+    </div>
+  );
+
+  if (isPending) {
+    return shell(
+      <p className="p-4 text-sm text-base-content/60">Chargement…</p>,
+    );
+  }
+
+  if (isError || !candidature) {
+    return shell(
+      <EmptyState
+        icon={FileQuestion}
+        message="Cette candidature n'existe pas ou plus."
+      />,
+      "Candidature introuvable",
     );
   }
 
@@ -49,15 +65,16 @@ export function CandidatureDetail() {
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm text-base-content/60">Statut</span>
                 <span
-                  className={`badge badge-sm ${STATUS_BADGE_CLASS[candidature.status]}`}
+                  className={`badge badge-sm ${
+                    CANDIDATURE_STATUS_BADGE_CLASS[candidature.statusLabel] ??
+                    "badge-soft"
+                  }`}
                 >
-                  {candidature.status}
+                  {candidature.statusLabel}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-2">
-                <span className="text-sm text-base-content/60">
-                  Entreprise
-                </span>
+                <span className="text-sm text-base-content/60">Entreprise</span>
                 <span className="text-sm text-base-content/90">
                   {candidature.company}
                 </span>
@@ -76,19 +93,19 @@ export function CandidatureDetail() {
                   {candidature.appliedDate}
                 </span>
               </div>
+              {candidature.interviewsCount > 0 && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm text-base-content/60">
+                    Entretiens
+                  </span>
+                  <span className="text-sm text-base-content/90">
+                    {candidature.interviewsCount}
+                  </span>
+                </div>
+              )}
             </div>
           </SectionCard>
         </div>
-
-        <button
-          type="button"
-          onClick={() => {
-            // TODO: brancher sur l'envoi réel d'une relance
-          }}
-          className="btn btn-primary w-full"
-        >
-          Relancer cette candidature
-        </button>
       </PageContainer>
     </div>
   );

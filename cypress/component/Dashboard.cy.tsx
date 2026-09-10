@@ -2,12 +2,6 @@ import { MemoryRouter, Route, Routes } from "react-router";
 import { Dashboard } from "../../src/pages/Dashboard/Dashboard";
 import { MenuProvider } from "../../src/context/Menu/MenuContext";
 import { useAuthStore } from "../../src/store/auth.store";
-import {
-  dashboardStats,
-  dashboardTodayTasks,
-  dashboardUpcomingTasks,
-  dashboardRecentEvents,
-} from "../../src/data/dashboard";
 
 const testUser = {
   id: "1",
@@ -19,7 +13,61 @@ const testUser = {
 // Doit rester synchro avec SEEN_EVENTS_KEY dans Dashboard.tsx (non exporté).
 const SEEN_EVENTS_KEY = "dashboard-seen-event-ids";
 
+const stats = {
+  activeApplications: 4,
+  upcomingInterviews: 2,
+  availableOffers: 30,
+};
+
+// « Derniers événements » est dérivé des candidatures (une ligne par candidature).
+const applications = [
+  {
+    id: 11,
+    jobOfferingId: 1,
+    company: "TechCorp",
+    role: "Développeuse Fullstack",
+    status: "PENDING",
+    statusLabel: "En attente",
+    hasUpcomingInterview: false,
+    interviewsCount: 0,
+    appliedDate: "01/09/2026",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 12,
+    jobOfferingId: 2,
+    company: "CloudNine",
+    role: "Ingénieur DevOps",
+    status: "ACCEPTED",
+    statusLabel: "Acceptée",
+    hasUpcomingInterview: false,
+    interviewsCount: 0,
+    appliedDate: "28/08/2026",
+    createdAt: new Date().toISOString(),
+  },
+];
+
+const interviews = [
+  {
+    id: 21,
+    applicationId: 11,
+    company: "TechCorp",
+    role: "Développeuse Fullstack",
+    interviewType: "VISIO",
+    mode: "visio",
+    scheduledAt: new Date(Date.now() + 86400000).toISOString(),
+    date: "mar. 15 sept. 14:00",
+    isUpcoming: true,
+    notes: null,
+    visioLink: "https://meet.example.com/x",
+    location: null,
+  },
+];
+
 function mountDashboard() {
+  cy.intercept("GET", "**/dashboard/stats", { body: stats });
+  cy.intercept("GET", "**/application", { body: applications });
+  cy.intercept("GET", "**/interview", { body: interviews });
   cy.mount(
     <MemoryRouter initialEntries={["/"]}>
       <MenuProvider>
@@ -49,43 +97,43 @@ describe("Dashboard", () => {
     cy.contains("GC").should("be.visible");
   });
 
-  it("affiche les stats rapides avec leurs valeurs", () => {
+  it("affiche les stats rapides avec les compteurs de l'API", () => {
     mountDashboard();
 
-    dashboardStats.forEach((stat) => {
-      cy.contains(stat.label)
-        .closest("a")
-        .should("contain.text", String(stat.count));
-    });
+    // Le libellé de StatCard est scindé sur deux lignes (<br/>) : on cible la
+    // tuile par son lien et on vérifie le compteur + le 1er mot du libellé.
+    cy.get('a[href="/candidatures"]')
+      .should("contain.text", String(stats.activeApplications))
+      .and("contain.text", "Candidatures");
+    cy.get('a[href="/entretiens"]')
+      .should("contain.text", String(stats.upcomingInterviews))
+      .and("contain.text", "Entretiens");
+    cy.get('a[href="/offers"]')
+      .should("contain.text", String(stats.availableOffers))
+      .and("contain.text", "Offres");
   });
 
-  it("affiche les tâches du jour et à venir", () => {
+  it("affiche les entretiens à venir dans « Prochaines actions »", () => {
     mountDashboard();
-
-    const [todayTask] = dashboardTodayTasks;
-    const [upcomingTask] = dashboardUpcomingTasks;
-
-    cy.contains("Aujourd'hui").should("be.visible");
-    cy.contains(`Relancer ${todayTask.company} (${todayTask.role})`).should(
-      "be.visible",
-    );
 
     cy.contains("À venir").should("be.visible");
-    cy.contains(upcomingTask.text as string).should("be.visible");
+    cy.contains(`Entretien — ${interviews[0].company}`).should("be.visible");
   });
 
-  it("affiche les derniers événements non vus", () => {
+  it("affiche les derniers événements dérivés des candidatures", () => {
     mountDashboard();
 
-    dashboardRecentEvents.forEach((event) => {
-      cy.contains(event.text).should("be.visible");
+    applications.forEach((application) => {
+      cy.contains(
+        `Candidature — ${application.role} chez ${application.company}`,
+      ).should("be.visible");
     });
   });
 
   it("affiche l'état vide quand tous les événements ont déjà été vus", () => {
     localStorage.setItem(
       SEEN_EVENTS_KEY,
-      JSON.stringify(dashboardRecentEvents.map((event) => event.id)),
+      JSON.stringify(applications.map((application) => application.id)),
     );
 
     mountDashboard();
@@ -93,9 +141,6 @@ describe("Dashboard", () => {
     cy.contains("Rien de nouveau pour l'instant, revenez plus tard !").should(
       "be.visible",
     );
-    dashboardRecentEvents.forEach((event) => {
-      cy.contains(event.text).should("not.exist");
-    });
   });
 
   it("marque les événements comme vus et navigue vers l'historique au clic sur Voir tout", () => {
@@ -109,7 +154,7 @@ describe("Dashboard", () => {
       .invoke("getItem", SEEN_EVENTS_KEY)
       .should(
         "eq",
-        JSON.stringify(dashboardRecentEvents.map((event) => event.id)),
+        JSON.stringify(applications.map((application) => application.id)),
       );
   });
 });

@@ -1,20 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Pencil } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
-import { letterItems } from "../../data/documents";
+import { DocumentsApi } from "../../api/documents.api";
+import { queryKeys } from "../../api/query-keys";
+import { useToastStore } from "../../store/toast.store";
 import { INPUT_CLASS } from "../../constants/styles";
 
 export function LetterEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const item = letterItems.find((letter) => letter.id === id);
-  const [title, setTitle] = useState(item?.title ?? "");
+  const queryClient = useQueryClient();
+  const [title, setTitle] = useState("");
+
+  const { data: item } = useQuery({
+    queryKey: queryKeys.documents.detail(id ?? ""),
+    queryFn: () => DocumentsApi.getById(id!),
+    enabled: !!id,
+  });
+
+  useEffect(() => {
+    if (item) setTitle(item.title);
+  }, [item]);
+
+  const rename = useMutation({
+    mutationFn: (nextTitle: string) => DocumentsApi.rename(id!, nextTitle),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.documents.all,
+      });
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.documents.detail(id ?? ""),
+      });
+      navigate(`/documents/letters/${id}`);
+    },
+    onError: () =>
+      useToastStore.getState().addToast("L'enregistrement a échoué", "error"),
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: brancher sur PATCH /documents/letters/:id
-    navigate(`/documents/letters/${id}`);
+    const next = title.trim();
+    if (!next || rename.isPending) return;
+    rename.mutate(next);
   };
 
   return (
@@ -51,7 +80,11 @@ export function LetterEdit() {
                 />
               </label>
 
-              <button type="submit" className="btn btn-primary mt-2">
+              <button
+                type="submit"
+                disabled={rename.isPending}
+                className="btn btn-primary mt-2"
+              >
                 Enregistrer
               </button>
             </form>

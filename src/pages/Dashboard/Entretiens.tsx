@@ -1,4 +1,5 @@
 // src/pages/Dashboard/Entretiens.tsx
+import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "@/lib/icons";
 import { ClickableRow } from "../../components/Layout/ClickableRow";
 import { EmptyState } from "../../components/Layout/EmptyState";
@@ -6,9 +7,19 @@ import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";
 import { SectionCard } from "../../components/Layout/SectionCard";
-import { entretienItems } from "../../data/entretiens";
+import { InterviewsApi } from "../../api/interviews.api";
+import { queryKeys } from "../../api/query-keys";
 
 export function Entretiens() {
+  const {
+    data: entretiens = [],
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: queryKeys.interviews.all,
+    queryFn: () => InterviewsApi.list(),
+  });
+
   return (
     <div className="flex-1 flex flex-col">
       <Header />
@@ -21,14 +32,21 @@ export function Entretiens() {
 
         <div className="-mx-4 sm:mx-0">
           <SectionCard title="Entretiens" collapsible={false}>
-            {entretienItems.length === 0 ? (
+            {isPending ? (
+              <p className="p-4 text-sm text-base-content/60">Chargement…</p>
+            ) : isError ? (
+              <EmptyState
+                icon={Calendar}
+                message="Impossible de charger vos entretiens pour le moment."
+              />
+            ) : entretiens.length === 0 ? (
               <EmptyState
                 icon={Calendar}
                 message="Aucun entretien prévu pour l'instant."
               />
             ) : (
               <div className="divide-y divide-base-200">
-                {entretienItems.map((entretien) => (
+                {entretiens.map((entretien) => (
                   <ClickableRow
                     key={entretien.id}
                     to={`/entretiens/${entretien.id}`}

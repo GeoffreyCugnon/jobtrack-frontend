@@ -11,10 +11,11 @@ import {
   Building2,
   type LucideIcon,
 } from "@/lib/icons";
-import { cvItems, letterItems } from "../../data/documents";
+import { DocumentsApi } from "../../api/documents.api";
 import { OffersApi } from "../../api/offers.api";
 import { PublicationsApi } from "../../api/publications.api";
 import { UserApi } from "../../api/user.api";
+import type { DocumentItem } from "../../types/document.type";
 import { useAuthStore } from "../../store/auth.store";
 import { useMessagingOptional } from "../../context/Messaging/useMessaging";
 import type { Offer } from "../../types/offer.type";
@@ -69,6 +70,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [publications, setPublications] = useState<Publication[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
 
   // Offres + actus : chargées une seule fois, à la première ouverture
@@ -119,6 +121,23 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       cancelled = true;
     };
   }, [effectiveScope, open, users.length]);
+
+  // Documents : scope "app" et session authentifiée uniquement
+  // (`GET /document` est protégé par AuthGuard).
+  useEffect(() => {
+    if (effectiveScope !== "app" || !open || documents.length > 0) return;
+    let cancelled = false;
+    DocumentsApi.list()
+      .then((data) => {
+        if (!cancelled) setDocuments(data);
+      })
+      .catch((error) =>
+        console.error("Recherche : chargement des documents échoué", error),
+      );
+    return () => {
+      cancelled = true;
+    };
+  }, [effectiveScope, open, documents.length]);
 
   // Fermeture au clic extérieur / touche Échap.
   useEffect(() => {
@@ -232,10 +251,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
       });
     }
 
-    const docs = [
-      ...cvItems.map((d) => ({ ...d, kind: "cv" as const })),
-      ...letterItems.map((d) => ({ ...d, kind: "letter" as const })),
-    ].filter((d) => d.title.toLowerCase().includes(q));
+    const docs = documents.filter((d) => d.title.toLowerCase().includes(q));
     if (docs.length) {
       groups.push({
         label: "Documents",
@@ -244,13 +260,8 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
         items: docs.map((d) => ({
           key: `doc-${d.id}`,
           title: d.title,
-          subtitle: `${d.kind === "cv" ? "CV" : "Lettre"} · modifié le ${d.updatedAt}`,
-          onSelect: () =>
-            go(
-              d.kind === "cv"
-                ? `/documents/cv/${d.id}`
-                : `/documents/letters/${d.id}`,
-            ),
+          subtitle: `${d.basePath === "cv" ? "CV" : "Lettre"} · modifié le ${d.updatedAt}`,
+          onSelect: () => go(`/documents/${d.basePath}/${d.id}`),
         })),
       });
     }

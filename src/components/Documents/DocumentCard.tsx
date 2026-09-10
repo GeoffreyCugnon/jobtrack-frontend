@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { FileText, Pencil, Copy, Trash2 } from "@/lib/icons";
-import type { DocumentItem } from "../../data/documents";
+import type { DocumentItem } from "../../types/document.type";
 
 interface DocumentCardProps {
   item: DocumentItem;

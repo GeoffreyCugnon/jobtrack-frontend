@@ -1,13 +1,20 @@
 import { useNavigate, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, FileText, Pencil } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
-import { cvItems } from "../../data/documents";
+import { DocumentsApi } from "../../api/documents.api";
+import { queryKeys } from "../../api/query-keys";
 import { BTN_FOCUS_RING } from "../../constants/styles";
 
 export function CVPreview() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const item = cvItems.find((cv) => cv.id === id);
+
+  const { data: item, isPending } = useQuery({
+    queryKey: queryKeys.documents.detail(id ?? ""),
+    queryFn: () => DocumentsApi.getById(id!),
+    enabled: !!id,
+  });
 
   return (
     <>
@@ -30,7 +37,9 @@ export function CVPreview() {
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold">
-                    {item?.title ?? "Document introuvable"}
+                    {isPending
+                      ? "Chargement…"
+                      : (item?.title ?? "Document introuvable")}
                   </h1>
                   {item ? (
                     <p className="text-sm text-base-content/60">
@@ -50,9 +59,10 @@ export function CVPreview() {
               ) : null}
             </div>
 
-            {/* TODO: brancher sur GET /documents/cv/:id pour afficher le vrai rendu du CV */}
+            {/* Le modèle Document ne stocke que le titre/type : pas de contenu
+                à rendre tant qu'il n'y a pas d'upload de fichier. */}
             <div className="flex items-center justify-center rounded-box border border-dashed border-base-300 bg-base-200/40 py-24 text-sm text-base-content/40">
-              Aperçu à venir
+              Aperçu du fichier à venir
             </div>
           </div>
         </div>

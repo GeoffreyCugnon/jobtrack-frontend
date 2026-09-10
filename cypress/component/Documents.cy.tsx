@@ -1,9 +1,43 @@
 import { MemoryRouter, Route, Routes } from "react-router";
 import { Documents } from "../../src/pages/Documents/Documents";
 import { MenuProvider } from "../../src/context/Menu/MenuContext";
-import { cvItems, letterItems } from "../../src/data/documents";
+import { useAuthStore } from "../../src/store/auth.store";
+
+const cvItems = [
+  {
+    id: 1,
+    title: "CV principal — Fullstack",
+    type: "CV",
+    basePath: "cv",
+    updatedAt: "01/09/2026",
+    updatedAtISO: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    title: "CV anglais — Software Engineer",
+    type: "CV",
+    basePath: "cv",
+    updatedAt: "12/08/2026",
+    updatedAtISO: new Date().toISOString(),
+  },
+];
+const letterItems = [
+  {
+    id: 3,
+    title: "Lettre — TechCorp",
+    type: "LETTRE",
+    basePath: "letters",
+    updatedAt: "20/08/2026",
+    updatedAtISO: new Date().toISOString(),
+  },
+];
 
 function mountDocuments() {
+  useAuthStore.setState({
+    isAuthenticated: true,
+    user: { id: "1", email: "c@t.dev", first_name: "C", last_name: "T" },
+  });
+  cy.intercept("GET", "**/document*", { body: [...cvItems, ...letterItems] });
   cy.mount(
     <MemoryRouter initialEntries={["/documents"]}>
       <MenuProvider>
@@ -24,6 +58,8 @@ function mountDocuments() {
 }
 
 describe("Documents", () => {
+  afterEach(() => useAuthStore.getState().clearAuth());
+
   it("affiche l'onglet CV actif par défaut avec la liste des CV", () => {
     mountDocuments();
 

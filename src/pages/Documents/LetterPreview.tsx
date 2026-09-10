@@ -1,13 +1,20 @@
 import { useNavigate, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, FileText, Pencil } from "@/lib/icons";
 import { Header } from "../../components/Layout/Header";
-import { letterItems } from "../../data/documents";
+import { DocumentsApi } from "../../api/documents.api";
+import { queryKeys } from "../../api/query-keys";
 import { BTN_FOCUS_RING } from "../../constants/styles";
 
 export function LetterPreview() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const item = letterItems.find((letter) => letter.id === id);
+
+  const { data: item, isPending } = useQuery({
+    queryKey: queryKeys.documents.detail(id ?? ""),
+    queryFn: () => DocumentsApi.getById(id!),
+    enabled: !!id,
+  });
 
   return (
     <>
@@ -30,7 +37,9 @@ export function LetterPreview() {
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold">
-                    {item?.title ?? "Document introuvable"}
+                    {isPending
+                      ? "Chargement…"
+                      : (item?.title ?? "Document introuvable")}
                   </h1>
                   {item ? (
                     <p className="text-sm text-base-content/60">
@@ -52,9 +61,8 @@ export function LetterPreview() {
               ) : null}
             </div>
 
-            {/* TODO: brancher sur GET /documents/letters/:id pour afficher le vrai rendu de la lettre */}
             <div className="flex items-center justify-center rounded-box border border-dashed border-base-300 bg-base-200/40 py-24 text-sm text-base-content/40">
-              Aperçu à venir
+              Aperçu du fichier à venir
             </div>
           </div>
         </div>

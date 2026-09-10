@@ -1,5 +1,6 @@
 // src/pages/Dashboard/EntretienDetail.tsx
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import { Calendar, MapPin, Video, FileQuestion, CheckCircle2 } from "@/lib/icons";
 import { EmptyState } from "../../components/Layout/EmptyState";
@@ -7,14 +8,36 @@ import { Header } from "../../components/Layout/Header";
 import { PageContainer } from "../../components/Layout/PageContainer";
 import { PageTitle } from "../../components/Layout/PageTitle";
 import { SectionCard } from "../../components/Layout/SectionCard";
-import { entretienItems } from "../../data/entretiens";
+import { InterviewsApi } from "../../api/interviews.api";
+import { queryKeys } from "../../api/query-keys";
 
 export function EntretienDetail() {
   const { id } = useParams();
-  const entretien = entretienItems.find((item) => String(item.id) === id);
   const [confirmed, setConfirmed] = useState(false);
 
-  if (!entretien) {
+  const {
+    data: entretien,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: queryKeys.interviews.detail(id ?? ""),
+    queryFn: () => InterviewsApi.getById(id!),
+    enabled: !!id,
+  });
+
+  if (isPending) {
+    return (
+      <div className="flex-1 flex flex-col">
+        <Header />
+        <PageContainer className="pt-3 space-y-2 flex-1 flex flex-col">
+          <PageTitle title="Entretien" icon={Calendar} />
+          <p className="p-4 text-sm text-base-content/60">Chargement…</p>
+        </PageContainer>
+      </div>
+    );
+  }
+
+  if (isError || !entretien) {
     return (
       <div className="flex-1 flex flex-col">
         <Header />
@@ -53,16 +76,24 @@ export function EntretienDetail() {
                 <div className="flex items-center justify-between gap-2">
                   <span className="flex items-center gap-2 text-sm text-base-content/60">
                     <Video className="w-4 h-4" aria-hidden="true" />
-                    Visioconférence
+                    {entretien.interviewType === "TELEPHONE"
+                      ? "Entretien téléphonique"
+                      : "Visioconférence"}
                   </span>
-                  <a
-                    href={entretien.visioLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn btn-primary btn-sm"
-                  >
-                    Rejoindre la visio
-                  </a>
+                  {entretien.visioLink ? (
+                    <a
+                      href={entretien.visioLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-primary btn-sm"
+                    >
+                      Rejoindre
+                    </a>
+                  ) : (
+                    <span className="text-sm text-base-content/90 text-right">
+                      {entretien.notes ?? "—"}
+                    </span>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center justify-between gap-2">
@@ -71,7 +102,7 @@ export function EntretienDetail() {
                     Adresse
                   </span>
                   <span className="text-sm text-base-content/90 text-right">
-                    {entretien.location}
+                    {entretien.location ?? "À préciser"}
                   </span>
                 </div>
               )}

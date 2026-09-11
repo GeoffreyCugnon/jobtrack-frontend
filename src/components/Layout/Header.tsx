@@ -1,6 +1,6 @@
 // src/components/Layout/Header.tsx
 import { Link, useLocation } from "react-router";
-import { ChatCircleDots, SignIn } from "@phosphor-icons/react";
+import { ChatCircleDots, Moon, SignIn, Sun } from "@phosphor-icons/react";
 import { PageContainer } from "./PageContainer";
 import { useMenu } from "../../context/Menu/useMenu";
 import { AuthLogo } from "../Auth/AuthLogo";
@@ -10,6 +10,8 @@ import { getMainNavItems, isNavItemActive } from "../../constants/nav";
 import { useAuthStore } from "../../store/auth.store";
 import { getUserDisplay } from "../../utils/user-display";
 import { useMessagingOptional } from "../../context/Messaging/useMessaging";
+import { useTheme } from "../../context/Theme/useTheme";
+import { THEME_DARK } from "../../context/Theme/themeContextInstance";
 
 interface HeaderProps {
   /**
@@ -29,6 +31,9 @@ export function Header({ search = "app" }: HeaderProps) {
   const { openMenu } = useMenu();
   const messaging = useMessagingOptional();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === THEME_DARK;
+  const ThemeIcon = isDark ? Moon : Sun;
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const currentUser = useAuthStore((state) => state.user);
   const { initials: userInitials, avatarUrl: userAvatarUrl } =
@@ -89,14 +94,24 @@ export function Header({ search = "app" }: HeaderProps) {
           </nav>
 
           {!isAuthenticated ? (
-            <Link
-              to="/auth"
-              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-content shadow-sm transition-opacity hover:opacity-90"
-              aria-label="Se connecter"
-            >
-              <SignIn className="h-3.5 w-3.5" />
-              Connexion
-            </Link>
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={isDark ? "Passer au thème clair" : "Passer au thème sombre"}
+                className="p-1.5 text-base-content/70 transition-colors hover:text-base-content"
+              >
+                <ThemeIcon className="h-5 w-5" />
+              </button>
+              <Link
+                to="/auth"
+                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-content shadow-sm transition-opacity hover:opacity-90"
+                aria-label="Se connecter"
+              >
+                <SignIn className="h-3.5 w-3.5" />
+                Connexion
+              </Link>
+            </div>
           ) : (
             <button
               type="button"

@@ -7,6 +7,8 @@ export type Offer = {
   id: number;
   role: string;
   company: string;
+  companyId?: number;
+  companyLogoUrl?: string;
   location: string;
   timeAgo: string;
   postedHoursAgo: number;

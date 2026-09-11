@@ -181,55 +181,58 @@ export function Offers() {
         </div>
       </PageContainer>
 
-      {/* Bandeau récap collé en bas de la liste. `bottom-0` suffit : le
+      {/* Bandeau récap collé en bas de la liste — réservé aux connectés (alerte
+          de catégorie, sans objet pour un invité). `bottom-0` suffit : le
           conteneur de scroll (Root) porte déjà `pb-16` pour dégager la nav
           mobile — remettre un `bottom-16` ici doublait la marge et laissait
           un trou de la hauteur de la nav au-dessus d'elle. */}
-      <div
-        className={`sticky bottom-0 z-20 shadow-[0_-2px_10px_rgba(15,23,42,0.15)] transition-colors ${
-          alertActive
-            ? "bg-success text-success-content"
-            : "bg-primary text-primary-content"
-        }`}
-      >
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-2.5">
-          <div className="min-w-0">
-            <p className="truncate font-bold leading-tight">{bannerLabel}</p>
-            <p
-              className={`text-sm font-bold leading-tight ${
-                alertActive
-                  ? "text-success-content/80"
-                  : "text-primary-content/80"
-              }`}
-            >
-              {resultsLabel}
-            </p>
-          </div>
+      {isAuthenticated && (
+        <div
+          className={`sticky bottom-0 z-20 shadow-[0_-2px_10px_rgba(15,23,42,0.15)] transition-colors ${
+            alertActive
+              ? "bg-success text-success-content"
+              : "bg-primary text-primary-content"
+          }`}
+        >
+          <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-2.5">
+            <div className="min-w-0">
+              <p className="truncate font-bold leading-tight">{bannerLabel}</p>
+              <p
+                className={`text-sm font-bold leading-tight ${
+                  alertActive
+                    ? "text-success-content/80"
+                    : "text-primary-content/80"
+                }`}
+              >
+                {resultsLabel}
+              </p>
+            </div>
 
-          {showAlertToggle && (
-            <label className="flex shrink-0 items-center gap-2 text-sm font-medium">
-              <span className="whitespace-nowrap leading-none">
-                {alertEnabled ? "Alerte activée" : "Définir une alerte"}
-              </span>
-              <input
-                type="checkbox"
-                checked={alertEnabled}
-                onChange={(e) => setAlertEnabled(e.target.checked)}
-                className="toggle toggle-sm"
-                // Piste peu visible sur le fond bleu tant que décoché : on force
-                // le blanc. Une fois coché, daisyUI passe sur un fond clair déjà
-                // lisible.
-                style={
-                  !alertEnabled
-                    ? ({ "--input-color": "#fff" } as CSSProperties)
-                    : undefined
-                }
-                aria-label="Définir une alerte pour cette catégorie"
-              />
-            </label>
-          )}
+            {showAlertToggle && (
+              <label className="flex shrink-0 items-center gap-2 text-sm font-medium">
+                <span className="whitespace-nowrap leading-none">
+                  {alertEnabled ? "Alerte activée" : "Définir une alerte"}
+                </span>
+                <input
+                  type="checkbox"
+                  checked={alertEnabled}
+                  onChange={(e) => setAlertEnabled(e.target.checked)}
+                  className="toggle toggle-sm"
+                  // Piste peu visible sur le fond bleu tant que décoché : on force
+                  // le blanc. Une fois coché, daisyUI passe sur un fond clair déjà
+                  // lisible.
+                  style={
+                    !alertEnabled
+                      ? ({ "--input-color": "#fff" } as CSSProperties)
+                      : undefined
+                  }
+                  aria-label="Définir une alerte pour cette catégorie"
+                />
+              </label>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

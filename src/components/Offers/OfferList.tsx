@@ -25,6 +25,7 @@ export function OfferList({
           id={offer.id}
           role={offer.role}
           company={offer.company}
+          companyLogoUrl={offer.companyLogoUrl}
           location={offer.location}
           timeAgo={offer.timeAgo}
           workMode={offer.workMode}

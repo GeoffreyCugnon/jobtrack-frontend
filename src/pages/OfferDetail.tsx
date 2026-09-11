@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowClockwise, ArrowLeft, Briefcase, Buildings, Clock, FileDashed, MapPin, SealCheck, Users } from "@phosphor-icons/react";
 import { Header } from "../components/Layout/Header";
@@ -92,7 +92,16 @@ export function OfferDetail() {
                 <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-base-content/70">
                   <span className="flex items-center gap-1.5">
                     <Buildings className="w-4 h-4" />
-                    {offer.company}
+                    {offer.companyId ? (
+                      <Link
+                        to={`/company/${offer.companyId}`}
+                        className="text-primary hover:underline"
+                      >
+                        {offer.company}
+                      </Link>
+                    ) : (
+                      offer.company
+                    )}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-4 h-4" />

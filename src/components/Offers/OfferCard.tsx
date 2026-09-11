@@ -17,6 +17,7 @@ interface OfferCardProps {
   id: number;
   role: string;
   company: string;
+  companyLogoUrl?: string;
   location: string;
   timeAgo: string;
   workMode?: WorkMode;
@@ -33,6 +34,7 @@ export function OfferCard({
   id,
   role,
   company,
+  companyLogoUrl,
   location,
   timeAgo,
   workMode = "onSite",
@@ -61,8 +63,16 @@ export function OfferCard({
         className="group flex min-w-0 flex-1 items-start gap-3"
       >
         <div className="relative shrink-0">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 font-semibold text-base-content/60">
-            {company.charAt(0)}
+          <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg bg-primary/10 font-semibold text-base-content/60">
+            {companyLogoUrl ? (
+              <img
+                src={companyLogoUrl}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              company.charAt(0)
+            )}
           </div>
           {verified && (
             <span

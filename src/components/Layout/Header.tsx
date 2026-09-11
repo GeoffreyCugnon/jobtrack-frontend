@@ -108,7 +108,7 @@ export function Header({ search = "app" }: HeaderProps) {
                 className={
                   isDark
                     ? "btn btn-sm shrink-0 gap-1.5 border-none bg-base-200 text-base-content/80 transition-colors hover:bg-base-300 hover:text-base-content"
-                    : "inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-content shadow-sm transition-opacity hover:opacity-90"
+                    : "btn btn-sm shrink-0 gap-1.5 border-none bg-primary text-primary-content shadow-sm transition-opacity hover:opacity-90"
                 }
                 aria-label="Se connecter"
               >

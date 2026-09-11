@@ -275,7 +275,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
             onFocus={() => setOpen(true)}
             placeholder={placeholder}
             aria-label={ariaLabel}
-            className="grow"
+            className="grow text-base"
           />
           {query && (
             <button

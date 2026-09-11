@@ -265,7 +265,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
         {/* Pattern DaisyUI 5 : l'icône est un enfant du champ (jamais masquée
             par le fond de l'input, contrairement à un icône en position
             absolue). */}
-        <label className="input input-sm h-10 w-full items-center gap-2 rounded-full border border-base-content/70 bg-base-100 focus-within:border-primary focus-within:outline-none">
+        <label className="input input-sm h-10 w-full items-center gap-2 border border-base-content/70 bg-base-100 focus-within:border-primary focus-within:outline-none">
           <MagnifyingGlass className="w-4 h-4 shrink-0 text-base-content/70" />
           <input
             type="text"

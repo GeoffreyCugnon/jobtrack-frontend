@@ -120,7 +120,7 @@ export default function PublicationCard({
             <button
               type="button"
               onClick={() => setExpanded(true)}
-              className="ml-1 text-sm font-medium text-base-content/50 hover:text-primary"
+              className="ml-1 text-sm font-medium text-base-content/50 hover:text-link"
             >
               plus
             </button>
@@ -150,7 +150,7 @@ export default function PublicationCard({
             <button
               type="button"
               onClick={() => setImageExpanded(true)}
-              className="absolute inset-x-0 bottom-0 flex items-end justify-center bg-linear-to-t from-base-100 via-base-100/80 to-transparent pt-12 pb-2 text-sm font-medium text-primary"
+              className="absolute inset-x-0 bottom-0 flex items-end justify-center bg-linear-to-t from-base-100 via-base-100/80 to-transparent pt-12 pb-2 text-sm font-medium text-link"
             >
               … plus
             </button>

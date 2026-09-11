@@ -310,7 +310,7 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
                     <button
                       type="button"
                       onClick={() => go(group.href)}
-                      className="flex w-full items-center justify-between px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-base-content/50 hover:text-primary"
+                      className="flex w-full items-center justify-between px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-base-content/50 hover:text-link"
                     >
                       {group.label}
                       <span className="normal-case tracking-normal text-[0.7rem] font-medium">

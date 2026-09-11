@@ -95,7 +95,7 @@ export function OfferDetail() {
                     {offer.companyId ? (
                       <Link
                         to={`/company/${offer.companyId}`}
-                        className="text-primary hover:underline"
+                        className="text-link hover:underline"
                       >
                         {offer.company}
                       </Link>

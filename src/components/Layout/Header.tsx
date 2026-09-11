@@ -83,7 +83,7 @@ export function Header({ search = "app" }: HeaderProps) {
                 to={path}
                 className={`flex flex-col items-center justify-center gap-0.5 h-full px-4 text-xs transition-colors ${
                   isNavItemActive(location.pathname, path)
-                    ? "text-primary font-medium"
+                    ? "text-link font-medium"
                     : "text-base-content/60 hover:text-base-content"
                 }`}
               >

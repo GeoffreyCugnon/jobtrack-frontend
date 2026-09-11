@@ -83,7 +83,7 @@ function RootContent() {
                     to={path}
                     className={`flex flex-col items-center gap-1 px-3 py-2 rounded-field transition-colors ${
                       isNavItemActive(location.pathname, path)
-                        ? "text-primary bg-primary/10 font-medium"
+                        ? "text-link bg-primary/10 font-medium"
                         : "text-base-content/50 hover:text-base-content/80"
                     }`}
                   >

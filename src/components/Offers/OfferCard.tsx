@@ -85,7 +85,7 @@ export function OfferCard({
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-bold text-primary group-hover:underline">
+          <h3 className="truncate font-bold text-link group-hover:underline">
             {role}
           </h3>
           <p className="truncate text-sm font-medium text-base-content/70">

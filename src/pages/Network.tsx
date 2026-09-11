@@ -253,7 +253,7 @@ export function Network() {
             <button
               type="button"
               onClick={() => navigate("/network/invitations")}
-              className="mt-3 flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+              className="mt-3 flex items-center gap-1 text-sm font-semibold text-link hover:underline"
             >
               Voir les {incoming.length} invitations
               <ArrowRight size={16} />
@@ -311,7 +311,7 @@ export function Network() {
               <button
                 type="button"
                 onClick={() => toast("Bientôt disponible")}
-                className="mt-4 flex w-full items-center justify-center gap-1.5 border-t border-base-200 px-4 py-3 text-sm font-semibold text-primary transition-colors hover:bg-base-200"
+                className="mt-4 flex w-full items-center justify-center gap-1.5 border-t border-base-200 px-4 py-3 text-sm font-semibold text-link transition-colors hover:bg-base-200"
               >
                 Tout afficher
                 <ArrowRight size={16} />

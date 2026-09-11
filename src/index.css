@@ -34,6 +34,16 @@
   --border: 1px;
 }
 
+/* Couleur des liens texte (`text-link`) : bleu `primary` en clair, mais en
+   sombre le bleu sur fond très sombre est peu lisible -> effet blanc
+   (`base-content`) à la place. Distinct de `text-primary`, qui reste bleu
+   partout (boutons pleins, badges, icônes d'accent) : seuls les éléments
+   qui SONT des liens (`<Link>`/`<a>`, actifs de nav) doivent utiliser
+   `text-link`, pas `text-primary`. */
+[data-theme="moncrm-dark"] {
+  --link-color: var(--color-base-content);
+}
+
 @plugin "daisyui/theme" {
   name: "moncrm-light";
   default: true;
@@ -62,4 +72,8 @@
   --radius-field: 0.5rem;
   --radius-box: 1rem;
   --border: 1px;
+}
+
+@utility text-link {
+  color: var(--link-color, var(--color-primary));
 }

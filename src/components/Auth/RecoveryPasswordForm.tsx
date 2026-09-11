@@ -81,7 +81,7 @@ export function RecoveryPasswordForm({ onBack }: RecoveryPasswordFormProps) {
       <button
         type="button"
         onClick={onBack}
-        className="block mx-auto text-sm text-base-content/50 hover:text-primary transition-colors"
+        className="block mx-auto text-sm text-base-content/50 hover:text-link transition-colors"
       >
         Retour à la connexion
       </button>

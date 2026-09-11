@@ -68,7 +68,7 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
         <button
           type="button"
           onClick={onForgotPassword}
-          className="text-sm text-base-content/50 hover:text-primary transition-colors"
+          className="text-sm text-base-content/50 hover:text-link transition-colors"
         >
           Mot de passe oublié ?
         </button>

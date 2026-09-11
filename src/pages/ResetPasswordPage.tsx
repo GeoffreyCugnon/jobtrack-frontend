@@ -37,7 +37,7 @@ export function ResetPasswordPage() {
         <div className="mt-8 text-center border-t border-base-content/10 pt-4">
           <Link
             to="/auth"
-            className="text-sm text-base-content/50 hover:text-primary transition-colors"
+            className="text-sm text-base-content/50 hover:text-link transition-colors"
           >
             Retour à la connexion →
           </Link>

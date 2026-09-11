@@ -23,7 +23,7 @@ export default function SettingsProfileCard({ name, email, onEdit }: SettingsPro
       </div>
       <button
         onClick={onEdit}
-        className="text-sm font-medium text-primary hover:underline"
+        className="text-sm font-medium text-link hover:underline"
       >
         Modifier
       </button>

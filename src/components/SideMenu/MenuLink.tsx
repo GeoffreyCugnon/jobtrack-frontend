@@ -30,7 +30,7 @@ export function MenuLink({
           variant === "danger"
             ? "text-error hover:bg-error/10"
             : isActive
-              ? "bg-primary/10 text-primary font-medium"
+              ? "bg-primary/10 text-link font-medium"
               : "text-base-content"
         }
       >

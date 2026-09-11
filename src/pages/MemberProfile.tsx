@@ -209,7 +209,7 @@ export function MemberProfile() {
       <div className="border-t border-base-200 px-4 py-3 text-center">
         <Link
           to="/network"
-          className="text-sm font-medium text-primary hover:underline"
+          className="text-sm font-medium text-link hover:underline"
         >
           Voir d'autres membres
         </Link>

@@ -82,7 +82,7 @@ export function CompanyDetails({ company }: { company: Company }) {
                 href={company.website}
                 target="_blank"
                 rel="noreferrer"
-                className="truncate text-sm text-primary hover:underline"
+                className="truncate text-sm text-link hover:underline"
               >
                 {company.website}
               </a>

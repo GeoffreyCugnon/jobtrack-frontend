@@ -47,7 +47,7 @@ export function Header({ search = "app" }: HeaderProps) {
   const showLogo = search === "none";
 
   return (
-    <header className="sticky top-0 z-30 bg-base-100 border-b border-base-300 h-16">
+    <header className="sticky top-0 z-30 bg-base-100 border-b border-base-200 h-16">
       <div className="max-w-5xl mx-auto h-full">
         <PageContainer className="h-full flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0 flex-1">

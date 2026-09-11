@@ -45,12 +45,8 @@ export function Publications({ showLogo = true }: PublicationsProps) {
   ).filter((p) => !hiddenIds.includes(p.id));
 
   return (
-    <div className="flex-1 flex flex-col bg-base-200 pb-6">
+    <div className="flex-1 flex flex-col bg-base-100 pb-6">
       <Header search="feed" />
-
-      {/* Démarcation base-200 sous le header (1px de moins que l'espace
-          entre les publications). */}
-      <div className="h-1 shrink-0" />
 
       {showLogo && (
         <div className="bg-base-100 pt-2">
@@ -89,7 +85,7 @@ export function Publications({ showLogo = true }: PublicationsProps) {
       )}
 
       {!isPending && !isError && visible.length > 0 && (
-        <div className="flex flex-col gap-1.25">
+        <div className="divide-y divide-base-200">
           {visible.map((publication) => (
             <PublicationCard
               key={publication.id}

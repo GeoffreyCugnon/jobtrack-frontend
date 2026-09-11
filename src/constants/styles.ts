@@ -3,10 +3,13 @@
 // formulaires, centralisés ici pour éviter la divergence au copier-coller.
 
 export const INPUT_CLASS =
-  "input input-bordered border-base-content/20 focus:border-primary w-full";
+  "input input-bordered border-base-content/20 focus:border-primary focus:outline-primary w-full";
 
 export const TEXTAREA_CLASS =
-  "textarea textarea-bordered border-base-content/20 focus:border-primary w-full";
+  "textarea textarea-bordered border-base-content/20 focus:border-primary focus:outline-primary w-full";
+
+export const SELECT_CLASS =
+  "select select-bordered border-base-content/20 focus:border-primary focus:outline-primary w-full";
 
 export const BTN_FOCUS_RING = {
   primary: "border border-primary-content/20 focus:border-primary-content/40",

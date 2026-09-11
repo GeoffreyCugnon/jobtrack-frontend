@@ -15,6 +15,10 @@ import { ManageNetwork } from "./pages/ManageNetwork";
 import { NetworkRelations } from "./pages/NetworkRelations";
 import { NetworkInvitations } from "./pages/NetworkInvitations";
 import { MemberProfile } from "./pages/MemberProfile";
+import { CompanyList } from "./pages/Company/CompanyList";
+import { CompanyView } from "./pages/Company/CompanyView";
+import { CreateCompany } from "./pages/Company/CreateCompany";
+import { EditCompany } from "./pages/Company/EditCompany";
 import { Documents } from "./pages/Documents/Documents";
 import { DocumentPreview } from "./pages/Documents/DocumentPreview";
 import { DocumentEdit } from "./pages/Documents/DocumentEdit";
@@ -58,6 +62,15 @@ export const router = createBrowserRouter([
       { path: "network/relations", Component: NetworkRelations },
       { path: "network/invitations", Component: NetworkInvitations },
       { path: "members/:id", Component: MemberProfile },
+      {
+        path: "company",
+        children: [
+          { index: true, Component: CompanyList },
+          { path: "create", Component: CreateCompany },
+          { path: ":id", Component: CompanyView },
+          { path: ":id/edit", Component: EditCompany },
+        ],
+      },
       {
         path: "documents",
         children: [

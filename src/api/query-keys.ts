@@ -48,6 +48,11 @@ export const queryKeys = {
   dashboard: {
     stats: ["dashboard", "stats"] as const,
   },
+  company: {
+    /** Toutes les entreprises gérées par l'utilisateur courant (`GET /company/mine/all`). */
+    mineAll: ["company", "mine", "all"] as const,
+    detail: (id: string | number) => ["company", "detail", String(id)] as const,
+  },
   messaging: {
     /** Aperçu des conversations de l'utilisateur (liste + badges non lus). */
     conversations: ["messaging", "conversations"] as const,

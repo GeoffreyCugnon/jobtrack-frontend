@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router";
-import { ArrowLeft, Gear, SignOut } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, Buildings, Gear, SignOut } from "@phosphor-icons/react";
 
 import { MenuOverlay } from "./MenuOverlay";
 import { MenuHeader } from "./MenuHeader";
@@ -10,6 +11,8 @@ import { getMainNavItems, isNavItemActive } from "../../constants/nav";
 import { useAuthStore } from "../../store/auth.store";
 import { useToastStore } from "../../store/toast.store";
 import { AuthApi } from "../../api/auth.api";
+import { CompanyApi } from "../../api/company.api";
+import { queryKeys } from "../../api/query-keys";
 import { getUserDisplay } from "../../utils/user-display";
 import { POST_LOGOUT_KEY } from "../../constants/auth";
 import { logError } from "../../utils/log";
@@ -26,6 +29,16 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
   const user = useAuthStore((state) => state.user);
   const mainNavItems = getMainNavItems(isAuthenticated);
 
+  // Détermine si l'entrée du menu pointe vers la création ou vers la liste
+  // des entreprises déjà gérées par l'utilisateur (un `Employment` par
+  // entreprise).
+  const { data: myCompanies } = useQuery({
+    queryKey: queryKeys.company.mineAll,
+    queryFn: () => CompanyApi.getMineAll(),
+    enabled: isAuthenticated,
+  });
+  const companyCount = myCompanies?.length ?? 0;
+
   const {
     name: displayName,
     email: displayEmail,
@@ -40,11 +53,36 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
 
   // "Profil" n'est plus un lien de liste : l'en-tête du menu (identité +
   // chevron) est devenu le point d'entrée vers le profil.
-  const mainLinks = mainNavItems.map(({ path, label, icon }) => ({
-    to: path,
-    label,
-    icon,
-  }));
+  // "Documents" est descendu sous le trait avec les actions secondaires
+  // (voir `secondaryLinks`) plutôt que dans le groupe de nav principal.
+  const documentsNavItem = mainNavItems.find(
+    (item) => item.path === "/documents",
+  );
+  const mainLinks = mainNavItems
+    .filter((item) => item !== documentsNavItem)
+    .map(({ path, label, icon }) => ({ to: path, label, icon }));
+
+  const secondaryLinks = [
+    {
+      to: companyCount > 0 ? "/company" : "/company/create",
+      label:
+        companyCount > 1
+          ? "Vos entreprises"
+          : companyCount === 1
+            ? "Votre entreprise"
+            : "Créer une entreprise",
+      icon: Buildings,
+    },
+    ...(documentsNavItem
+      ? [
+          {
+            to: documentsNavItem.path,
+            label: documentsNavItem.label,
+            icon: documentsNavItem.icon,
+          },
+        ]
+      : []),
+  ];
 
   const handleLogout = async () => {
     try {
@@ -101,6 +139,9 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
             </ul>
           )}
           <MenuSection links={mainLinks} onLinkClick={onClose} />
+          {isAuthenticated && (
+            <MenuSection links={secondaryLinks} onLinkClick={onClose} />
+          )}
           {isAuthenticated && (
             <ul className="menu menu-vertical w-full py-4">
               <ThemeToggle />

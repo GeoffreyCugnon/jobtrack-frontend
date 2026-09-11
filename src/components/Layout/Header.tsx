@@ -94,7 +94,7 @@ export function Header({ search = "app" }: HeaderProps) {
           </nav>
 
           {!isAuthenticated ? (
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex shrink-0 items-center gap-3">
               <button
                 type="button"
                 onClick={toggleTheme}

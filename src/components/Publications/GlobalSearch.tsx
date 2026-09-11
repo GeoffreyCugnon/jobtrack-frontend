@@ -249,12 +249,10 @@ export function GlobalSearch({ scope = "app" }: GlobalSearchProps) {
     go(groups[0]?.href ?? "/publications");
   };
 
-  // Le libellé suit l'état de connexion, pas le `scope` : un membre connecté
-  // voit toujours "Chercher" quelle que soit la page (le `scope` ne pilote
-  // que les sources réellement interrogées).
-  const placeholder = isAuthenticated
-    ? "Chercher"
-    : "Chercher une actu ou une offre...";
+  // Placeholder court partout ("Chercher"), y compris en invité — le détail
+  // de ce qui est interrogé reste porté par `ariaLabel` (lecteurs d'écran),
+  // pas par le placeholder visible.
+  const placeholder = "Chercher";
   const ariaLabel = isAuthenticated
     ? "Chercher parmi les actus, offres, utilisateurs, documents et conversations"
     : "Chercher parmi les actus et les offres";

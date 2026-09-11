@@ -95,6 +95,14 @@ export function Header({ search = "app" }: HeaderProps) {
 
           {!isAuthenticated ? (
             <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={isDark ? "Passer au thème clair" : "Passer au thème sombre"}
+                className="flex h-10 w-10 shrink-0 items-center justify-center text-base-content/70 transition-colors hover:text-base-content"
+              >
+                <ThemeIcon className="h-6 w-6" />
+              </button>
               <Link
                 to="/auth"
                 className={
@@ -107,14 +115,6 @@ export function Header({ search = "app" }: HeaderProps) {
                 <SignIn className="h-3.5 w-3.5" />
                 Connexion
               </Link>
-              <button
-                type="button"
-                onClick={toggleTheme}
-                aria-label={isDark ? "Passer au thème clair" : "Passer au thème sombre"}
-                className="flex h-10 w-10 shrink-0 items-center justify-center text-base-content/70 transition-colors hover:text-base-content"
-              >
-                <ThemeIcon className="h-5 w-5" />
-              </button>
             </div>
           ) : (
             <button

@@ -1,27 +1,14 @@
-import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowClockwise } from "@phosphor-icons/react";
 import { Header } from "../../components/Layout/Header";
-import { AuthLogo } from "../../components/Auth/AuthLogo";
 import PublicationCard from "../../components/Publications/PublicationCard";
 import { PublicationsApi } from "../../api/publications.api";
 import { queryKeys } from "../../api/query-keys";
 
-interface PublicationsProps {
-  /**
-   * Logo JobTrack en tête du fil : présent sur l'accueil (`/`), absent sur
-   * l'onglet "Actus" de l'app (`/publications`) — même composant, deux usages.
-   */
-  showLogo?: boolean;
-}
-
-export function Publications({ showLogo = true }: PublicationsProps) {
+export function Publications() {
   const [searchParams] = useSearchParams();
   const query = (searchParams.get("q") ?? "").trim().toLowerCase();
-  // Masquage local d'un post (pas d'endpoint dédié) : disparaît du fil
-  // jusqu'au prochain rechargement.
-  const [hiddenIds, setHiddenIds] = useState<number[]>([]);
 
   const {
     data: publications = [],
@@ -33,26 +20,18 @@ export function Publications({ showLogo = true }: PublicationsProps) {
     queryFn: () => PublicationsApi.getAll(),
   });
 
-  const visible = (
-    query
-      ? publications.filter(
-          (p) =>
-            p.authorName.toLowerCase().includes(query) ||
-            p.title.toLowerCase().includes(query) ||
-            p.content.toLowerCase().includes(query),
-        )
-      : publications
-  ).filter((p) => !hiddenIds.includes(p.id));
+  const visible = query
+    ? publications.filter(
+        (p) =>
+          p.authorName.toLowerCase().includes(query) ||
+          p.title.toLowerCase().includes(query) ||
+          p.content.toLowerCase().includes(query),
+      )
+    : publications;
 
   return (
     <div className="flex-1 flex flex-col bg-base-100 pb-6">
       <Header search="feed" />
-
-      {showLogo && (
-        <div className="bg-base-100 pt-2">
-          <AuthLogo size="lg" />
-        </div>
-      )}
 
       {isPending && (
         <p className="p-6 text-center text-sm text-base-content/60">
@@ -87,13 +66,7 @@ export function Publications({ showLogo = true }: PublicationsProps) {
       {!isPending && !isError && visible.length > 0 && (
         <div className="divide-y divide-base-200">
           {visible.map((publication) => (
-            <PublicationCard
-              key={publication.id}
-              publication={publication}
-              onHide={() =>
-                setHiddenIds((prev) => [...prev, publication.id])
-              }
-            />
+            <PublicationCard key={publication.id} publication={publication} />
           ))}
         </div>
       )}

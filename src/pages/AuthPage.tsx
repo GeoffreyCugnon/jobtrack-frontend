@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { FileText, SquaresFour, Target } from "@phosphor-icons/react";
 import { AuthLogo } from "../components/Auth/AuthLogo";
 import { AuthTabs } from "../components/Auth/AuthTabs";
@@ -40,7 +40,10 @@ const clearPostLogout = () => {
 };
 
 export function AuthPage() {
-  const [mode, setMode] = useState<"login" | "signup" | "recovery">("login");
+  const [searchParams] = useSearchParams();
+  const [mode, setMode] = useState<"login" | "signup" | "recovery">(
+    searchParams.get("mode") === "signup" ? "signup" : "login",
+  );
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   // true dès que CE montage a armé la temporisation : permet de distinguer

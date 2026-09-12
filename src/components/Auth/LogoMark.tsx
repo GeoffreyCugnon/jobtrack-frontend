@@ -1,14 +1,16 @@
 // src/components/Auth/LogoMark.tsx
 interface LogoMarkProps {
   className?: string;
-  align?: "left" | "center";
 }
 
-export function LogoMark({ className, align = "left" }: LogoMarkProps) {
+export function LogoMark({ className }: LogoMarkProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 500 150"
+      // Recadré au plus près du dessin (icône + texte) : plus de marge morte
+      // à compenser par un décalage manuel, un `justify-center` sur le
+      // conteneur suffit désormais à centrer visuellement le logo.
+      viewBox="30 25 355 105"
       className={className}
     >
       <defs>
@@ -25,65 +27,62 @@ export function LogoMark({ className, align = "left" }: LogoMarkProps) {
         </filter>
       </defs>
 
-      {/* translate(30,0) uniquement en mode "center" (page d'auth), absent en mode "left" (header) */}
-      <g transform={align === "center" ? "translate(30, 0)" : undefined}>
-        <g transform="translate(20, 15)">
-          <rect
-            x="15"
-            y="45"
-            width="90"
-            height="65"
-            rx="12"
-            fill="url(#primaryGrad)"
-            filter="url(#dropShadow)"
-          />
-          <path
-            d="M40,45 V32 C40,26 46,20 52,20 H68 C74,20 80,26 80,32 V45"
-            fill="none"
-            stroke="url(#primaryGrad)"
-            strokeWidth="7"
-            strokeLinecap="round"
-          />
-          <path
-            d="M25,85 L50,60 L70,75 L105,35"
-            fill="none"
-            stroke="url(#accentGrad)"
-            strokeWidth="8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M90,35 H105 V50"
-            fill="none"
-            stroke="url(#accentGrad)"
-            strokeWidth="8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
+      <g transform="translate(20, 15)">
+        <rect
+          x="15"
+          y="45"
+          width="90"
+          height="65"
+          rx="12"
+          fill="url(#primaryGrad)"
+          filter="url(#dropShadow)"
+        />
+        <path
+          d="M40,45 V32 C40,26 46,20 52,20 H68 C74,20 80,26 80,32 V45"
+          fill="none"
+          stroke="url(#primaryGrad)"
+          strokeWidth="7"
+          strokeLinecap="round"
+        />
+        <path
+          d="M25,85 L50,60 L70,75 L105,35"
+          fill="none"
+          stroke="url(#accentGrad)"
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M90,35 H105 V50"
+          fill="none"
+          stroke="url(#accentGrad)"
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
 
-        <g transform="translate(145, 92)">
-          <text
-            fontFamily="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-            fontSize="54"
-            fontWeight="800"
-            fill="currentColor"
-            letterSpacing="-1"
-          >
-            Job<tspan fill="url(#primaryGrad)">Track</tspan>
-          </text>
-          <text
-            fontFamily="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-            fontSize="14"
-            fontWeight="600"
-            fill="#64748b"
-            letterSpacing="4"
-            x="4"
-            y="24"
-          >
-            CAREER NAVIGATOR
-          </text>
-        </g>
+      <g transform="translate(145, 92)">
+        <text
+          fontFamily="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+          fontSize="54"
+          fontWeight="800"
+          fill="currentColor"
+          letterSpacing="-1"
+        >
+          Job<tspan fill="url(#primaryGrad)">Track</tspan>
+        </text>
+        <text
+          fontFamily="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+          fontSize="14"
+          fontWeight="600"
+          fill="#64748b"
+          letterSpacing="4"
+          x="4"
+          y="24"
+        >
+          CAREER NAVIGATOR
+        </text>
       </g>
     </svg>
   );

@@ -9,7 +9,7 @@ Ce repo est le frontend. Il consomme deux services indépendants :
 ## Stack
 
 - React 19, TypeScript ~5.8, Vite 7
-- TailwindCSS v4 + DaisyUI v5 (thèmes custom `moncrm-dark` / `moncrm-light`)
+- TailwindCSS v4 + DaisyUI v5 (thèmes custom `theme-dark` / `theme-light`)
 - React Router v8 (`react-router`)
 - Zustand (état global : auth, toasts, offres sauvegardées)
 - TanStack React Query + axios (couche de fetch de toutes les pages qui chargent des données API)

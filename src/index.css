@@ -5,7 +5,7 @@
 }
 
 @plugin "daisyui/theme" {
-  name: "moncrm-dark";
+  name: "theme-dark";
   default: false;
   prefersdark: false;
   color-scheme: dark;
@@ -40,12 +40,12 @@
    partout (boutons pleins, badges, icônes d'accent) : seuls les éléments
    qui SONT des liens (`<Link>`/`<a>`, actifs de nav) doivent utiliser
    `text-link`, pas `text-primary`. */
-[data-theme="moncrm-dark"] {
+[data-theme="theme-dark"] {
   --link-color: var(--color-base-content);
 }
 
 @plugin "daisyui/theme" {
-  name: "moncrm-light";
+  name: "theme-light";
   default: true;
   prefersdark: false;
   color-scheme: light;

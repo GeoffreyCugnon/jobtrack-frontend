@@ -1,69 +1,61 @@
-# React + TypeScript + Vite
+# JobTrack — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application mobile-first de CRM de recherche d'emploi : suivi des candidatures, entretiens, documents, offres d'emploi, réseau professionnel et messagerie.
 
-Currently, two official plugins are available:
+Ce repo est le frontend. Il consomme deux services indépendants :
+- **Backend** (`../Backend`, NestJS + Prisma/MySQL) — API principale (auth, offres, candidatures, entreprises, réseau…).
+- **MS-Messagerie** (`../Microservices/messagerie`, NestJS + Prisma/PostgreSQL + Socket.IO) — messagerie temps réel, contactée directement par le Frontend avec un jeton dédié fourni par le Backend.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Stack
 
-## Expanding the ESLint configuration
+- React 19, TypeScript ~5.8, Vite 7
+- TailwindCSS v4 + DaisyUI v5 (thèmes custom `moncrm-dark` / `moncrm-light`)
+- React Router v8 (`react-router`)
+- Zustand (état global : auth, toasts, offres sauvegardées)
+- TanStack React Query + axios (couche de fetch de toutes les pages qui chargent des données API)
+- Zod + react-hook-form pour les formulaires
+- Phosphor Icons
+- Cypress (tests e2e et composants)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Prérequis
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js LTS
+- Le Backend (`../Backend`) lancé en local pour des réponses API réelles
+- Optionnel : MS-Messagerie (`../Microservices/messagerie`) pour la messagerie
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Installation & lancement
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Serveur de dev sur `http://localhost:5173` (fallback `5174` si le port est pris).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Variables d'environnement attendues (`.env`) : notamment `VITE_MESSAGING_API_URL` (URL de MS-Messagerie).
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Scripts
+
+- `npm run dev` — serveur de développement
+- `npm run build` — `tsc -b` puis build Vite
+- `npm run lint` — ESLint
+- `npm run preview` — prévisualisation du build de production
+- `npm run cy:open` / `cy:run` / `cy:component` / `cy:component:run` — Cypress (e2e / composants). **Toujours passer par ces scripts npm**, jamais `npx cypress` directement : ils suppriment `ELECTRON_RUN_AS_NODE` de l'environnement, nécessaire pour que Cypress fonctionne correctement quand les commandes sont lancées depuis un environnement basé sur Electron (VS Code, etc.).
+
+`npm run lint` et `npm run build` doivent passer sans erreur ni warning avant de considérer une tâche terminée.
+
+## Organisation du code
+
+- `src/pages/` — pages applicatives (Dashboard, Offers, Publications, Company, Profile, Settings, Network, Documents…), montées via `pages/Root.tsx`
+- `src/components/` — composants partagés, dossiers en PascalCase
+- `src/store/` — stores Zustand (`auth.store.ts`, `toast.store.ts`, `saved-offers.store.ts`)
+- `src/api/` — appels API (axios + React Query), clés de cache dans `api/query-keys.ts`
+- `src/schemas/` — schémas Zod des formulaires
+- `src/services/messaging-client.ts` — seul point d'accès à MS-Messagerie
+- `src/context/` — contextes React (Menu, Messaging, Theme)
+
+## Projet
+
+Projet solo (Jeff), repris après un développement initial à deux. Plus de suivi par tickets — commits réguliers.
+
+Pour les conventions détaillées (architecture, patterns UI, points d'attention, historique des choix techniques), voir [`CLAUDE.md`](./CLAUDE.md) et [`JobTrack/CLAUDE.md`](../CLAUDE.md) (workflow partagé avec le Backend).

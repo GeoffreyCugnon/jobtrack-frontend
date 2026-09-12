@@ -57,7 +57,7 @@ export function ProfileContact({ user, onAdd }: ProfileContactProps) {
   ].filter((contact) => contact.label);
 
   return (
-    <SectionCard title="Contact" onAdd={onAdd} addLabel="Modifier les contacts">
+    <SectionCard title="Contact" onAdd={onAdd} addLabel="Modifier les contacts" flat>
       <div className="space-y-2">
         {contacts.map((contact, i) => (
           <ContactRow key={i} icon={contact.icon} label={contact.label} />

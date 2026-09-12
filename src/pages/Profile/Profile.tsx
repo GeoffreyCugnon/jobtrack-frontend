@@ -63,7 +63,7 @@ export function Profile() {
           icon={User}
         />
 
-        <div className="-mx-4 sm:mx-0 mt-3">
+        <div className="-mx-4 sm:mx-0 mt-3 flex flex-col divide-y divide-base-300">
           <ProfileIdentity
             user={display}
             onEdit={() => navigate("/profile/edit")}

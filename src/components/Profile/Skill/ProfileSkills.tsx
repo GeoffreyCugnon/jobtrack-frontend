@@ -11,6 +11,7 @@ export function ProfileSkills({ skills, onAdd }: ProfileSkillsProps) {
       title="Compétences"
       onAdd={onAdd}
       addLabel="Modifier les compétences"
+      flat
     >
       {skills.length === 0 ? (
         <p className="text-sm text-base-content/50">

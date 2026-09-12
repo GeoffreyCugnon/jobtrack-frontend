@@ -25,6 +25,7 @@ Projet initialement développé à deux, repris en solo par Jeff. En l'absence d
   - Sous-pages formulaire/détail (`SettingsPassword`, `ProfileEdit`, `CVEdit`...) : conteneur `max-w-2xl`, bouton "Retour", card unique, `<h1>` custom.
 - Classes DaisyUI répétées dans les formulaires sont centralisées dans `src/constants/styles.ts` (`INPUT_CLASS`, `TEXTAREA_CLASS`, `BTN_FOCUS_RING`) — les réutiliser plutôt que retaper les combos de classes.
 - Tokens DaisyUI uniquement pour la couleur (`base-100/200/300`, `primary`, `error`, `success`...), jamais de couleur Tailwind brute (`text-gray-500`...) — ça casse le rendu dark/light. La violation relevée par l'audit v2 (`PublicationCard.tsx`) a été corrigée en `text-base-content/60`.
+- **Thème sombre — dérogations ponctuelles (nouveau).** Deux techniques coexistent pour un rendu différent entre thèmes, à ne pas confondre : (1) une variable CSS redéfinie par thème dans `src/index.css` (`--link-color` sous `[data-theme="moncrm-dark"]`, cf. `text-link`) pour un token réutilisé partout ; (2) `useTheme()`/`THEME_DARK` (`context/Theme/`) avec des classes conditionnelles **en littéral** (`bg-white`/`text-black`, pas un token DaisyUI) pour un élément ponctuel dont seul le rendu sombre doit changer (badge « vérifié », icônes sauvegardées, bandeau `Offers.tsx`, `NavRow`/`PeopleCard` de `Network.tsx`) — une dérogation assumée à la règle « tokens DaisyUI uniquement » ci-dessus, comme `getCategoryStyle`.
 
 ## Authentification & état guest/connecté (nouveau)
 
@@ -51,7 +52,27 @@ Un vrai flux d'auth relié au backend a été mis en place :
 
 **Audit v4 (septembre 2026) — préférences Settings branchées :** le toggle **Notifications** et le select **Langue** de `Settings.tsx` étaient du `useState` local jamais persisté. Ils sont maintenant pilotés par `useAuthStore().user` et sauvegardés via `UserApi.updateNotifications()` (`PATCH /user/settings/notifications`) / `UserApi.updateLanguage()` (`PATCH /user/settings/language`, codes `fr`/`en`/`es`/`de`). Mise à jour optimiste du store + revert & toast d'erreur si l'appel échoue ; contrôles désactivés pour un invité (`rawUser` nul). Le type `User` (`types/user.type.ts`) porte désormais `notifications_enabled?` et `language?` (déjà renvoyés par le Backend dans le user « safe », le type ne les déclarait pas).
 
-**Reste un écart de périmètre à trancher (pas un bug) :** `pages/Profile/Profile.tsx` (+ `ProfileEdit`) portent encore des champs fictifs codés en dur (`MOCK_PROFILE_DETAILS` : titre, bio, localisation, réseaux, disponibilité, type de contrat, salaire) — **aucun n'existe sur le modèle `User` côté Backend**. Seuls nom/email/initiales viennent du vrai utilisateur. À décider consciemment : étoffer `User` (ou un modèle profil dédié) côté Backend, ou assumer que ces sections restent une maquette.
+**Écart de périmètre tranché depuis (audit v5) :** le modèle `User` a été étoffé côté Backend (`headline`/`bio`/`location`/`phone`/`website`/`linkedin`/`github`) — `MOCK_PROFILE_DETAILS` n'existe plus. `ProfileEdit.tsx`/`ProfileContactEdit.tsx` appellent `UserApi.updateProfile()` (`PATCH /user/profile`), `Profile.tsx` affiche les vraies valeurs.
+
+**Profil — style épuré (nouveau).** `ProfileContact`/`ProfileSkills` passent `flat` à leur `SectionCard` (bandeau de titre gris + filet `border-t` supprimés, fond `base-100` uniforme) ; le comportement dépliant (chevron `CaretDown`) est conservé, `flat` ne change que l'habillage. `Profile.tsx` sépare `ProfileIdentity`/`ProfileContact`/`ProfileSkills` par un simple `divide-y divide-base-300` (même pattern que `Dashboard.tsx`) plutôt qu'un fond gris entre sections.
+
+## Candidatures, Entretiens, Documents, commentaires, compétences — modules réels (nouveau, doc mise à jour à l'audit v5)
+
+Ces pages ne sont **pas** des maquettes : chacune parle à un module Backend réellement câblé (voir `Backend/CLAUDE.md` §"Organisation des modules") via React Query, pas de données codées en dur.
+
+- `pages/Dashboard/{Candidatures,CandidatureDetail}.tsx` → `api/applications.api.ts` (`ApplicationsApi`, `GET/POST/PATCH/DELETE /application`). `OfferDetail.tsx` : bouton "Postuler" → `ApplicationsApi.create({ jobOfferingId })`, redirige vers `/auth` si invité, toast succès/erreur (409 si déjà postulé).
+- `pages/Dashboard/{Entretiens,EntretienDetail}.tsx` → `api/interviews.api.ts` (`InterviewsApi`), entretiens liés à une candidature.
+- `pages/Documents/*` → `api/documents.api.ts` (`DocumentsApi`), CV/lettres de motivation.
+- `pages/Dashboard/Dashboard.tsx` : tuiles de stats → `api/dashboard.api.ts` (`DashboardApi.stats()`, `GET /dashboard/stats`).
+- `pages/Publications/PublicationDetail.tsx` : fil de commentaires → `api/comments.api.ts`.
+- `pages/Profile/ProfileSkillsEdit.tsx` → `UserApi.getSkills()`/`updateSkills()` (`User_skill`, liste plate — le regroupement par catégorie affiché ailleurs reste une présentation Front, pas un modèle de données).
+
+## Publications — composeur, accueil invité, actions sur une carte (nouveau)
+
+- **Composeur de post** : `pages/Publications/CreatePublication.tsx` (route `publications/create`) — page plein écran (pas de `Header`/`PageContainer`, sur le modèle de `CreateCompany.tsx`) : X pour fermer, identité + chevron (décoratif), icône horloge (décorative, toast « Bientôt disponible »), bouton « Publier ». Textarea unique plein cadre (placeholder « Donnez votre avis... ») ; pas de champ titre dans l'UI alors que `CreatePublicationDto.title` est requis côté Backend — dérivé de la première ligne du contenu (`deriveTitle`, 80 caractères max). Barre basse : bouton image (upload réel, `utils/image.ts#fileToPostImageDataUrl`, prévisualisée et retirable) + bouton "+" (décoratif). `PublicationsApi.create()` (nouveau, `POST publication`) — le bouton « Publier » de la nav du bas (`Root.tsx`) y navigue directement (n'affiche plus un toast placeholder).
+- `utils/image.ts#fileToPostImageDataUrl` : contrairement à `fileToAvatarDataUrl`/`fileToBannerDataUrl` (recadrage carré/cover), pas de recadrage — redimensionnement seul si l'image dépasse `maxDimension` (1080 par défaut), pour rester raisonnable en data URL (`Publication.image_url` est passé en `LONGTEXT` côté Backend pour l'accueillir, cf. `Backend/CLAUDE.md`).
+- **Accueil invité refondu** : `pages/GuestHome.tsx` remplace l'ancien rendu direct de `Publications` dans `Root.tsx` pour la vue d'accueil non connectée (`/` et `/dashboard`) — logo (`AuthLogo size="xl"`, largeur relative plafonnée plutôt que fixe) + bascule Offres/Publications (aperçu : 3 à 8 offres selon la hauteur d'écran via `OFFERS_PREVIEW_TIERS`, 3 publications fixe) + lien « Voir tout » vers la page complète + CTA « Créer un compte » (`/auth?mode=signup`) collé en pied de page. `Root.tsx` masque la nav du bas mobile sur cette vue (remplacée par le CTA) — auparavant toujours affichée. `AuthPage.tsx` lit `?mode=signup` pour ouvrir directement l'onglet inscription depuis ce CTA.
+- **Actions sur une carte de publication** (`PublicationCard.tsx`) : le bouton "X" ne retire plus le post directement — panneau d'annulation façon LinkedIn (« Post masqué… Annuler ») avec des actions de suivi (Masquer l'auteur / Signaler / …). Le "…" ouvre un `BottomSheet` (nouveau composant partagé, `components/UI/BottomSheet.tsx` — panneau modal ancré en bas, même logique overlay que `SideMenu`/`MessagingPanel`) listant Enregistrer / Partager / Masquer / Pas intéressé / Signaler (toutes en toast « Bientôt disponible », pas de mutation réelle). Le compteur de likes ouvre un second `BottomSheet` (détail des réactions, placeholder). Ces boutons sont masqués pour un invité (`isAuthenticated`).
 
 ## Offres — intégration API réelle (nouveau)
 
@@ -63,6 +84,8 @@ Un vrai flux d'auth relié au backend a été mis en place :
 
 **Audit v3 — code mort supprimé :** le cluster CRUD `components/Network/{Card,CompanyCard,CompanyForm,CompanyList,ContactCard,ContactForm,ContactsList,RelationsSearchInput}` + `schemas/{company,contact}.schemas.ts` + `types/{company,contact}.types.ts` (jamais montés par aucune page) ont été supprimés. `components/Network/` ne contient plus que `PeopleCard.tsx`.
 
+**Retouches thème sombre + détail d'offre (nouveau).** `OfferCard.tsx` (badge « vérifié » : rond blanc/check noir au lieu de bleu ; icône cœur sauvegardée en blanc) et `Offers.tsx` (icône « Offres sauvegardées », bandeau sticky : blanc par défaut, blanc/vert une fois l'alerte activée au lieu de bleu/vert) lisent `useTheme()`/`THEME_DARK` (`context/Theme/`) pour appliquer ces classes **uniquement** en thème sombre — cf. « Thème sombre — dérogations ponctuelles » plus bas pour le pattern. Le badge « Premier candidat » (`applicantCount < 5`) n'a pas changé de logique ; c'est `Backend/CLAUDE.md#prisma:seed:applications` qui diversifie les volumes de candidatures pour le faire coexister avec des offres qui l'ont dépassé. `OfferDetail.tsx` : `Header` retiré, le bouton « Retour aux offres » est stylé comme le titre de la page (`text-xl font-bold`) plutôt qu'un lien discret.
+
 ## Page Réseau — mise en relation
 
 `pages/Network.tsx` : plus d'onglets ni de mention « Premium ». Charge `UserApi.getAll()` (suggestions) + `ConnectionApi.list()` (`GET /connection` → `{ connections, incoming, outgoing }`).
@@ -72,6 +95,7 @@ Un vrai flux d'auth relié au backend a été mis en place :
 - Section « Invitations reçues » en tête quand `incoming.length > 0` (Accepter / Ignorer).
 - Les cartes de suggestion (`PeopleCard`, props `actionLabel` / `actionDisabled`) reflètent l'état ; les personnes déjà en relation ou en attente de ma réponse sont exclues du pool de suggestions.
 - `pages/MemberProfile.tsx` : bouton « Se connecter » branché sur la même logique.
+- **Thème sombre — plus de bleu (nouveau).** `NavRow` (badges de compteur) et `PeopleCard.tsx` (dégradé de couverture, anneau/pastille « #Hiring », bouton « Se connecter ») remplacent `primary` par du blanc en thème sombre (`useTheme()`/`THEME_DARK`, cf. section dédiée plus bas). Le bouton « Accepter » d'une invitation reprend telle quelle la classe du bouton « Modifier » de `ProfileIdentity.tsx` (`bg-base-200 hover:bg-base-300 text-base-content/80 ... border-none`) — dans les deux thèmes, pas seulement en sombre.
 
 Le type d'une offre est **unique** : `src/types/offer.type.ts` (`Offer`). Il était dupliqué à l'identique dans `api/offers.api.ts` (`OfferApiItem`), `data/offerCategories.ts` (`CategoryOffer`, jamais importé) et `components/Offers/OfferList.tsx` — ces copies ont été remplacées par un import de `Offer`. `OffersApi` réexporte `Offer` par commodité.
 

@@ -17,4 +17,23 @@ export class PublicationsApi {
     const { data } = await api.get<Publication | null>(`publication/${id}`);
     return data ?? null;
   }
+
+  /**
+   * `POST publication` (protégé). `title` est dérivé du contenu côté appelant
+   * (pas de champ dédié dans le composeur, cf. `CreatePublication.tsx`) — le
+   * Backend le rend obligatoire (`CreatePublicationDto`).
+   */
+  static async create(payload: {
+    title: string;
+    content: string;
+    type: "ARTICLE" | "ANNONCE" | "ACTU";
+    imageUrl?: string;
+  }): Promise<void> {
+    await api.post("publication", {
+      title: payload.title,
+      content: payload.content,
+      type: payload.type,
+      image_url: payload.imageUrl,
+    });
+  }
 }

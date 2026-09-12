@@ -23,6 +23,7 @@ import { Documents } from "./pages/Documents/Documents";
 import { DocumentPreview } from "./pages/Documents/DocumentPreview";
 import { DocumentEdit } from "./pages/Documents/DocumentEdit";
 import { Publications } from "./pages/Publications/Publications";
+import { CreatePublication } from "./pages/Publications/CreatePublication";
 import { PublicationDetail } from "./pages/Publications/PublicationDetail";
 import { Settings } from "./pages/Settings/Settings";
 import { Profile } from "./pages/Profile/Profile";
@@ -47,7 +48,7 @@ export const router = createBrowserRouter([
     Component: Root,
     children: [
       // "/" et "/dashboard" pointent sur le même écran ; en invité `Root`
-      // affiche `Publications` à la place (vue d'accueil publique).
+      // affiche `GuestHome` à la place (vue d'accueil publique).
       { index: true, Component: Dashboard },
       { path: "dashboard", Component: Dashboard },
       { path: "candidatures", Component: Candidatures },
@@ -79,8 +80,8 @@ export const router = createBrowserRouter([
           { path: ":type/:id/edit", Component: DocumentEdit },
         ],
       },
-      // Onglet "Actus" de l'app : même composant que l'accueil, sans le logo.
-      { path: "publications", element: <Publications showLogo={false} /> },
+      { path: "publications", Component: Publications },
+      { path: "publications/create", Component: CreatePublication },
       { path: "publications/:id", Component: PublicationDetail },
       {
         path: "messaging",

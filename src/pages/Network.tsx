@@ -15,6 +15,8 @@ import {
 import { queryKeys } from "../api/query-keys";
 import { useAuthStore } from "../store/auth.store";
 import { useToastStore } from "../store/toast.store";
+import { useTheme } from "../context/Theme/useTheme";
+import { THEME_DARK } from "../context/Theme/themeContextInstance";
 import {
   memberHeadline,
   memberInitials,
@@ -42,6 +44,8 @@ function NavRow({
   count?: number;
   onClick: () => void;
 }) {
+  const { theme } = useTheme();
+  const isDark = theme === THEME_DARK;
   return (
     <button
       type="button"
@@ -51,7 +55,11 @@ function NavRow({
       <span className="font-medium text-base-content">
         {label}
         {count ? (
-          <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-content">
+          <span
+            className={`ml-2 rounded-full px-2 py-0.5 text-xs font-bold ${
+              isDark ? "bg-white text-black" : "bg-primary text-primary-content"
+            }`}
+          >
             {count}
           </span>
         ) : null}
@@ -232,7 +240,7 @@ export function Network() {
                   aria-label="Accepter l'invitation"
                   onClick={() => acceptMut.mutate(user.id)}
                   disabled={busy}
-                  className="btn btn-primary btn-sm gap-1"
+                  className="btn btn-sm gap-1.5 bg-base-200 hover:bg-base-300 text-base-content/80 hover:text-base-content border-none transition-colors"
                 >
                   <Check className="h-4 w-4" />
                   Accepter

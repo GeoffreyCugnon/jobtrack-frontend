@@ -1,5 +1,7 @@
 import { Link } from "react-router";
 import { Check, Heart, X } from "@phosphor-icons/react";
+import { useTheme } from "../../context/Theme/useTheme";
+import { THEME_DARK } from "../../context/Theme/themeContextInstance";
 
 type WorkMode = "onSite" | "Remote" | "Hybrid";
 
@@ -47,6 +49,8 @@ export function OfferCard({
 }: OfferCardProps) {
   const isEarlyApplicant =
     applicantCount !== undefined && applicantCount < EARLY_APPLICANT_THRESHOLD;
+  const { theme } = useTheme();
+  const isDark = theme === THEME_DARK;
 
   // Ligne méta compacte : ville (1er segment du lieu) · mode · ancienneté.
   const city = location.split(",")[0].trim();
@@ -77,7 +81,9 @@ export function OfferCard({
           {verified && (
             <span
               aria-label="Offre vérifiée"
-              className="absolute -bottom-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-primary text-primary-content ring-2 ring-base-100"
+              className={`absolute -bottom-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full ring-2 ring-base-100 ${
+                isDark ? "bg-white text-black" : "bg-primary text-primary-content"
+              }`}
             >
               <Check className="h-3 w-3" weight="bold" />
             </span>
@@ -108,8 +114,12 @@ export function OfferCard({
             onClick={onToggleSave}
             className={`rounded-full p-2 transition-colors ${
               saved
-                ? "text-primary"
-                : "text-base-content/40 hover:bg-base-200 hover:text-primary"
+                ? isDark
+                  ? "text-white"
+                  : "text-primary"
+                : isDark
+                  ? "text-base-content/40 hover:bg-base-200 hover:text-white"
+                  : "text-base-content/40 hover:bg-base-200 hover:text-primary"
             }`}
           >
             <Heart className="h-5 w-5" weight={saved ? "fill" : "regular"} />

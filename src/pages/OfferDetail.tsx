@@ -1,11 +1,15 @@
 import { Link, useNavigate, useParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowClockwise, ArrowLeft, Briefcase, Buildings, Clock, FileDashed, MapPin, SealCheck, Users } from "@phosphor-icons/react";
-import { Header } from "../components/Layout/Header";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { OffersApi } from "../api/offers.api";
+import { ApplicationsApi } from "../api/applications.api";
 import { queryKeys } from "../api/query-keys";
 import { useJobCategories } from "../hooks/useJobCategories";
+import { useAuthStore } from "../store/auth.store";
+import { useToastStore } from "../store/toast.store";
+import { getBackendErrorMessage } from "../utils/http-error";
+import { logError } from "../utils/log";
 
 const WORK_MODE_LABEL: Record<string, string> = {
   onSite: "Sur site",
@@ -16,6 +20,8 @@ const WORK_MODE_LABEL: Record<string, string> = {
 export function OfferDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const {
     data: offer,
@@ -34,15 +40,39 @@ export function OfferDetail() {
       offer.category)
     : "";
 
+  const applyMutation = useMutation({
+    mutationFn: () => ApplicationsApi.create({ jobOfferingId: offer!.id }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.applications.all });
+      useToastStore.getState().addToast("Candidature envoyée", "success");
+    },
+    onError: (error) => {
+      logError("offers/apply", error);
+      useToastStore
+        .getState()
+        .addToast(
+          getBackendErrorMessage(error, "La candidature a échoué"),
+          "error",
+        );
+    },
+  });
+
+  const handleApply = () => {
+    if (!isAuthenticated) {
+      navigate("/auth");
+      return;
+    }
+    applyMutation.mutate();
+  };
+
   return (
     <div className="flex-1 flex flex-col">
-      <Header />
       <div className="mx-auto w-full max-w-2xl px-4 py-6">
         <button
           onClick={() => navigate("/offers")}
-          className="mb-4 flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-base-content"
+          className="mb-4 flex items-center gap-2 text-xl font-bold text-base-content hover:text-base-content/80"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={20} />
           Retour aux offres
         </button>
 
@@ -149,12 +179,11 @@ export function OfferDetail() {
 
               <button
                 type="button"
-                onClick={() => {
-                  // TODO: brancher sur POST /application
-                }}
+                onClick={handleApply}
+                disabled={applyMutation.isPending || applyMutation.isSuccess}
                 className="btn btn-primary mt-2 self-start"
               >
-                Postuler
+                {applyMutation.isSuccess ? "Candidature envoyée" : "Postuler"}
               </button>
             </div>
           </div>

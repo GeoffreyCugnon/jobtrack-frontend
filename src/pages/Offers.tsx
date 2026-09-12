@@ -16,6 +16,8 @@ import { OffersApi } from "../api/offers.api";
 import { queryKeys } from "../api/query-keys";
 import { useAuthStore } from "../store/auth.store";
 import { useSavedOffersStore } from "../store/saved-offers.store";
+import { useTheme } from "../context/Theme/useTheme";
+import { THEME_DARK } from "../context/Theme/themeContextInstance";
 
 function pluralize(count: number, singular: string, plural: string) {
   return count > 1 ? plural : singular;
@@ -28,6 +30,8 @@ export function Offers() {
   const searchQuery = (searchParams.get("q") ?? "").trim();
   // En invité : pas de sauvegarde d'offres.
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { theme } = useTheme();
+  const isDark = theme === THEME_DARK;
   const savedIds = useSavedOffersStore((state) => state.savedIds);
   const toggleSave = useSavedOffersStore((state) => state.toggle);
   // Référentiel des catégories (`GET /job-categories`) : libellé de la bannière.
@@ -139,7 +143,9 @@ export function Offers() {
               to="/offers/saved"
               className="flex items-center gap-3 border-b border-base-200 px-4 py-3.5 text-sm font-semibold text-base-content transition-colors hover:bg-base-200"
             >
-              <BookmarkSimple className="h-5 w-5 text-primary" />
+              <BookmarkSimple
+                className={`h-5 w-5 ${isDark ? "text-white" : "text-primary"}`}
+              />
               <span className="flex-1">Offres sauvegardées</span>
               {savedIds.length > 0 && (
                 <span className="badge badge-primary badge-sm font-semibold">
@@ -189,19 +195,31 @@ export function Offers() {
       {isAuthenticated && (
         <div
           className={`sticky bottom-0 z-20 shadow-[0_-2px_10px_rgba(15,23,42,0.15)] transition-colors ${
-            alertActive
-              ? "bg-success text-success-content"
-              : "bg-primary text-primary-content"
+            isDark
+              ? "bg-white"
+              : alertActive
+                ? "bg-success text-success-content"
+                : "bg-primary text-primary-content"
           }`}
         >
           <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-2.5">
             <div className="min-w-0">
-              <p className="truncate font-bold leading-tight">{bannerLabel}</p>
+              <p
+                className={`truncate font-bold leading-tight ${
+                  isDark ? (alertActive ? "text-success" : "text-black") : ""
+                }`}
+              >
+                {bannerLabel}
+              </p>
               <p
                 className={`text-sm font-bold leading-tight ${
-                  alertActive
-                    ? "text-success-content/80"
-                    : "text-primary-content/80"
+                  isDark
+                    ? alertActive
+                      ? "text-success/80"
+                      : "text-black/70"
+                    : alertActive
+                      ? "text-success-content/80"
+                      : "text-primary-content/80"
                 }`}
               >
                 {resultsLabel}
@@ -209,7 +227,11 @@ export function Offers() {
             </div>
 
             {showAlertToggle && (
-              <label className="flex shrink-0 items-center gap-2 text-sm font-medium">
+              <label
+                className={`flex shrink-0 items-center gap-2 text-sm font-medium ${
+                  isDark ? (alertActive ? "text-success" : "text-black") : ""
+                }`}
+              >
                 <span className="whitespace-nowrap leading-none">
                   {alertEnabled ? "Alerte activée" : "Définir une alerte"}
                 </span>
@@ -220,9 +242,9 @@ export function Offers() {
                   className="toggle toggle-sm"
                   // Piste peu visible sur le fond bleu tant que décoché : on force
                   // le blanc. Une fois coché, daisyUI passe sur un fond clair déjà
-                  // lisible.
+                  // lisible. Inutile en thème sombre, où le bandeau est déjà blanc.
                   style={
-                    !alertEnabled
+                    !alertEnabled && !isDark
                       ? ({ "--input-color": "#fff" } as CSSProperties)
                       : undefined
                   }

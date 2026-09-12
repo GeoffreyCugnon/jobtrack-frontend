@@ -1,8 +1,25 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ChatCircle, DotsThree, Heart, PaperPlaneTilt, Repeat, ThumbsUp, X } from "@phosphor-icons/react";
+import {
+  BookmarkSimple,
+  ChatCircle,
+  DotsThreeVertical,
+  EyeSlash,
+  Flag,
+  Heart,
+  PaperPlaneTilt,
+  Repeat,
+  ShareNetwork,
+  ThumbsDown,
+  ThumbsUp,
+  WarningDiamond,
+  X,
+} from "@phosphor-icons/react";
+import type { Icon as IconType } from "@phosphor-icons/react";
 
 import { Avatar } from "../UI/Avatar";
+import { BottomSheet } from "../UI/BottomSheet";
+import { useAuthStore } from "../../store/auth.store";
 import { useToastStore } from "../../store/toast.store";
 import type { Publication } from "../../types/publication.types";
 
@@ -37,11 +54,67 @@ export default function PublicationCard({
   onHide,
 }: Props) {
   const to = `/publications/${publication.id}`;
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [expanded, setExpanded] = useState(false);
   const [imageExpanded, setImageExpanded] = useState(false);
   const [imageTall, setImageTall] = useState(false);
+  const [reactionsOpen, setReactionsOpen] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  // Masquage local (pas d'endpoint dédié) : le "X" ne retire pas le post
+  // directement, il le remplace par un panneau d'annulation façon LinkedIn.
+  const [hidden, setHidden] = useState(false);
   const notify = () =>
     useToastStore.getState().addToast("Bientôt disponible", "info");
+
+  const optionItems: { icon: IconType; label: string }[] = [
+    { icon: BookmarkSimple, label: "Enregistrer" },
+    { icon: ShareNetwork, label: "Partager via" },
+    { icon: EyeSlash, label: `Masquer les posts de ${publication.authorName}` },
+    { icon: ThumbsDown, label: "Pas intéressé(e)" },
+    { icon: WarningDiamond, label: "On dirait de l'IA slop" },
+    { icon: Flag, label: "Signaler le post" },
+  ];
+
+  const hideFollowUpItems: { icon: IconType; label: string }[] = [
+    { icon: EyeSlash, label: `Masquer les posts de ${publication.authorName}` },
+    { icon: WarningDiamond, label: "On dirait de l'IA slop" },
+    { icon: Flag, label: "Signaler le post" },
+  ];
+
+  if (hidden) {
+    return (
+      <article className="bg-base-100 px-4 py-3">
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-sm text-base-content/70">
+            Post masqué dans le fil d'actualité. Vous verrez moins de posts de
+            ce genre.
+          </p>
+          <button
+            type="button"
+            onClick={() => setHidden(false)}
+            className="shrink-0 cursor-pointer text-sm font-semibold text-link hover:underline"
+          >
+            Annuler
+          </button>
+        </div>
+
+        <ul className="mt-2 divide-y divide-base-200 border-t border-base-200">
+          {hideFollowUpItems.map(({ icon: OptionIcon, label }) => (
+            <li key={label}>
+              <button
+                type="button"
+                onClick={notify}
+                className="flex w-full cursor-pointer items-center gap-4 py-3 text-left text-sm font-medium text-base-content hover:bg-base-200"
+              >
+                <OptionIcon className="h-5 w-5 shrink-0" weight="fill" />
+                {label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </article>
+    );
+  }
 
   const isLong = publication.content.length > CLAMP_CHARS;
   const shown =
@@ -84,31 +157,33 @@ export default function PublicationCard({
   );
 
   const actionBtn =
-    "flex items-center gap-1.5 rounded-field px-2.5 py-2 text-sm hover:bg-base-200";
+    "flex items-center gap-1.5 rounded-field mx-1 px-1.5 py-2 text-sm hover:bg-base-200 cursor-pointer";
 
   return (
     <article className="bg-base-100">
       <div className="px-4 pt-3">
         <div className="flex items-start justify-between gap-2">
           {header}
-          <div className="flex shrink-0 items-center text-base-content/50">
-            <button
-              type="button"
-              aria-label="Plus d'options"
-              onClick={notify}
-              className="btn btn-ghost btn-circle btn-sm"
-            >
-              <DotsThree className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              aria-label="Masquer ce post"
-              onClick={onHide ?? notify}
-              className="btn btn-ghost btn-sm btn-square"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          {isAuthenticated && (
+            <div className="flex shrink-0 items-center text-base-content/60">
+              <button
+                type="button"
+                aria-label="Plus d'options"
+                onClick={() => setOptionsOpen(true)}
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-base-200"
+              >
+                <DotsThreeVertical className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Masquer ce post"
+                onClick={onHide ?? (() => setHidden(true))}
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-field hover:bg-base-200"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="mt-2 text-[15px] leading-relaxed text-base-content/90 whitespace-pre-line">
@@ -163,7 +238,7 @@ export default function PublicationCard({
       <div
         className={`${
           publication.imageUrl ? "" : "mt-2"
-        } flex items-center justify-between border-t border-base-200 px-2 py-1 text-base-content/60`}
+        } flex items-center justify-between px-2 py-1 text-base-content/60`}
       >
         <div className="flex items-center">
           <button type="button" onClick={notify} className={actionBtn}>
@@ -198,7 +273,11 @@ export default function PublicationCard({
           </button>
         </div>
 
-        <span className="flex items-center gap-1 pr-2 text-xs text-base-content/50">
+        <button
+          type="button"
+          onClick={() => setReactionsOpen(true)}
+          className="flex cursor-pointer items-center gap-1 pr-2 text-xs text-base-content/50 hover:underline"
+        >
           <span className="flex -space-x-1">
             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-content ring-1 ring-base-100">
               <ThumbsUp className="h-2.5 w-2.5" weight="fill" />
@@ -208,8 +287,51 @@ export default function PublicationCard({
             </span>
           </span>
           {publication.likesCount}
-        </span>
+        </button>
       </div>
+
+      <BottomSheet
+        open={reactionsOpen}
+        onClose={() => setReactionsOpen(false)}
+        title="Réactions"
+      >
+        <div className="flex items-center gap-2 border-b border-base-200 pb-3">
+          <span className="flex -space-x-1">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-content ring-2 ring-base-100">
+              <ThumbsUp className="h-3.5 w-3.5" weight="fill" />
+            </span>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-error text-error-content ring-2 ring-base-100">
+              <Heart className="h-3.5 w-3.5" weight="fill" />
+            </span>
+          </span>
+          <span className="font-semibold text-base-content">
+            {publication.likesCount}
+          </span>
+        </div>
+        <p className="py-4 text-sm text-base-content/60">
+          Détail des réactions bientôt disponible.
+        </p>
+      </BottomSheet>
+
+      <BottomSheet open={optionsOpen} onClose={() => setOptionsOpen(false)}>
+        <ul className="py-1">
+          {optionItems.map(({ icon: OptionIcon, label }) => (
+            <li key={label}>
+              <button
+                type="button"
+                onClick={() => {
+                  setOptionsOpen(false);
+                  notify();
+                }}
+                className="flex w-full cursor-pointer items-center gap-4 rounded-field px-2 py-3 text-left text-base font-medium text-base-content hover:bg-base-200"
+              >
+                <OptionIcon className="h-5 w-5 shrink-0" weight="fill" />
+                {label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </BottomSheet>
     </article>
   );
 }

@@ -1,10 +1,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import "./index.css";
 import App from "./App.tsx";
 import { ThemeProvider } from "./context/Theme/ThemeContext";
 import { IconContext } from "@phosphor-icons/react";
+import {
+  queryPersister,
+  PERSIST_MAX_AGE,
+  shouldDehydrateQuery,
+} from "./utils/query-persister";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,13 +28,20 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister: queryPersister,
+        maxAge: PERSIST_MAX_AGE,
+        dehydrateOptions: { shouldDehydrateQuery },
+      }}
+    >
       {/* Poids par défaut des icônes Phosphor (rendu type LinkedIn/Artdeco). */}
       <IconContext.Provider value={{ weight: "bold" }}>
         <ThemeProvider>
           <App />
         </ThemeProvider>
       </IconContext.Provider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   </StrictMode>,
 );

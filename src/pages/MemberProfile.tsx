@@ -11,6 +11,7 @@ import {
   type ConnectionStatus,
 } from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";
+import { DETAIL_PAGE_GC_TIME, staleTimeByCategory } from "../api/query-cache";
 import { useToastStore } from "../store/toast.store";
 import { memberHeadline, memberName } from "../utils/member";
 import { useMessaging } from "../context/Messaging/useMessaging";
@@ -40,11 +41,14 @@ export function MemberProfile() {
     queryKey: queryKeys.users.detail(id ?? ""),
     queryFn: () => UserApi.getById(id!),
     enabled: !!id,
+    staleTime: staleTimeByCategory.userDetail,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   const { data: connections } = useQuery({
     queryKey: queryKeys.connections.all,
     queryFn: () => ConnectionApi.list(),
+    staleTime: staleTimeByCategory.connections,
   });
 
   const connectStatus: ConnectionStatus =

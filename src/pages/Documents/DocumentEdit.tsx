@@ -5,6 +5,7 @@ import { Pencil } from "@phosphor-icons/react";
 import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { DocumentsApi } from "../../api/documents.api";
 import { queryKeys } from "../../api/query-keys";
+import { DETAIL_PAGE_GC_TIME } from "../../api/query-cache";
 import { useToastStore } from "../../store/toast.store";
 import { logError } from "../../utils/log";
 import { INPUT_CLASS } from "../../constants/styles";
@@ -20,6 +21,7 @@ export function DocumentEdit() {
     queryKey: queryKeys.documents.detail(id ?? ""),
     queryFn: () => DocumentsApi.getById(id!),
     enabled: !!id,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   useEffect(() => {

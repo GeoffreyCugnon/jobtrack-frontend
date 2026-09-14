@@ -13,6 +13,7 @@ import {
   type ConnectionStatus,
 } from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";
+import { staleTimeByCategory } from "../api/query-cache";
 import { useAuthStore } from "../store/auth.store";
 import { useToastStore } from "../store/toast.store";
 import { useTheme } from "../context/Theme/useTheme";
@@ -136,6 +137,7 @@ export function Network() {
     queryKey: queryKeys.connections.all,
     queryFn: () => ConnectionApi.list(),
     enabled: isAuthenticated,
+    staleTime: staleTimeByCategory.connections,
   });
 
   const statusByUser = connections

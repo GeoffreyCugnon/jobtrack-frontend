@@ -13,6 +13,7 @@ import { useToastStore } from "../../store/toast.store";
 import { AuthApi } from "../../api/auth.api";
 import { CompanyApi } from "../../api/company.api";
 import { queryKeys } from "../../api/query-keys";
+import { staleTimeByCategory } from "../../api/query-cache";
 import { getUserDisplay } from "../../utils/user-display";
 import { POST_LOGOUT_KEY } from "../../constants/auth";
 import { logError } from "../../utils/log";
@@ -36,6 +37,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
     queryKey: queryKeys.company.mineAll,
     queryFn: () => CompanyApi.getMineAll(),
     enabled: isAuthenticated,
+    staleTime: staleTimeByCategory.company,
   });
   const companyCount = myCompanies?.length ?? 0;
 

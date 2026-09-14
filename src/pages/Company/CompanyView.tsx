@@ -5,6 +5,7 @@ import { ArrowClockwise, ArrowLeft, PencilSimple } from "@phosphor-icons/react";
 import { CompanyDetails } from "../../components/Company/CompanyDetails";
 import { CompanyApi } from "../../api/company.api";
 import { queryKeys } from "../../api/query-keys";
+import { DETAIL_PAGE_GC_TIME, staleTimeByCategory } from "../../api/query-cache";
 import { useAuthStore } from "../../store/auth.store";
 
 export function CompanyView() {
@@ -21,6 +22,8 @@ export function CompanyView() {
     queryKey: queryKeys.company.detail(id ?? ""),
     queryFn: () => CompanyApi.getById(id ?? ""),
     enabled: !!id,
+    staleTime: staleTimeByCategory.company,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   // Cette page est publique (accessible depuis une offre d'emploi, elle-même
@@ -30,6 +33,7 @@ export function CompanyView() {
     queryKey: queryKeys.company.mineAll,
     queryFn: () => CompanyApi.getMineAll(),
     enabled: isAuthenticated,
+    staleTime: staleTimeByCategory.company,
   });
   const isOwner = !!company && !!myCompanies?.some((c) => c.id === company.id);
 

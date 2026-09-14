@@ -8,6 +8,7 @@ import PublicationCard from "../../components/Publications/PublicationCard";
 import { PublicationsApi } from "../../api/publications.api";
 import { CommentsApi } from "../../api/comments.api";
 import { queryKeys } from "../../api/query-keys";
+import { DETAIL_PAGE_GC_TIME } from "../../api/query-cache";
 import { useAuthStore } from "../../store/auth.store";
 import { useToastStore } from "../../store/toast.store";
 import { INPUT_CLASS } from "../../constants/styles";
@@ -28,6 +29,7 @@ export function PublicationDetail() {
     queryKey: queryKeys.publications.detail(id ?? ""),
     queryFn: () => PublicationsApi.getById(id!),
     enabled: !!id,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   const { data: comments = [] } = useQuery({

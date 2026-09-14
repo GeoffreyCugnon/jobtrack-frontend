@@ -9,6 +9,7 @@ import { PageTitle } from "../../components/Layout/PageTitle";
 import { SectionCard } from "../../components/Layout/SectionCard";
 import { ApplicationsApi } from "../../api/applications.api";
 import { queryKeys } from "../../api/query-keys";
+import { DETAIL_PAGE_GC_TIME } from "../../api/query-cache";
 import { CANDIDATURE_STATUS_BADGE_CLASS } from "./candidature-status";
 
 export function CandidatureDetail() {
@@ -21,6 +22,7 @@ export function CandidatureDetail() {
     queryKey: queryKeys.applications.detail(id ?? ""),
     queryFn: () => ApplicationsApi.getById(id!),
     enabled: !!id,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   const shell = (children: React.ReactNode, title = "Candidature") => (

@@ -7,6 +7,7 @@ import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { BTN_FOCUS_RING, INPUT_CLASS } from "../../constants/styles";
 import { UserApi } from "../../api/user.api";
 import { queryKeys } from "../../api/query-keys";
+import { staleTimeByCategory } from "../../api/query-cache";
 import { useToastStore } from "../../store/toast.store";
 import { logError } from "../../utils/log";
 
@@ -19,6 +20,7 @@ export function ProfileSkillsEdit() {
   const { data: initial = [], isPending } = useQuery({
     queryKey: queryKeys.skills.mine,
     queryFn: () => UserApi.getSkills(),
+    staleTime: staleTimeByCategory.skills,
   });
   useEffect(() => {
     setSkills(initial);

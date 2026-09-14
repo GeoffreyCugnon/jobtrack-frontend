@@ -12,6 +12,7 @@ import { EmptyState } from "../../components/Layout/EmptyState";
 import { CompanyDetails } from "../../components/Company/CompanyDetails";
 import { CompanyApi } from "../../api/company.api";
 import { queryKeys } from "../../api/query-keys";
+import { staleTimeByCategory } from "../../api/query-cache";
 
 export function CompanyList() {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export function CompanyList() {
   } = useQuery({
     queryKey: queryKeys.company.mineAll,
     queryFn: () => CompanyApi.getMineAll(),
+    staleTime: staleTimeByCategory.company,
   });
 
   const singleCompany =

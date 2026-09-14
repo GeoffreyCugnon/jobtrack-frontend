@@ -18,6 +18,7 @@ import { DashboardApi } from "../../api/dashboard.api";
 import { ApplicationsApi } from "../../api/applications.api";
 import { InterviewsApi } from "../../api/interviews.api";
 import { queryKeys } from "../../api/query-keys";
+import { staleTimeByCategory } from "../../api/query-cache";
 import { DEFAULT_MOTIVATION, pickMotivation } from "../../data/motivation";
 
 const MAX_VISIBLE_EVENTS = 4;
@@ -67,6 +68,7 @@ export function Dashboard() {
     queryKey: queryKeys.dashboard.stats,
     queryFn: () => DashboardApi.stats(),
     enabled: isAuthenticated,
+    staleTime: staleTimeByCategory.dashboardStats,
   });
   const { data: applications = [] } = useQuery({
     queryKey: queryKeys.applications.all,

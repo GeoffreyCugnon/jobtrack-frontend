@@ -10,6 +10,7 @@ import {
   type ConnectionEntry,
 } from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";
+import { staleTimeByCategory } from "../api/query-cache";
 import { useToastStore } from "../store/toast.store";
 import {
   memberHeadline,
@@ -33,6 +34,7 @@ export function NetworkInvitations() {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: queryKeys.connections.all,
     queryFn: () => ConnectionApi.list(),
+    staleTime: staleTimeByCategory.connections,
   });
 
   const invalidate = () =>

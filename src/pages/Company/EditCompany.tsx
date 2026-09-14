@@ -9,6 +9,7 @@ import axios from "axios";
 import { CompanyFormFields } from "../../components/Company/CompanyFormFields";
 import { CompanyApi } from "../../api/company.api";
 import { queryKeys } from "../../api/query-keys";
+import { DETAIL_PAGE_GC_TIME, staleTimeByCategory } from "../../api/query-cache";
 import type { Company } from "../../types/company.type";
 import {
   type CreateCompanyValues,
@@ -181,6 +182,8 @@ export function EditCompany() {
     queryKey: queryKeys.company.detail(id ?? ""),
     queryFn: () => CompanyApi.getById(id ?? ""),
     enabled: !!id,
+    staleTime: staleTimeByCategory.company,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   return (

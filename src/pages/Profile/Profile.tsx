@@ -13,6 +13,7 @@ import { useToastStore } from "../../store/toast.store";
 import { getUserDisplay } from "../../utils/user-display";
 import { UserApi } from "../../api/user.api";
 import { queryKeys } from "../../api/query-keys";
+import { staleTimeByCategory } from "../../api/query-cache";
 
 export function Profile() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export function Profile() {
   const { data: skills = [] } = useQuery({
     queryKey: queryKeys.skills.mine,
     queryFn: () => UserApi.getSkills(),
+    staleTime: staleTimeByCategory.skills,
   });
 
   // Persiste le nouvel avatar en base et met à jour le store -> il se propage

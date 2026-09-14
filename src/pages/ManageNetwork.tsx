@@ -4,6 +4,7 @@ import { ArrowLeft, Buildings, CalendarDots, Newspaper, User, Users, UsersThree,
 
 import { ConnectionApi } from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";
+import { staleTimeByCategory } from "../api/query-cache";
 import { useToastStore } from "../store/toast.store";
 
 const notify = () =>
@@ -41,6 +42,7 @@ export function ManageNetwork() {
   const { data: connections } = useQuery({
     queryKey: queryKeys.connections.all,
     queryFn: () => ConnectionApi.list(),
+    staleTime: staleTimeByCategory.connections,
   });
 
   return (

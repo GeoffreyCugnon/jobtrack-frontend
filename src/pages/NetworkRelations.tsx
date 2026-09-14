@@ -6,6 +6,7 @@ import { Avatar } from "../components/UI/Avatar";
 import { EmptyState } from "../components/Layout/EmptyState";
 import { ConnectionApi } from "../api/connection.api";
 import { queryKeys } from "../api/query-keys";
+import { staleTimeByCategory } from "../api/query-cache";
 import { useToastStore } from "../store/toast.store";
 import { memberInitials, memberName } from "../utils/member";
 
@@ -16,6 +17,7 @@ export function NetworkRelations() {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: queryKeys.connections.all,
     queryFn: () => ConnectionApi.list(),
+    staleTime: staleTimeByCategory.connections,
   });
 
   const removeMut = useMutation({

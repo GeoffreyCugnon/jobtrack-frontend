@@ -10,6 +10,7 @@ import { PageTitle } from "../../components/Layout/PageTitle";
 import { SectionCard } from "../../components/Layout/SectionCard";
 import { InterviewsApi } from "../../api/interviews.api";
 import { queryKeys } from "../../api/query-keys";
+import { DETAIL_PAGE_GC_TIME } from "../../api/query-cache";
 
 export function EntretienDetail() {
   const { id } = useParams();
@@ -23,6 +24,7 @@ export function EntretienDetail() {
     queryKey: queryKeys.interviews.detail(id ?? ""),
     queryFn: () => InterviewsApi.getById(id!),
     enabled: !!id,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   if (isPending) {

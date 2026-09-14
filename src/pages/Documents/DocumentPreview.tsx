@@ -4,6 +4,7 @@ import { FileText, Pencil } from "@phosphor-icons/react";
 import { FormPageLayout } from "../../components/Layout/FormPageLayout";
 import { DocumentsApi } from "../../api/documents.api";
 import { queryKeys } from "../../api/query-keys";
+import { DETAIL_PAGE_GC_TIME } from "../../api/query-cache";
 import { BTN_FOCUS_RING } from "../../constants/styles";
 
 /** Aperçu d'un CV / lettre (`/documents/:type/:id`). */
@@ -15,6 +16,7 @@ export function DocumentPreview() {
     queryKey: queryKeys.documents.detail(id ?? ""),
     queryFn: () => DocumentsApi.getById(id!),
     enabled: !!id,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   const label = item?.basePath === "letters" ? "de la lettre" : "du CV";

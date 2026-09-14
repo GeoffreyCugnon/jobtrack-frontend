@@ -5,6 +5,7 @@ import { EmptyState } from "../components/Layout/EmptyState";
 import { OffersApi } from "../api/offers.api";
 import { ApplicationsApi } from "../api/applications.api";
 import { queryKeys } from "../api/query-keys";
+import { DETAIL_PAGE_GC_TIME } from "../api/query-cache";
 import { useJobCategories } from "../hooks/useJobCategories";
 import { useAuthStore } from "../store/auth.store";
 import { useToastStore } from "../store/toast.store";
@@ -32,6 +33,7 @@ export function OfferDetail() {
     queryKey: queryKeys.offers.detail(id ?? ""),
     queryFn: () => OffersApi.getById(id!),
     enabled: !!id,
+    gcTime: DETAIL_PAGE_GC_TIME,
   });
 
   const { categories: jobCategories } = useJobCategories();

@@ -33,7 +33,17 @@ export const PERSIST_MAX_AGE = 1000 * 60 * 60 * 24; // 24h
  * segment de la clé (`queryKeys.messaging.*` vaut `["messaging", ...]`)
  * plutôt qu'un `includes` sur une string, pour rester fiable si une autre clé
  * venait à contenir le mot "messaging" ailleurs qu'en tête.
+ *
+ * `status === "success"` reprend le filtre par défaut de React Query
+ * (`defaultShouldDehydrateQuery`), qu'on écrase sinon entièrement en
+ * fournissant `shouldDehydrateQuery` : une query encore `pending` au moment
+ * de la sauvegarde embarque sa promesse en vol (`query.promise`), qui devient
+ * `{}` après le `JSON.stringify` du persister et fait planter la
+ * réhydratation au chargement suivant (`{}.then is not a function`).
  */
 export function shouldDehydrateQuery(query: Query): boolean {
-  return query.queryKey[0] !== queryKeys.messaging.conversations[0];
+  return (
+    query.state.status === "success" &&
+    query.queryKey[0] !== queryKeys.messaging.conversations[0]
+  );
 }

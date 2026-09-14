@@ -34,6 +34,13 @@ function RootContent() {
   const guestHomeView =
     !isAuthenticated &&
     (location.pathname === "/" || location.pathname === "/dashboard");
+  // Vue complète offres/publications en invité (atteinte depuis les liens
+  // "Voir tout" de `GuestHome`) : pas de nav du bas non plus, remplacée par
+  // le "←" du header pour revenir à l'accueil invité.
+  const guestFullListView =
+    !isAuthenticated &&
+    (location.pathname === "/offers" || location.pathname === "/publications");
+  const hideBottomNav = guestHomeView || guestFullListView;
 
   return (
     <>
@@ -43,7 +50,7 @@ function RootContent() {
       <div className="h-screen flex flex-col">
         <div
           className={`flex-1 flex flex-col overflow-y-auto bg-base-200 w-full min-h-0 ${
-            guestHomeView ? "" : "pb-16 lg:pb-0"
+            hideBottomNav ? "" : "pb-16 lg:pb-0"
           }`}
         >
           {guestHomeView ? <GuestHome /> : <Outlet />}
@@ -52,8 +59,9 @@ function RootContent() {
         {!isAuthenticated ? null : <MessagingFab />}
 
         {/* Accueil invité : pas de nav du bas, remplacée par le CTA de
-            création de compte collé au bas de `GuestHome`. */}
-        {!guestHomeView && (
+            création de compte collé au bas de `GuestHome`. Idem sur les vues
+            complètes offres/publications en invité (`guestFullListView`). */}
+        {!hideBottomNav && (
           <nav
             className="lg:hidden fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-300 px-2 py-3 z-40"
             style={{ height: BOTTOM_NAV_HEIGHT }}

@@ -1,6 +1,10 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
-import { useToastStore, type ToastType } from "../../store/toast.store";
-import { STACK_BOTTOM_OFFSET } from "../../constants/layout";
+import {
+  useToastStore,
+  TOAST_HIDE_DURATION,
+  type ToastType,
+} from "../../store/toast.store";
+import { STACK_ITEM_GAP } from "../../constants/layout";
 
 const alertClass: Record<ToastType, string> = {
   success: "alert-success",
@@ -13,6 +17,7 @@ export default function Toast() {
   const toasts = useToastStore((state) => state.toasts);
   const removeToast = useToastStore((state) => state.removeToast);
   const setStackHeight = useToastStore((state) => state.setStackHeight);
+  const bottomBarHeight = useToastStore((state) => state.bottomBarHeight);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Publie la hauteur réelle de la pile pour que le bouton messagerie se cale
@@ -38,17 +43,20 @@ export default function Toast() {
     <div
       ref={containerRef}
       className="toast toast-end toast-bottom z-50"
-      // Remonté au-dessus de la barre de nav mobile (même niveau que le
-      // bouton flottant messagerie) pour ne pas masquer le menu.
-      style={{ bottom: STACK_BOTTOM_OFFSET, top: "auto" }}
+      // Remonté au-dessus de la barre fixe en bas d'écran (nav mobile, ou le
+      // CTA de `GuestHome` qui la remplace) pour ne pas la masquer.
+      style={{ bottom: bottomBarHeight + STACK_ITEM_GAP, top: "auto" }}
     >
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`alert ${alertClass[toast.type]} cursor-pointer shadow-lg`}
+          className={`alert ${alertClass[toast.type]} cursor-pointer shadow-lg transition-all ease-in ${
+            toast.hiding ? "opacity-0 scale-95" : "opacity-100 scale-100"
+          }`}
+          style={{ transitionDuration: `${TOAST_HIDE_DURATION}ms` }}
           onClick={() => removeToast(toast.id)}
         >
-          <span>{toast.message}</span>
+          <span className="text-white">{toast.message}</span>
         </div>
       ))}
     </div>

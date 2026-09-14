@@ -5,10 +5,13 @@ import { Header } from "../../components/Layout/Header";
 import PublicationCard from "../../components/Publications/PublicationCard";
 import { PublicationsApi } from "../../api/publications.api";
 import { queryKeys } from "../../api/query-keys";
+import { useAuthStore } from "../../store/auth.store";
+import { usePullToRefresh } from "../../hooks/usePullToRefresh";
 
 export function Publications() {
   const [searchParams] = useSearchParams();
   const query = (searchParams.get("q") ?? "").trim().toLowerCase();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const {
     data: publications = [],
@@ -20,6 +23,11 @@ export function Publications() {
     queryFn: () => PublicationsApi.getAll(),
   });
 
+  // Glisser vers le bas depuis le haut du fil (déjà scrollé en haut)
+  // recharge les publications, comme un pull-to-refresh natif.
+  const { containerRef, pullDistance, refreshing, threshold } =
+    usePullToRefresh<HTMLDivElement>(() => refetch());
+
   const visible = query
     ? publications.filter(
         (p) =>
@@ -29,9 +37,33 @@ export function Publications() {
       )
     : publications;
 
+  const pullProgress = Math.min(pullDistance / threshold, 1);
+
   return (
-    <div className="flex-1 flex flex-col bg-base-100 pb-6">
-      <Header search="feed" />
+    <div
+      ref={containerRef}
+      className="flex-1 flex flex-col bg-base-100 pb-6"
+    >
+      <Header search="feed" backTo={isAuthenticated ? undefined : "/"} />
+
+      {/* Indicateur pull-to-refresh : hauteur animée par le tirage, icône
+          qui tourne en fonction de la progression puis en continu pendant le
+          rechargement. */}
+      {(pullDistance > 0 || refreshing) && (
+        <div
+          className="flex items-center justify-center overflow-hidden transition-[height] duration-150"
+          style={{ height: refreshing ? 48 : pullDistance }}
+        >
+          <ArrowClockwise
+            className={`h-5 w-5 text-base-content/50 ${refreshing ? "animate-spin" : ""}`}
+            style={
+              refreshing
+                ? undefined
+                : { transform: `rotate(${pullProgress * 360}deg)` }
+            }
+          />
+        </div>
+      )}
 
       {isPending && (
         <p className="p-6 text-center text-sm text-base-content/60">

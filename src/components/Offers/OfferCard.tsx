@@ -28,6 +28,10 @@ interface OfferCardProps {
   verified?: boolean;
   /** Boutons favori / masquer : masqués en vue invité (rien à sauvegarder). */
   showActions?: boolean;
+  /** true si c'est la dernière carte d'un aperçu (accueil invité) : retire le
+   *  padding bas, redondant avec l'espace déjà géré par les spacers autour du
+   *  lien "Voir tout" dans `GuestHome`. */
+  previewLast?: boolean;
   onToggleSave: () => void;
   onDismiss: () => void;
 }
@@ -44,6 +48,7 @@ export function OfferCard({
   saved,
   verified,
   showActions = true,
+  previewLast = false,
   onToggleSave,
   onDismiss,
 }: OfferCardProps) {
@@ -59,7 +64,9 @@ export function OfferCard({
     .join(" · ");
 
   return (
-    <div className="py-3 pl-1 pr-2 flex items-start gap-3">
+    <div
+      className={`${previewLast ? "pt-2.75" : "py-2.75"} pl-3 pr-2 flex items-start gap-3`}
+    >
       {/* Toute la zone titre/entreprise/lieu mène au détail de l'offre ;
           les boutons favori / masquer restent hors du lien. */}
       <Link
@@ -90,16 +97,16 @@ export function OfferCard({
           )}
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 -mt-1.5">
           <h3 className="truncate font-bold text-link group-hover:underline">
             {role}
           </h3>
           <p className="truncate text-sm font-medium text-base-content/70">
             {company}
           </p>
-          <p className="mt-0.5 truncate text-sm text-base-content/60">{meta}</p>
+          <p className="truncate text-sm text-base-content/60">{meta}</p>
           {isEarlyApplicant && (
-            <span className="badge badge-soft badge-success badge-sm mt-1.5 font-medium">
+            <span className="badge badge-soft badge-success badge-sm mt-1 py-0 font-medium">
               Premier candidat
             </span>
           )}

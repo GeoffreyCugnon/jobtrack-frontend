@@ -12,6 +12,7 @@ import { EmptyState } from "../components/Layout/EmptyState";
 import { Header } from "../components/Layout/Header";
 import { PageContainer } from "../components/Layout/PageContainer";
 import { useJobCategories } from "../hooks/useJobCategories";
+import { usePullToRefresh } from "../hooks/usePullToRefresh";
 import { OffersApi } from "../api/offers.api";
 import { queryKeys } from "../api/query-keys";
 import { useAuthStore } from "../store/auth.store";
@@ -61,6 +62,11 @@ export function Offers() {
     queryKey: queryKeys.offers.all,
     queryFn: () => OffersApi.getAll(),
   });
+
+  // Glisser vers le bas depuis le haut de la liste (déjà scrollée en haut)
+  // recharge les offres, comme un pull-to-refresh natif (cf. Publications).
+  const { containerRef, pullDistance, refreshing, threshold } =
+    usePullToRefresh<HTMLDivElement>(() => loadOffers());
 
   // Masquage local (le cache React Query reste la source) : l'offre rejetée
   // disparaît de la liste jusqu'au prochain rechargement des données.
@@ -132,9 +138,28 @@ export function Offers() {
     </div>
   );
 
+  const pullProgress = Math.min(pullDistance / threshold, 1);
+
   return (
-    <div className="flex-1 flex flex-col bg-base-100">
-      <Header />
+    <div ref={containerRef} className="flex-1 flex flex-col bg-base-100">
+      <Header backTo={isAuthenticated ? undefined : "/"} />
+
+      {/* Indicateur pull-to-refresh : cf. Publications pour le détail. */}
+      {(pullDistance > 0 || refreshing) && (
+        <div
+          className="flex items-center justify-center overflow-hidden transition-[height] duration-150"
+          style={{ height: refreshing ? 48 : pullDistance }}
+        >
+          <ArrowClockwise
+            className={`h-5 w-5 text-base-content/50 ${refreshing ? "animate-spin" : ""}`}
+            style={
+              refreshing
+                ? undefined
+                : { transform: `rotate(${pullProgress * 360}deg)` }
+            }
+          />
+        </div>
+      )}
 
       <PageContainer className="flex-1 flex flex-col">
         <div className="-mx-4 sm:mx-0 flex flex-col">

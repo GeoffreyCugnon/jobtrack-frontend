@@ -30,6 +30,17 @@ interface Props {
   linkToDetail?: boolean;
   /** Croix en haut à droite : masque le post (fil) ou ferme le détail. */
   onHide?: () => void;
+  /**
+   * Aperçu à hauteur fixe (accueil invité) : texte et image sont bornés en
+   * hauteur (`overflow-hidden`), en-tête et barre de réactions restent
+   * toujours entiers. Les affordances d'expansion ("plus") sont masquées
+   * puisqu'elles resteraient coupées par le crop.
+   */
+  previewCrop?: boolean;
+  /** true si c'est la dernière carte de l'aperçu : retire le `mb` sous la
+   *  barre de réactions (redondant avec l'espace déjà géré par les spacers
+   *  autour du lien "Voir tout" dans `GuestHome`). */
+  previewLast?: boolean;
 }
 
 const CLAMP_CHARS = 280;
@@ -52,6 +63,8 @@ export default function PublicationCard({
   publication,
   linkToDetail = true,
   onHide,
+  previewCrop = false,
+  previewLast = false,
 }: Props) {
   const to = `/publications/${publication.id}`;
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -65,6 +78,19 @@ export default function PublicationCard({
   const [hidden, setHidden] = useState(false);
   const notify = () =>
     useToastStore.getState().addToast("Bientôt disponible", "info");
+  const notifyAuthRequired = () =>
+    useToastStore
+      .getState()
+      .addToast("Connectez-vous pour interagir avec les publications", "info");
+  // Like / commentaire / repost / partage : réservés aux utilisateurs
+  // connectés (un invité voit un toast plutôt que l'action, même placeholder).
+  const handleEngagement = () => {
+    if (!isAuthenticated) {
+      notifyAuthRequired();
+      return;
+    }
+    notify();
+  };
 
   const optionItems: { icon: IconType; label: string }[] = [
     { icon: BookmarkSimple, label: "Enregistrer" },
@@ -127,7 +153,7 @@ export default function PublicationCard({
       <Avatar
         label={authorInitials(publication.authorName)}
         avatarUrl={publication.authorAvatarUrl ?? undefined}
-        size="md"
+        size={previewCrop ? "sm" : "md"}
       />
       <div className="min-w-0 leading-tight">
         <p className="font-semibold text-base-content truncate">
@@ -156,12 +182,17 @@ export default function PublicationCard({
     </Link>
   );
 
-  const actionBtn =
-    "flex items-center gap-1.5 rounded-field mx-1 px-1.5 py-2 text-sm hover:bg-base-200 cursor-pointer";
+  // Dernière carte de l'aperçu : retire le padding bas des boutons de
+  // réaction (redondant avec l'espace déjà géré par les spacers autour du
+  // lien "Voir tout" dans `GuestHome`), garde le padding haut pour la cible
+  // tactile.
+  const actionBtn = `flex items-center gap-1.5 rounded-field mx-1 px-1.5 text-sm hover:bg-base-200 cursor-pointer ${
+    previewCrop ? (previewLast ? "pt-1.5" : "py-1.5") : "py-2"
+  }`;
 
   return (
     <article className="bg-base-100">
-      <div className="px-4 pt-3">
+      <div className={`px-4 ${previewCrop ? "pt-2.5" : "pt-3"}`}>
         <div className="flex items-start justify-between gap-2">
           {header}
           {isAuthenticated && (
@@ -185,13 +216,21 @@ export default function PublicationCard({
             </div>
           )}
         </div>
+      </div>
 
-        <div className="mt-2 text-[15px] leading-relaxed text-base-content/90 whitespace-pre-line">
+      <div className="px-4">
+        <div
+          className={`${previewCrop ? "mt-1.5" : "mt-2"} text-[15px] ${
+            previewCrop ? "leading-snug" : "leading-relaxed"
+          } text-base-content/90 whitespace-pre-line ${
+            previewCrop ? "line-clamp-2" : ""
+          }`}
+        >
           {publication.title && (
             <span className="font-medium">{publication.title}. </span>
           )}
           {shown}
-          {isLong && !expanded && (
+          {isLong && !expanded && !previewCrop && (
             <button
               type="button"
               onClick={() => setExpanded(true)}
@@ -203,7 +242,7 @@ export default function PublicationCard({
         </div>
       </div>
 
-      {publication.imageUrl && (
+      {publication.imageUrl && !previewCrop && (
         <div
           className={`relative mt-3 overflow-hidden ${
             imageTall && !imageExpanded ? "max-h-112" : ""
@@ -234,38 +273,51 @@ export default function PublicationCard({
       )}
 
       {/* Une seule ligne : actions à gauche, résumé des réactions à droite.
-          Pas de marge haute quand une image la précède (elle colle l'image). */}
+          Pas de marge haute quand une image la précède (elle colle l'image).
+          Resserrée en `previewCrop` (accueil invité), pour laisser un peu
+          plus de place aux cartes sur l'aperçu de l'accueil invité. */}
       <div
         className={`${
-          publication.imageUrl ? "" : "mt-2"
-        } flex items-center justify-between px-2 py-1 text-base-content/60`}
+          publication.imageUrl ? "" : previewCrop ? "mt-1" : "mt-2"
+        } flex items-center justify-between px-2 ${
+          previewCrop ? `py-0 ${previewLast ? "" : "mb-1.5"}` : "py-1"
+        } text-base-content/60`}
       >
         <div className="flex items-center">
-          <button type="button" onClick={notify} className={actionBtn}>
+          <button type="button" onClick={handleEngagement} className={actionBtn}>
             <ThumbsUp className="h-5 w-5" weight="bold" />
             {publication.likesCount}
           </button>
 
-          {linkToDetail ? (
+          {!linkToDetail ? (
+            <span className={actionBtn}>
+              <ChatCircle className="h-5 w-5" weight="bold" />
+              {publication.commentsCount}
+            </span>
+          ) : isAuthenticated ? (
             <Link to={to} className={actionBtn}>
               <ChatCircle className="h-5 w-5" weight="bold" />
               {publication.commentsCount}
             </Link>
           ) : (
-            <span className={actionBtn}>
+            <button
+              type="button"
+              onClick={notifyAuthRequired}
+              className={actionBtn}
+            >
               <ChatCircle className="h-5 w-5" weight="bold" />
               {publication.commentsCount}
-            </span>
+            </button>
           )}
 
-          <button type="button" onClick={notify} className={actionBtn}>
+          <button type="button" onClick={handleEngagement} className={actionBtn}>
             <Repeat className="h-5 w-5" weight="bold" />
             {publication.sharesCount}
           </button>
 
           <button
             type="button"
-            onClick={notify}
+            onClick={handleEngagement}
             aria-label="Partager"
             className={actionBtn}
           >

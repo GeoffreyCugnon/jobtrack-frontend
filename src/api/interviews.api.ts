@@ -1,18 +1,24 @@
 import { api } from "../utils/axios-client";
 import type { EntretienItem, InterviewType } from "../types/interview.type";
+import { isUpcoming } from "../utils/relative-time";
 
 export type { EntretienItem, InterviewType };
+
+/** `isUpcoming` n'est pas renvoyé par l'API : dérivé ici de `scheduledAt` à chaque lecture (jamais périmé entre deux mutations, cf. `interview.type.ts`). */
+function withUpcomingFlag(interview: EntretienItem): EntretienItem {
+  return { ...interview, isUpcoming: isUpcoming(interview.scheduledAt) };
+}
 
 /** Entretiens de l'utilisateur courant (`/interview`, protégé par AuthGuard). */
 export class InterviewsApi {
   static async list(): Promise<EntretienItem[]> {
     const { data } = await api.get<EntretienItem[]>("interview");
-    return Array.isArray(data) ? data : [];
+    return Array.isArray(data) ? data.map(withUpcomingFlag) : [];
   }
 
   static async getById(id: number | string): Promise<EntretienItem | null> {
     const { data } = await api.get<EntretienItem | null>(`interview/${id}`);
-    return data ?? null;
+    return data ? withUpcomingFlag(data) : null;
   }
 
   static async create(input: {
@@ -27,7 +33,7 @@ export class InterviewsApi {
       scheduled_at: input.scheduledAt,
       ...(input.notes ? { notes: input.notes } : {}),
     });
-    return data;
+    return withUpcomingFlag(data);
   }
 
   static async remove(id: number | string): Promise<void> {

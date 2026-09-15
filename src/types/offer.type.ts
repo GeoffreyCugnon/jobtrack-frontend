@@ -10,6 +10,8 @@ export type Offer = {
   companyId?: number;
   companyLogoUrl?: string;
   location: string;
+  /** Brut, renvoyé par l'API. `timeAgo`/`postedHoursAgo` sont dérivés côté Front (`offers.api.ts`) — jamais périmés entre deux mutations. */
+  createdAt: string;
   timeAgo: string;
   postedHoursAgo: number;
   category: string;

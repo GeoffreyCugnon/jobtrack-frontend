@@ -168,6 +168,13 @@ Audit (septembre 2026) de la gestion du cache Front dans une optique mobile-firs
    - **Cache ETag explicite côté client** (`src/utils/axios-client.ts`) plutôt que de compter sur le cache HTTP implicite du navigateur : une `Map` en mémoire (par URL, non persistée) associe la dernière réponse à son `ETag` ; l'intercepteur de requête rajoute `If-None-Match`, celui de réponse retombe sur les données mises en cache si le serveur répond `304` (`validateStatus` élargi pour traiter `304` comme un succès plutôt qu'une erreur axios). Choix délibéré plutôt que le cache HTTP navigateur : ce dernier a un comportement ambigu pour des requêtes cross-origin avec un header `Authorization` (RFC 7234 §3.2) — explicite = déterministe et vérifiable.
    - **`src/utils/relative-time.ts`** (nouveau) : les champs autrefois précalculés côté Backend à partir de l'heure serveur (`timeAgo`/`postedHoursAgo` sur les offres et publications, `isUpcoming` sur les entretiens, `hasUpcomingInterview`/le volet « Entretien prévu » de `statusLabel` sur les candidatures) sont désormais recalculés ici, côté Front, **à chaque exécution réelle de la fonction de requête React Query** — dans `offers.api.ts`/`publications.api.ts`/`interviews.api.ts`/`applications.api.ts` (fonctions `withRelativeTime`/`withUpcomingFlag`/`withUpcomingInterview`), pas dans les composants. Nécessaire car un champ calculé côté serveur et mis en cache (`ETag`) ne se rafraîchirait plus qu'aux vraies mutations de données, jamais au simple écoulement du temps, une fois qu'une réponse `304` réutilise le corps précédent — recalculer côté client à chaque `queryFn` reste borné par `staleTime` comme avant, sans dépendre du contenu de la réponse HTTP.
 
+## Déploiement (AWS, septembre 2026)
+
+Voir `../CLAUDE.md` §Déploiement pour la vue d'ensemble (EC2, ECR, GitLab CI). Spécifique à ce repo :
+
+- `Dockerfile` multi-stage : build Vite (`node:20-alpine`) → runtime `nginx:1.27-alpine` statique (`nginx.conf` gère le fallback SPA + cache des assets).
+- **`VITE_API_URL`/`VITE_MESSAGING_API_URL` sont bakées dans le bundle JS au moment du `vite build`**, pas lues au runtime du conteneur — passées en `--build-arg` depuis des variables GitLab CI, pas depuis le `.env` du serveur (contrairement à `docker-compose.yml`, qui ne lit que `FRONTEND_PORT`). Une image buildée pour un environnement n'est donc pas réutilisable telle quelle pour un autre.
+
 ## Workflow Git
 
 Projet solo désormais, plus de suivi par tickets (l'ancienne convention YouTrack `GC/CRM-XX` était liée au projet d'équipe CRM, abandonnée ici).

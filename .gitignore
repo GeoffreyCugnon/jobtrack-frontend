@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Env (VITE_API_URL/VITE_MESSAGING_API_URL en local, secrets en prod) — jamais committé
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

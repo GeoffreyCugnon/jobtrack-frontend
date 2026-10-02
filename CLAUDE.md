@@ -182,6 +182,7 @@ Projet solo désormais, plus de suivi par tickets (l'ancienne convention YouTrac
 - Dépôt hébergé sur `gp_assassin-script/jobtrack/frontend` (GitLab self-hosted, `git.alt-tools.tech`) — remote `origin`. L'ancien dépôt d'équipe reste accessible en lecture via le remote `crm`.
 - Commits réguliers désormais, plutôt qu'uniquement à des points stables validés — ne pas hésiter à committer souvent en cours de tâche.
 - Voir aussi le `CLAUDE.md` à la racine de `JobTrack/` pour le workflow partagé entre les deux repos (lancement de Claude Code, skills/settings communs).
+- **Historique réécrit le 2026-10-02** (`git filter-repo`, force push sur `develop`/`main`) pour remplacer l'IP publique de l'EC2 de prod par `<IP_EC2>` dans `.env.example`, en prévision d'un miroir GitHub public. Les hash de commits antérieurs à cette date ont changé.
 
 ## Préférences de travail
 

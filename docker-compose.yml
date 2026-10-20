@@ -6,8 +6,9 @@
 services:
   frontend:
     image: ${ECR_REGISTRY}/jobtrack-frontend:${IMAGE_TAG:-latest}
+    # Joignable uniquement via le Nginx de l'hôte (infra/nginx/jobtrack.conf).
     ports:
-      - '${FRONTEND_PORT:-80}:80'
+      - '127.0.0.1:${FRONTEND_PORT:-8080}:80'
     networks:
       - jobtrack-network
     restart: unless-stopped
